@@ -18,7 +18,8 @@
         "laravel-vite-plugin": "^2.0.0",
         "lodash": "^4.17.21",
         "tailwindcss": "^4.1.11",
-        "vue": "^3.5.17"
+        "vue": "^3.5.17",
+        "vue-i18n": "^11.1.11"
     },
     "devDependencies": {
         "@blumilksoftware/eslint-config": "^3.0.2",

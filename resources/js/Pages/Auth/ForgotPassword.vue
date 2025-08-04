@@ -1,5 +1,6 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n} from "vue-i18n";
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import InputError from '@/Components/InputError.vue';
@@ -10,6 +11,8 @@ import TextInput from '@/Components/TextInput.vue';
 defineProps({
     status: String,
 });
+
+const { t } = useI18n()
 
 const form = useForm({
     email: '',
@@ -29,11 +32,11 @@ const submit = () => {
         </template>
 
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+            {{ t('passwords.instruction')}}
         </div>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-            {{ status }}
+            {{ t(status) }}
         </div>
 
         <form @submit.prevent="submit">
@@ -53,7 +56,7 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
+                    {{ t('passwords.resetLink')}}
                 </PrimaryButton>
             </div>
         </form>

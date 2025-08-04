@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "email": "E-mail",
+    "password": "Hasło",
+    "remember": "Zapamiętaj mnie",
+    "login": "Zaloguj się",
+    "logout": "Wyloguj się",
+    "register": "Zarejestruj się",
+    "alreadyRegistered": "Masz już konto?",
+    "confirmPassword": "Proszę potwierdź swoje hasło przed kontynuacją.",
+    "failed": "Podane dane są nieprawidłowe."
+  },
+  "passwords": {
+    "resetLink": "Wyślij link do resetowania hasła",
+    "forgot": "Nie pamiętasz hasła?",
+    "instruction": "Nie ma problemu. Podaj swój adres e-mail, a wyślemy Ci link do zresetowania hasła.",
+    "sent": "Wysłaliśmy link do resetowania hasła!"
+  },
+  "verification": {
+    "resend": "Wyślij ponownie e-mail weryfikacyjny",
+    "checkEmail": "Zanim przejdziesz dalej, proszę potwierdź swój adres e-mail klikając w link, który Ci wysłaliśmy."
+  },
+  "2fa": {
+    "authCode": "Potwierdź dostęp do swojego konta za pomocą kodu autoryzacyjnego z aplikacji.",
+    "recoveryCode": "Potwierdź dostęp do swojego konta za pomocą jednego z kodów zapasowych.",
+    "useAuth": "Użyj kodu autoryzacyjnego",
+    "useRecovery": "Użyj kodu zapasowego"
+  },
+  "profile": {
+    "edit": "Edytuj profil"
+  },
+  "terms": {
+    "agreement": "Zgadzam się na Regulamin i Politykę Prywatności"
+  },
+  "validation": {
+    "min": {
+      "string": "Pole :attribute musi mieć co najmniej :min znaków."
+    },
+    "confirmed": "Potwierdzenie pola :attribute nie zgadza się."
+  }
+}
