@@ -1,0 +1,35 @@
+{
+    "name": "interns2025c",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint": "eslint .",
+        "lintf": "eslint . --fix",
+        "tsc": "vue-tsc"
+    },
+    "dependencies": {
+        "@inertiajs/vue3": "^2.0.14",
+        "@tailwindcss/forms": "^0.5.10",
+        "@tailwindcss/postcss": "^4.1.11",
+        "@tailwindcss/typography": "^0.5.16",
+        "@tailwindcss/vite": "^4.1.11",
+        "laravel-vite-plugin": "^2.0.0",
+        "lodash": "^4.17.21",
+        "tailwindcss": "^4.1.11",
+        "vue": "^3.5.17"
+    },
+    "devDependencies": {
+        "@blumilksoftware/eslint-config": "^3.0.2",
+        "@typescript-eslint/eslint-plugin": "^8.37.0",
+        "@vitejs/plugin-vue": "^6.0.0",
+        "autoprefixer": "^10.4.21",
+        "eslint": "^9.31.0",
+        "eslint-config-prettier": "^10.1.5",
+        "eslint-plugin-vue": "^10.3.0",
+        "postcss": "^8.5.6",
+        "vite": "^7.0.4",
+        "vue-tsc": "^3.0.1"
+    }
+}
