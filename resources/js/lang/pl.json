@@ -1,5 +1,6 @@
 {
   "auth": {
+    "name": "Imię",
     "email": "E-mail",
     "password": "Hasło",
     "remember": "Zapamiętaj mnie",
@@ -7,8 +8,21 @@
     "logout": "Wyloguj się",
     "register": "Zarejestruj się",
     "alreadyRegistered": "Masz już konto?",
-    "confirmPassword": "Proszę potwierdź swoje hasło przed kontynuacją.",
-    "failed": "Podane dane są nieprawidłowe."
+    "confirmPassword": "Potwierdź hasło",
+    "failed": "Podane dane są nieprawidłowe.",
+    "remember_me": "Zapamiętaj mnie",
+    "forgotPassword": "Nie pamiętasz hasła?",
+    "resetPassword": "Zresetuj hasło",
+    "resetPasswordLink": "Wyślij link do resetowania hasła",
+    "twoFactorConfirmation": "Potwierdź dostęp do swojego konta",
+    "code": "Kod",
+    "recoveryCode": "Kod zapasowy",
+    "useRecoveryCode": "Użyj kodu zapasowego",
+    "useAuthenticationCode": "Użyj kodu autoryzacyjnego",
+    "emailVerification": "Potwierdź swoją e-mail",
+    "resendVerificationEmail": "Wyślij ponownie e-mail potwierdzający",
+    "editProfile": "Edytuj profil",
+    "logOut": "Wyloguj"
   },
   "passwords": {
     "resetLink": "Wyślij link do resetowania hasła",
@@ -36,6 +50,16 @@
     "min": {
       "string": "Pole :attribute musi mieć co najmniej :min znaków."
     },
-    "confirmed": "Potwierdzenie pola :attribute nie zgadza się."
+    "confirmed": "Potwierdzenie pola :attribute nie zgadza się.",
+    "confirm": "Potwierdź"
+  },
+  "title": {
+    "secure": "Chroniony obszar",
+    "register": "Zarejestruj się",
+    "forgotPassword": "Zapomniałem hasła",
+    "login": "Logowanie",
+    "resetPassword": "Zresetuj hasło",
+    "twoFactorConfirmation": "Potwierdź dostęp do swojego konta",
+    "emailVerification": "Potwierdź swoją e-mail"
   }
 }

@@ -27,7 +27,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('auth.register')" />
+  <Head :title="t('title.register')" />
 
   <AuthenticationCard>
     <template #logo>
@@ -36,9 +36,7 @@ const submit = () => {
 
     <form @submit.prevent="submit">
       <div>
-        <InputLabel for="name">
-          {{ t('auth.name') }}
-        </InputLabel>
+        <InputLabel for="name" :value="t('auth.name')" />
         <TextInput
             id="name"
             v-model="form.name"
@@ -52,9 +50,7 @@ const submit = () => {
       </div>
 
       <div class="mt-4">
-        <InputLabel for="email">
-          {{ t('auth.email') }}
-        </InputLabel>
+        <InputLabel for="email" :value="t('auth.email')" />
         <TextInput
             id="email"
             v-model="form.email"
@@ -67,9 +63,7 @@ const submit = () => {
       </div>
 
       <div class="mt-4">
-        <InputLabel for="password">
-          {{ t('auth.password') }}
-        </InputLabel>
+        <InputLabel for="password" :value="t('auth.password')" />
         <TextInput
             id="password"
             v-model="form.password"
@@ -82,9 +76,7 @@ const submit = () => {
       </div>
 
       <div class="mt-4">
-        <InputLabel for="password_confirmation">
-          {{ t('auth.confirmPassword') }}
-        </InputLabel>
+        <InputLabel for="password_confirmation" :value="t('auth.confirmPassword')" />
         <TextInput
             id="password_confirmation"
             v-model="form.password_confirmation"
