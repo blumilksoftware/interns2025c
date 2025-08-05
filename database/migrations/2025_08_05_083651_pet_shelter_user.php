@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pet_shelter_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('shelter_id')->constrained('pet_shelters')->onDelete('cascade');
+            $table->foreignId('pet_shelter_id')->constrained('pet_shelters')->onDelete('cascade');
             $table->timestamps();
         });
     }
