@@ -6,7 +6,13 @@
 @source '../**/*.{vue,js,ts}';
 
 @theme {
-    --color-primary: oklch(0.605 0.2253 29.3);
-    --color-gradient-primary: oklch(0.7967 0.1781 148.24);
-    --color-gradient-secondary: oklch(0.802 0.1202 88.53);
+    --color-primary: oklch(0.6094 0.1302 57.35);
+    --color-gradient-primary: oklch(0.95 0.05 85); /* Ciepły beż */
+    --color-gradient-secondary: oklch(0.92 0.08 120); /* Delikatny zielony */
+}
+
+.paw-prints-bg {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.5'%3E%3Cpath d='M15 20c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm20 0c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm-10 10c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm10 0c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm-5-15c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    background-repeat: repeat;
 }
