@@ -3,7 +3,7 @@ import PawPrints from '../../Components/PawPrints.vue'
 </script>
 
 <template>
-  <div class="relative isolate overflow-hidden py-20 bg-[#fefae0]/50 backdrop-blur-sm" style="mask: linear-gradient(to bottom, transparent 0%, black 15%);">
+  <div class="relative isolate overflow-hidden py-20 bg-[#fefae0]/50 backdrop-blur-sm" style="mask: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);">
     <PawPrints />
     
     <div class="h-1/2 px-6 py-12 sm:px-6 sm:py-16 lg:px-8">

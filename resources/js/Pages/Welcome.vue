@@ -3,6 +3,7 @@ import Header from '../Components/Header.vue'
 import ImageSection from './LandingPage/ImageSection.vue'
 import BackgroundGradient from './BackgroudGradient.vue'
 import ButtonSection from './LandingPage/ButtonSection.vue'
+import Footer from '../Components/Footer.vue'
 </script>
 
 <template>
@@ -10,8 +11,8 @@ import ButtonSection from './LandingPage/ButtonSection.vue'
   <Header />
   <ImageSection />
   <ButtonSection />
-
-  </template>
+  <Footer />
+</template>
 
 <style>
 </style>
