@@ -17,7 +17,6 @@ const generatePawPrint = () => {
 onMounted(() => {
   const count = Math.floor(Math.random() * 11) + 40
   pawPrints.value = Array.from({ length: count }, generatePawPrint)
-  console.log('PawPrints generated:', pawPrints.value.length)
 })
 </script>
 

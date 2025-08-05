@@ -83,5 +83,4 @@ const animals = [
 </template>
 
 <style scoped>
-
 </style>

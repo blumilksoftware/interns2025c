@@ -1,5 +1,4 @@
 <script setup>
-import { defineComponent, h } from 'vue'
 </script>
 
 <template>
