@@ -10,7 +10,7 @@ const generatePawPrint = () => {
     size: Math.random() * 0.8 + 0.8,
     rotation: Math.random() * 360,
     opacity: Math.random() * 0.1 + 0.3,
-    delay: Math.random() * 2
+    delay: Math.random() * 2,
   }
 }
 
@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="absolute inset-0 pointer-events-none overflow-hidden z-[-10]">
+  <div class="absolute inset-0 pointer-events-none overflow-hidden -z-10">
     <div 
       v-for="(paw, index) in pawPrints" 
       :key="index"
