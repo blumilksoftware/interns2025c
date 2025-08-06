@@ -6,7 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::get("/", fn() => Inertia::render("LandingPage", [
     "canLogin" => Route::has("login"),
     "canRegister" => Route::has("register"),
@@ -21,4 +20,3 @@ Route::middleware([
 ])->group(function (): void {
     Route::get("/dashboard", fn() => Inertia::render("Dashboard"))->name("dashboard");
 });
-
