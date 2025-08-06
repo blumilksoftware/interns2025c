@@ -7,8 +7,6 @@ use App\Http\Requests\TagRequest;
 
 class TagController extends Controller
 {
-
-    
     public function store(TagRequest $request)
     {
         $tag = Tag::create([
