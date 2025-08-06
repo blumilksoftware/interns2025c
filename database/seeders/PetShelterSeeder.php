@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\DB;
 
 class PetShelterSeeder extends Seeder
 {
-    const NUMBER_OF_PET_SHELTES_TO_CREATE = 50;
+    const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public function run(): void
     {
-        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTES_TO_CREATE)->create();
+        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
         $users = User::all();
         
-        foreach ($users as $index => $user) {
+        foreach ($users as $user) {
 
             $userHasExistingShelter = DB::table('pet_shelter_user')
                 ->where('user_id', $user->id)
