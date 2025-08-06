@@ -9,9 +9,7 @@ class TagController extends Controller
 {
     public function store(TagRequest $request)
     {
-        $tag = Tag::create([
-            'name' => $request->name,
-        ]);
+        $tag = Tag::query()->create($request->validated());
 
         return response()->json($tag, 201);
     }
