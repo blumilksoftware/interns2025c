@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { router } from '@inertiajs/vue3'
 import {
   Dialog,
   DialogPanel,
@@ -11,6 +12,10 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const mobileMenuOpen = ref(false)
+
+const goToAdmin = () => {
+  router.visit('/admin')
+}
 </script>
 
 <template>
@@ -34,7 +39,7 @@ const mobileMenuOpen = ref(false)
         <a href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</a>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="#" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+        <button @click="goToAdmin" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200">Log in <span aria-hidden="true">&rarr;</span></button>
       </div>
     </nav>
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">
@@ -58,7 +63,7 @@ const mobileMenuOpen = ref(false)
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Contact Us</a>
               </div>
               <div class="py-6">
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
+                <button @click="goToAdmin" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left">Log in</button>
               </div>
             </div>
           </div>
