@@ -8,7 +8,7 @@ use App\Models\PetShelterAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\PetShelter>
+ * @extends Factory<PetShelter>
  */
 class PetShelterFactory extends Factory
 {
