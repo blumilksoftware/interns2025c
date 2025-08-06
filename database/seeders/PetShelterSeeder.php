@@ -4,30 +4,33 @@ namespace Database\Seeders;
 
 use App\Models\PetShelter;
 use App\Models\User;
+use App\Enums\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class PetShelterSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    const NUMBER_OF_PET_SHELTES_TO_CREATE = 50;
     public function run(): void
     {
-        $petShelters = PetShelter::factory()->count(10)->create();
+        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTES_TO_CREATE)->create();
         $users = User::all();
         
-        if ($users->count() === 0 || $petShelters->count() === 0) return;
-        
-        foreach ($users as $user) {
-            $hasExistingShelter = DB::table('pet_shelter_user')
+        foreach ($users as $index => $user) {
+
+            $userHasExistingShelter = DB::table('pet_shelter_user')
                 ->where('user_id', $user->id)
                 ->exists();
             
-            if (!$hasExistingShelter) {
+            if (!$userHasExistingShelter) {
                 $randomShelter = $petShelters->random();
                 $randomShelter->users()->attach($user->id);
+
+                // Randomly assign 'shelter' role to only some users (e.g., 30% chance)
+                if (rand(1, 100) <= 30) {
+                    $user->update(['role' => Role::SHELTER->value]);
+                }
             }
         }
         

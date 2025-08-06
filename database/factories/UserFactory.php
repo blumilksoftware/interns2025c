@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,7 +44,7 @@ class UserFactory extends Factory
 
     public function chooseRandomRole(): string
     {
-        return $this->faker->randomElement(['admin', 'user']);
+        return $this->faker->randomElement(array_column(Role::cases(), 'value'));
     }
 
     /**

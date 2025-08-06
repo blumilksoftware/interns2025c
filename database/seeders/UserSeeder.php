@@ -8,11 +8,9 @@ use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    const NUMBER_OF_USERS_TO_CREATE = 100;
     public function run(): void
     {
-        User::factory()->count(10)->create();
+        User::factory()->count(self::NUMBER_OF_USERS_TO_CREATE)->create();
     }
 }
