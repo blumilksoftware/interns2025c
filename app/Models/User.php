@@ -21,11 +21,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         "name",
         "email",
@@ -33,11 +28,6 @@ class User extends Authenticatable implements MustVerifyEmail
         "role",
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         "password",
         "remember_token",
@@ -45,11 +35,6 @@ class User extends Authenticatable implements MustVerifyEmail
         "two_factor_secret",
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

@@ -19,12 +19,12 @@ class PetShelter extends Model
         "address_id",
     ];
 
-    public function address()
+    public function address(): BelongsTo
     {
         return $this->belongsTo(PetShelterAddress::class);
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }

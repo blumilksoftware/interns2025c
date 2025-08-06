@@ -17,7 +17,7 @@ class PetShelterAddress extends Model
         "postal_code",
     ];
 
-    public function petShelter()
+    public function petShelter(): HasOne
     {
         return $this->hasOne(PetShelter::class);
     }
