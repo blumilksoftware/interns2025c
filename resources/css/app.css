@@ -5,3 +5,11 @@
 [x-cloak] {
     display: none;
 }
+
+@source '../**/*.{vue,js,ts}';
+
+@theme {
+    --color-primary: oklch(0.6094 0.1302 57.35); /* Orange */
+    --color-gradient-primary: oklch(0.95 0.05 85); /* Warm beige */
+    --color-gradient-secondary: oklch(0.92 0.08 120); /* Soft green */
+}
