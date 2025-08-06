@@ -8,15 +8,10 @@ use App\Models\PetShelterAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PetShelter>
+ * @extends Factory<\App\Models\PetShelter>
  */
 class PetShelterFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
