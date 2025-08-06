@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Actions\Jetstream\DeleteUser;
@@ -14,7 +16,6 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**
@@ -34,13 +35,13 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     protected function configurePermissions(): void
     {
-        Jetstream::defaultApiTokenPermissions(['read']);
+        Jetstream::defaultApiTokenPermissions(["read"]);
 
         Jetstream::permissions([
-            'create',
-            'read',
-            'update',
-            'delete',
+            "create",
+            "read",
+            "update",
+            "delete",
         ]);
     }
 }

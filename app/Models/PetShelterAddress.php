@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,9 +12,9 @@ class PetShelterAddress extends Model
     use HasFactory;
 
     protected $fillable = [
-        'address',
-        'city',
-        'postal_code',
+        "address",
+        "city",
+        "postal_code",
     ];
 
     public function petShelter()

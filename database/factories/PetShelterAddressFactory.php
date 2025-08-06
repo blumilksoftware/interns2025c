@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use App\Models\PetShelterAddress;
-use App\Models\PetShelter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +19,9 @@ class PetShelterAddressFactory extends Factory
     public function definition(): array
     {
         return [
-            'address' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postal_code' => $this->faker->postcode(),
+            "address" => $this->faker->streetAddress(),
+            "city" => $this->faker->city(),
+            "postal_code" => $this->faker->postcode(),
         ];
     }
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\Jetstream\Features;
 use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Jetstream Stack
@@ -16,7 +17,7 @@ return [
     |
     */
 
-    'stack' => 'inertia',
+    "stack" => "inertia",
 
     /*
     |--------------------------------------------------------------------------
@@ -29,9 +30,9 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    "middleware" => ["web"],
 
-    'auth_session' => AuthenticateSession::class,
+    "auth_session" => AuthenticateSession::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +45,7 @@ return [
     |
     */
 
-    'guard' => 'sanctum',
+    "guard" => "sanctum",
 
     /*
     |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ return [
     |
     */
 
-    'features' => [
+    "features" => [
         // Features::termsAndPrivacyPolicy(),
         // Features::profilePhotos(),
         // Features::api(),
@@ -76,6 +77,5 @@ return [
     |
     */
 
-    'profile_photo_disk' => 'public',
-
+    "profile_photo_disk" => "public",
 ];
