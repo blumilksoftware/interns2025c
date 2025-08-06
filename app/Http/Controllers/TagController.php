@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Http\Requests\TagRequest;
+use App\Http\Resources\TagResource;
 
 class TagController extends Controller
 {
     public function store(TagRequest $request)
     {
         $tag = Tag::query()->create($request->validated());
-
         return response()->json($tag, 201);
     }
 
@@ -22,12 +22,12 @@ class TagController extends Controller
             'name' => $request->name,
         ]);
 
-        return response()->json($tag, 200);
+        return new TagResource($tag);
     }
 
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
-        Tag::destroy($id);
+        $tag->delete();
         return response()->json(null, 204);
     }
 }
