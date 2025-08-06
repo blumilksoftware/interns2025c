@@ -14,12 +14,12 @@ const mobileMenuOpen = ref(false)
 </script>
 
 <template>
-  <header class="">
+  <header>
     <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
         <a href="#" class="-m-1.5 p-1.5">
           <span class="sr-only">Interns2025c</span>
-          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="">
+          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="App logo">
         </a>
       </div>
       <div class="flex lg:hidden">
@@ -43,7 +43,7 @@ const mobileMenuOpen = ref(false)
           <div class="flex items-center justify-between sticky top-0 bg-white pb-4">
             <a href="#" class="-m-1.5 p-1.5">
               <span class="sr-only">Interns2025c</span>
-              <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="">
+              <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="App logo">
             </a>
             <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 z-10" @click="mobileMenuOpen = false">
               <span class="sr-only">Close menu</span>
