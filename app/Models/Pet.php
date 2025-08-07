@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -43,6 +44,9 @@ use Illuminate\Support\Carbon;
  */
 class Pet extends Model
 {
+    /** @use HasFactory<PetFactory> */
+    use HasFactory;
+
     protected $guarded = [];
     protected $casts = [
         "admission_date" => "date",
