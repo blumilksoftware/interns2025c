@@ -4,21 +4,27 @@ import { router } from '@inertiajs/vue3'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronRightIcon, Bars3Icon, XMarkIcon } from '@heroicons/vue/20/solid'
 
+const emit = defineEmits(['data-set-change'])
+
 const navigation = [
   {
     name: 'CRUDs',
     current: false,
     children: [
-      { name: 'Pets', href: '#' },
-      { name: 'Users', href: '#' },
-      { name: 'Shelters', href: '#' },
-      { name: 'Logs', href: '#' }
+      { name: 'Pets', key: 'pets', href: '#' },
+      { name: 'Users', key: 'users', href: '#' },
+      { name: 'Shelters', key: 'shelters', href: '#' },
+      { name: 'Logs', key: 'logs', href: '#' }
     ],
   },
 ]
 
 const goToHome = () => {
   router.visit('/')
+}
+
+const handleDataSetChange = (key) => {
+  emit('data-set-change', key)
 }
 
 const isSidebarOpen = ref(false)
@@ -68,7 +74,12 @@ onBeforeUnmount(() => {
                 </DisclosureButton>
                 <DisclosurePanel as="ul" class="mt-1 px-2">
                   <li v-for="subItem in item.children" :key="subItem.name">
-                    <DisclosureButton as="a" :href="subItem.href" :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']">{{ subItem.name }}</DisclosureButton>
+                    <button 
+                      @click="handleDataSetChange(subItem.key)"
+                      :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block w-full text-left rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']"
+                    >
+                      {{ subItem.name }}
+                    </button>
                   </li>
                 </DisclosurePanel>
               </Disclosure>
@@ -109,7 +120,12 @@ onBeforeUnmount(() => {
                     </DisclosureButton>
                     <DisclosurePanel as="ul" class="mt-1 px-2">
                       <li v-for="subItem in item.children" :key="subItem.name">
-                        <DisclosureButton as="a" :href="subItem.href" :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']">{{ subItem.name }}</DisclosureButton>
+                        <button 
+                          @click="handleDataSetChange(subItem.key)"
+                          :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block w-full text-left rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']"
+                        >
+                          {{ subItem.name }}
+                        </button>
                       </li>
                     </DisclosurePanel>
                   </Disclosure>
