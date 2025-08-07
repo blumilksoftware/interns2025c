@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Jetstream;
@@ -46,6 +47,7 @@ class RegistrationTest extends TestCase
             "email" => "test@example.com",
             "password" => "password",
             "password_confirmation" => "password",
+            "role" => Role::USER->value,
             "terms" => Jetstream::hasTermsAndPrivacyPolicyFeature(),
         ]);
 
