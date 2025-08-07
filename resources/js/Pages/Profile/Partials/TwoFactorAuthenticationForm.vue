@@ -10,8 +10,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 
+/* eslint-disable vue/no-v-html */
+import DOMPurify from 'dompurify'
+
 const props = defineProps({
-  requiresConfirmation: Boolean,
+  requiresConfirmation: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const sanitizedQrCode = computed(() => {
+  return DOMPurify.sanitize(qrCode.value)
 })
 
 const page = usePage()
@@ -152,11 +162,11 @@ const disableTwoFactorAuthentication = () => {
             </p>
           </div>
 
-          <div class="mt-4 p-2 inline-block bg-white" v-html="qrCode" />
+          <div class="mt-4 p-2 inline-block bg-white" v-html="sanitizedQrCode" />
 
           <div v-if="setupKey" class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-400">
             <p class="font-semibold">
-              Setup Key: <span v-html="setupKey" />
+              Setup Key: <span>{{ setupKey }}</span>
             </p>
           </div>
 

@@ -1,10 +1,22 @@
 <script setup>
+import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 
-defineProps({
-  policy: String,
+/* eslint-disable vue/no-v-html */
+import DOMPurify from 'dompurify'
+
+const props = defineProps({
+  policy: {
+    type: String,
+    default: '',
+  },
 })
+
+const sanitizedPolicy = computed(() => {
+  return DOMPurify.sanitize(props.policy)
+})
+
 </script>
 
 <template>
@@ -17,7 +29,7 @@ defineProps({
           <AuthenticationCardLogo />
         </div>
 
-        <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert" v-html="policy" />
+        <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert" v-html="sanitizedPolicy" />
       </div>
     </div>
   </div>

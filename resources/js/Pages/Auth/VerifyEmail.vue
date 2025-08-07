@@ -9,7 +9,10 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 const { t } = useI18n()
 
 const props = defineProps({
-  status: String,
+  status: {
+    type: String,
+    default: '',
+  },
 })
 
 const form = useForm({})

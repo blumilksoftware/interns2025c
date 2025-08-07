@@ -9,7 +9,10 @@ import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 
 defineProps({
-  title: String,
+  title: {
+    type: String,
+    default: '',
+  },
 })
 
 const showingNavigationDropdown = ref(false)

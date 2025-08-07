@@ -3,9 +3,18 @@ import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
-  active: Boolean,
-  href: String,
-  as: String,
+  active: {
+    type: Boolean,
+    default: false,
+  },
+  href: {
+    type: String,
+    default: '',
+  },
+  as: {
+    type: String,
+    default: '',
+  },
 })
 
 const classes = computed(() => {

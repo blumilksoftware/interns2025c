@@ -16,9 +16,18 @@ import SectionBorder from '@/Components/SectionBorder.vue'
 import TextInput from '@/Components/TextInput.vue'
 
 const props = defineProps({
-  tokens: Array,
-  availablePermissions: Array,
-  defaultPermissions: Array,
+  tokens: {
+    type: Array,
+    default: () => [],
+  },
+  availablePermissions: {
+    type: Array,
+    default: () => [],
+  },
+  defaultPermissions: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const createApiTokenForm = useForm({

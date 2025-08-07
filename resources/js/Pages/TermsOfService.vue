@@ -2,9 +2,20 @@
 import { Head } from '@inertiajs/vue3'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 
+/* eslint-disable vue/no-v-html */
+import DOMPurify from 'dompurify'
+
 defineProps({
-  terms: String,
+  terms: {
+    type: String,
+    default: '',
+  },
 })
+
+const sanitizedTerms = computed(() => {
+  return DOMPurify.sanitize(props.terms)
+})
+
 </script>
 
 <template>

@@ -10,8 +10,14 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 
 defineProps({
-  canResetPassword: Boolean,
-  status: String,
+  canResetPassword: {
+    type: Boolean,
+    default: false,
+  },
+  status: {
+    type: String,
+    default: '',
+  },
 })
 
 const { t } = useI18n()

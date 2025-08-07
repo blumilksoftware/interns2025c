@@ -3,9 +3,18 @@ import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 defineProps({
-  tokens: Array,
-  availablePermissions: Array,
-  defaultPermissions: Array,
+  tokens: {
+    type: Array,
+    default: () => [],
+  },
+  availablePermissions: {
+    type: Array,
+    default: () => [],
+  },
+  defaultPermissions: {
+    type: Array,
+    default: () => [],
+  },
 })
 </script>
 

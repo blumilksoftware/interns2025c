@@ -11,8 +11,14 @@ import TextInput from '@/Components/TextInput.vue'
 const { t } = useI18n()
 
 const props = defineProps({
-  email: String,
-  token: String,
+  email: {
+    type: String,
+    default: '',
+  },
+  token: {
+    type: String,
+    default: '',
+  },
 })
 
 const form = useForm({
