@@ -42,16 +42,16 @@ const dataSets = {
     { id: 8, name: 'Animal Rescue', location: 'Bydgoszcz', capacity: 30, current_occupancy: 25, rating: 4.6, status: 'Active', created_at: '2024-01-08' },
   ],
   logs: [
-    { id: 1, action: 'User Login', user: 'john@example.com', ip_address: '192.168.1.100', status: 'Success', timestamp: '2024-01-30 10:30:00' },
-    { id: 2, action: 'Pet Added', user: 'jane@example.com', ip_address: '192.168.1.101', status: 'Success', timestamp: '2024-01-30 10:25:00' },
-    { id: 3, action: 'User Logout', user: 'bob@example.com', ip_address: '192.168.1.102', status: 'Success', timestamp: '2024-01-30 10:20:00' },
-    { id: 4, action: 'Shelter Updated', user: 'admin@example.com', ip_address: '192.168.1.103', status: 'Success', timestamp: '2024-01-30 10:15:00' },
-    { id: 5, action: 'Failed Login', user: 'unknown@example.com', ip_address: '192.168.1.104', status: 'Failed', timestamp: '2024-01-30 10:10:00' },
-    { id: 6, action: 'Pet Adopted', user: 'charlie@example.com', ip_address: '192.168.1.105', status: 'Success', timestamp: '2024-01-30 10:05:00' },
-    { id: 7, action: 'User Created', user: 'admin@example.com', ip_address: '192.168.1.106', status: 'Success', timestamp: '2024-01-30 10:00:00' },
-    { id: 8, action: 'Data Export', user: 'diana@example.com', ip_address: '192.168.1.107', status: 'Success', timestamp: '2024-01-30 09:55:00' },
-    { id: 9, action: 'System Backup', user: 'system', ip_address: '192.168.1.108', status: 'Success', timestamp: '2024-01-30 09:50:00' },
-    { id: 10, action: 'Error Logged', user: 'fiona@example.com', ip_address: '192.168.1.109', status: 'Error', timestamp: '2024-01-30 09:45:00' },
+    { id: 1, action: 'User Login', user_email: 'john@example.com', ip_address: '192.168.1.100', status: 'Success', timestamp: '2024-01-30 10:30:00' },
+    { id: 2, action: 'Pet Added', user_email: 'jane@example.com', ip_address: '192.168.1.101', status: 'Success', timestamp: '2024-01-30 10:25:00' },
+    { id: 3, action: 'User Logout', user_email: 'bob@example.com', ip_address: '192.168.1.102', status: 'Success', timestamp: '2024-01-30 10:20:00' },
+    { id: 4, action: 'Shelter Updated', user_email: 'admin@example.com', ip_address: '192.168.1.103', status: 'Success', timestamp: '2024-01-30 10:15:00' },
+    { id: 5, action: 'Failed Login', user_email: 'unknown@example.com', ip_address: '192.168.1.104', status: 'Failed', timestamp: '2024-01-30 10:10:00' },
+    { id: 6, action: 'Pet Adopted', user_email: 'charlie@example.com', ip_address: '192.168.1.105', status: 'Success', timestamp: '2024-01-30 10:05:00' },
+    { id: 7, action: 'User Created', user_email: 'admin@example.com', ip_address: '192.168.1.106', status: 'Success', timestamp: '2024-01-30 10:00:00' },
+    { id: 8, action: 'Data Export', user_email: 'diana@example.com', ip_address: '192.168.1.107', status: 'Success', timestamp: '2024-01-30 09:55:00' },
+    { id: 9, action: 'System Backup', user_email: 'system', ip_address: '192.168.1.108', status: 'Success', timestamp: '2024-01-30 09:50:00' },
+    { id: 10, action: 'Error Logged', user_email: 'fiona@example.com', ip_address: '192.168.1.109', status: 'Error', timestamp: '2024-01-30 09:45:00' },
   ]
 }
 
@@ -59,9 +59,8 @@ const currentDataSet = ref('pets')
 const currentPage = ref(1)
 const itemsPerPage = 10
 const searchQuery = ref('')
-const selectedColumn = ref('all') // Nowe pole dla wybranej kolumny
+const selectedColumn = ref('all')
 
-// Pobieranie dostępnych kolumn dla aktualnego datasetu
 const availableColumns = computed(() => {
   if (dataSets[currentDataSet.value].length === 0) return []
   
@@ -71,14 +70,12 @@ const availableColumns = computed(() => {
     label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')
   }))
   
-  // Dodaj opcję "All columns"
   return [
     { value: 'all', label: 'All columns' },
     ...columns
   ]
 })
 
-// Filtrowanie danych na podstawie wyszukiwania
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) {
     return dataSets[currentDataSet.value]
@@ -87,12 +84,10 @@ const filteredData = computed(() => {
   const query = searchQuery.value.toLowerCase()
   return dataSets[currentDataSet.value].filter(item => {
     if (selectedColumn.value === 'all') {
-      // Wyszukiwanie we wszystkich kolumnach
       return Object.values(item).some(value => 
         String(value).toLowerCase().includes(query)
       )
     } else {
-      // Wyszukiwanie tylko w wybranej kolumnie
       const value = item[selectedColumn.value]
       return String(value).toLowerCase().includes(query)
     }
@@ -107,8 +102,8 @@ const editingItem = ref({})
 const handleDataSetChange = (dataSetKey) => {
   currentDataSet.value = dataSetKey
   currentPage.value = 1
-  searchQuery.value = '' // Reset wyszukiwania przy zmianie datasetu
-  selectedColumn.value = 'all' // Reset wybranej kolumny
+  searchQuery.value = ''
+  selectedColumn.value = 'all'
 }
 
 const handlePageChange = (page) => {
@@ -160,10 +155,8 @@ const clearSearch = () => {
           </h2>
         </div>
         
-        <!-- Pole wyszukiwania -->
         <div class="mb-6">
           <div class="flex gap-4 items-end">
-            <!-- Wybór kolumny -->
             <div class="flex-1">
               <label for="column-select" class="block text-sm font-medium text-gray-700 mb-1">
                 Search in column
@@ -182,8 +175,7 @@ const clearSearch = () => {
                 </option>
               </select>
             </div>
-            
-            <!-- Pole wyszukiwania -->
+
             <div class="flex-1">
               <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">
                 Search query

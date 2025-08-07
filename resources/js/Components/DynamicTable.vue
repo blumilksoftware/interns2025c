@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import StatusBadge from './StatusBadge.vue'
 import Pagination from './Pagination.vue'
 
@@ -20,7 +20,13 @@ const props = defineProps({
 
 const emit = defineEmits(['page-change', 'edit-item'])
 
-// Automatyczne wykrywanie kolumn
+// State for filtering and sorting
+const filters = ref({})
+const sortColumn = ref('')
+const sortDirection = ref('asc')
+const showFilters = ref(false)
+
+// Automatic column detection
 const columns = computed(() => {
   if (props.data.length === 0) return []
   
@@ -32,7 +38,7 @@ const columns = computed(() => {
   }))
 })
 
-// Funkcja określająca szerokość kolumny na podstawie typu danych
+// Function determining column width based on data type
 function getColumnWidth(key, value) {
   const type = typeof value
   
@@ -69,18 +75,24 @@ function getColumnWidth(key, value) {
       return 'w-20' // 80px
     case 'action':
       return 'w-32' // 128px
-    case 'user':
+    case 'user_email':
       return 'w-48' // 192px
     case 'ip_address':
       return 'w-36' // 144px
     case 'timestamp':
       return 'w-40' // 160px
+    case 'action':
+      return 'w-32' // 128px
+    case 'details':
+      return 'w-64' // 256px
+    case 'user_agent':
+      return 'w-48' // 192px
     default:
       return 'w-auto'
   }
 }
 
-// Funkcja formatująca wartości
+// Function formatting values
 function formatValue(key, value) {
   switch (key) {
     case 'created_at':
@@ -89,33 +101,150 @@ function formatValue(key, value) {
       return new Date(value).toLocaleDateString()
     case 'rating':
       return `${value}/5`
+    case 'ip_address':
+      return `<span class="font-mono text-xs">${value}</span>`
+    case 'user_email':
+      return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
+    case 'email':
+      return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
+    case 'details':
+    case 'user_agent':
+      return `<span class="truncate block max-w-xs" title="${value}">${value}</span>`
     default:
       return value
   }
 }
 
-// Obliczenia paginacji
-const totalPages = computed(() => Math.ceil(props.data.length / props.itemsPerPage))
+// Pagination calculations
+const totalPages = computed(() => Math.ceil(filteredData.value.length / props.itemsPerPage))
 const paginatedData = computed(() => {
   const start = (props.currentPage - 1) * props.itemsPerPage
   const end = start + props.itemsPerPage
-  return props.data.slice(start, end)
+  return filteredData.value.slice(start, end)
 })
 
+// Page change function
 const handlePageChange = (page) => {
   emit('page-change', page)
 }
 
+// Edit item function
 const handleEdit = (item) => {
   emit('edit-item', item)
+}
+
+// Data filtering function
+const filteredData = computed(() => {
+  let result = [...props.data]
+  
+  // Apply filters
+  Object.keys(filters.value).forEach(key => {
+    if (filters.value[key] && filters.value[key].trim() !== '') {
+      result = result.filter(item => {
+        const value = item[key]
+        if (value === null || value === undefined) return false
+        
+        const filterValue = filters.value[key].toLowerCase()
+        const itemValue = value.toString().toLowerCase()
+        
+        return itemValue.includes(filterValue)
+      })
+    }
+  })
+  
+  // Apply sorting
+  if (sortColumn.value && sortDirection.value) {
+    result.sort((a, b) => {
+      const aValue = a[sortColumn.value]
+      const bValue = b[sortColumn.value]
+      
+      if (aValue === null || aValue === undefined) return 1
+      if (bValue === null || bValue === undefined) return -1
+      
+      let comparison = 0
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue
+      } else {
+        comparison = aValue.toString().localeCompare(bValue.toString())
+      }
+      
+      return sortDirection.value === 'asc' ? comparison : -comparison
+    })
+  }
+  
+  return result
+})
+
+// Sorting function
+const handleSort = (column) => {
+  if (sortColumn.value === column) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortDirection.value = 'asc'
+  }
+}
+
+// Filtering function
+const handleFilter = (column, value) => {
+  if (value && value.trim() !== '') {
+    filters.value[column] = value
+  } else {
+    delete filters.value[column]
+  }
+}
+
+// Clear filters function
+const clearFilters = () => {
+  filters.value = {}
+  sortColumn.value = ''
+  sortDirection.value = 'asc'
 }
 </script>
 
 <template>
   <div class="bg-white shadow-sm rounded-lg overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200">
-      <h3 class="text-lg font-medium text-gray-900">Dynamic Data Table</h3>
-      <p class="text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-lg font-medium text-gray-900">Dynamic Data Table</h3>
+          <p class="text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
+        </div>
+        <div class="flex space-x-2">
+          <button
+            @click="showFilters = !showFilters"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+            </svg>
+            Filters
+          </button>
+          <button
+            @click="clearFilters"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div v-if="showFilters" class="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div v-for="column in columns" :key="column.key" class="space-y-1">
+          <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">
+            {{ column.label }}
+          </label>
+          <input
+            :id="`filter-${column.key}`"
+            v-model="filters[column.key]"
+            @input="handleFilter(column.key, $event.target.value)"
+            type="text"
+            class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
+            :placeholder="`Filter ${column.label.toLowerCase()}...`"
+          />
+        </div>
+      </div>
     </div>
     
     <div class="overflow-x-auto">
@@ -125,9 +254,41 @@ const handleEdit = (item) => {
             <th 
               v-for="column in columns" 
               :key="column.key"
-              :class="[column.width, 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider']"
+              @click="handleSort(column.key)"
+              :class="[
+                column.width, 
+                'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
+              ]"
             >
-              {{ column.label }}
+              <div class="flex items-center justify-between">
+                <span>{{ column.label }}</span>
+                <div class="flex flex-col ml-1">
+                  <svg 
+                    v-if="sortColumn === column.key && sortDirection === 'asc'"
+                    class="w-3 h-3 text-indigo-600" 
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  <svg 
+                    v-else-if="sortColumn === column.key && sortDirection === 'desc'"
+                    class="w-3 h-3 text-indigo-600" 
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  <svg 
+                    v-else
+                    class="w-3 h-3 text-gray-400" 
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </th>
             <th class="w-20 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -142,7 +303,7 @@ const handleEdit = (item) => {
               :class="[column.width, 'px-6 py-4 whitespace-nowrap text-sm text-gray-900']"
             >
               <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
-              <span v-else>{{ formatValue(column.key, row[column.key]) }}</span>
+              <span v-else v-html="formatValue(column.key, row[column.key])"></span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <button
@@ -157,11 +318,21 @@ const handleEdit = (item) => {
       </table>
     </div>
     
+    <!-- Results information -->
+    <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+      <p class="text-sm text-gray-600">
+        Showing {{ paginatedData.length }} of {{ filteredData.length }} results
+        <span v-if="Object.keys(filters).length > 0" class="text-indigo-600">
+          (filtered from {{ data.length }} total)
+        </span>
+      </p>
+    </div>
+    
     <!-- Pagination -->
     <Pagination 
       :current-page="currentPage"
       :total-pages="totalPages"
-      :total-items="data.length"
+      :total-items="filteredData.length"
       :items-per-page="itemsPerPage"
       @page-change="handlePageChange"
     />

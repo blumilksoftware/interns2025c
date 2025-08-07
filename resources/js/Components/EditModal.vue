@@ -19,29 +19,43 @@ const props = defineProps({
 const emit = defineEmits(['close', 'save'])
 
 const editData = ref({})
+const errors = ref({})
 
 watch(() => props.item, (newItem) => {
   if (newItem && Object.keys(newItem).length > 0) {
     editData.value = { ...newItem }
+    errors.value = {}
   }
 }, { immediate: true, deep: true })
 
 const editableFields = computed(() => {
   if (!props.item || Object.keys(props.item).length === 0) return []
   
-  const fields = Object.keys(props.item).filter(key => key !== 'id' && key !== 'created_at')
+  const fields = Object.keys(props.item).filter(key => {
+    // Usuń nieedytowalne pola
+    if (key === 'id' || key === 'created_at') return false
+    
+    // Dla users usuń last_login
+    if (props.dataSetType === 'users' && key === 'last_login') return false
+    
+    return true
+  })
   
   return fields.map(field => ({
     key: field,
     label: field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' '),
     type: getFieldType(field),
-    options: getFieldOptions(field)
+    options: getFieldOptions(field),
+    validation: getFieldValidation(field)
   }))
 })
 
 function getFieldType(field) {
   switch (field) {
     case 'status':
+    case 'type':
+    case 'role':
+    case 'shelter':
       return 'select'
     case 'age':
     case 'capacity':
@@ -50,10 +64,11 @@ function getFieldType(field) {
     case 'rating':
       return 'number'
     case 'email':
+    case 'user_email':
       return 'email'
+    case 'ip_address':
+      return 'text'
     case 'timestamp':
-    case 'last_login':
-    case 'created_at':
       return 'datetime-local'
     default:
       return 'text'
@@ -63,23 +78,137 @@ function getFieldType(field) {
 function getFieldOptions(field) {
   switch (field) {
     case 'status':
+      if (props.dataSetType === 'pets') {
+        return ['Available', 'Adopted']
+      } else if (props.dataSetType === 'users') {
+        return ['Active', 'Inactive']
+      } else if (props.dataSetType === 'logs') {
+        return ['Success', 'Failed', 'Error']
+      }
       return ['Available', 'Adopted', 'Pending', 'Active', 'Inactive', 'Success', 'Failed', 'Error']
+    
     case 'type':
+      if (props.dataSetType === 'pets') {
+        return ['Dog', 'Cat', 'Other']
+      }
       return ['Dog', 'Cat', 'Bird', 'Fish', 'Other']
+    
     case 'role':
+      if (props.dataSetType === 'users') {
+        return ['Admin', 'Shelter Caretaker', 'User']
+      }
       return ['Admin', 'User', 'Moderator']
+    
+    case 'shelter':
+      if (props.dataSetType === 'pets') {
+        return ['Happy Paws', 'Cat Care', 'Animal Haven', 'Pet Paradise', 'Furry Friends', 'Safe Haven', 'Companion Care', 'Animal Rescue']
+      }
+      return []
+    
     default:
       return []
   }
 }
 
+function getFieldValidation(field) {
+  switch (field) {
+    case 'email':
+      return {
+        required: true,
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: 'Please enter a valid email address'
+      }
+    case 'ip_address':
+      return {
+        required: true,
+        pattern: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
+        message: 'Please enter a valid IP address'
+      }
+    case 'user_email':
+      return {
+        required: true,
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: 'Please enter a valid email address'
+      }
+    case 'age':
+    case 'capacity':
+    case 'current_occupancy':
+      return {
+        required: true,
+        min: 0,
+        message: 'Value must be 0 or greater'
+      }
+    case 'rating':
+      return {
+        required: true,
+        min: 0,
+        max: 5,
+        message: 'Rating must be between 0 and 5'
+      }
+    case 'name':
+      return {
+        required: true,
+        minLength: 2,
+        message: 'Name must be at least 2 characters long'
+      }
+    default:
+      return {
+        required: false
+      }
+  }
+}
+
+const validateField = (field, value) => {
+  const validation = getFieldValidation(field)
+  
+  if (validation.required && (!value || value.toString().trim() === '')) {
+    return 'This field is required'
+  }
+  
+  if (validation.minLength && value && value.toString().length < validation.minLength) {
+    return validation.message
+  }
+  
+  if (validation.min !== undefined && value !== '' && Number(value) < validation.min) {
+    return validation.message
+  }
+  
+  if (validation.max !== undefined && value !== '' && Number(value) > validation.max) {
+    return validation.message
+  }
+  
+  if (validation.pattern && value && !validation.pattern.test(value)) {
+    return validation.message
+  }
+  
+  return null
+}
+
+const validateForm = () => {
+  errors.value = {}
+  let isValid = true
+  
+  editableFields.value.forEach(field => {
+    const error = validateField(field.key, editData.value[field.key])
+    if (error) {
+      errors.value[field.key] = error
+      isValid = false
+    }
+  })
+  
+  return isValid
+}
+
 const closeModal = () => {
   emit('close')
+  errors.value = {}
 }
 
 const saveChanges = () => {
-  emit('save', editData.value)
-  closeModal()
+  if (validateForm()) {
+    emit('save', editData.value)
+    closeModal()
+  }
 }
 
 const handleKeydown = (event) => {
@@ -105,6 +234,7 @@ const handleKeydown = (event) => {
                 <div v-for="field in editableFields" :key="field.key" class="space-y-2">
                   <label :for="field.key" class="block text-sm font-medium text-gray-700">
                     {{ field.label }}
+                    <span v-if="field.validation.required" class="text-red-500">*</span>
                   </label>
                   
                   <input
@@ -112,18 +242,25 @@ const handleKeydown = (event) => {
                     :id="field.key"
                     v-model="editData[field.key]"
                     :type="field.type"
-                    :step="field.type === 'number' ? '1' : undefined"
-                    :min="field.key === 'age' || field.key === 'capacity' || field.key === 'current_occupancy' ? '0' : undefined"
-                    :max="field.key === 'rating' ? '5' : undefined"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    :step="field.type === 'number' ? (field.key === 'age' ? '1' : field.key === 'rating' ? '0.1' : '1') : undefined"
+                    :min="field.validation.min !== undefined ? field.validation.min : undefined"
+                    :max="field.validation.max !== undefined ? field.validation.max : undefined"
+                    :class="[
+                      'mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                      errors[field.key] ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                    ]"
                   />
                   
                   <select
                     v-else-if="field.type === 'select'"
                     :id="field.key"
                     v-model="editData[field.key]"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    :class="[
+                      'mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                      errors[field.key] ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                    ]"
                   >
+                    <option value="">Select {{ field.label.toLowerCase() }}</option>
                     <option v-for="option in field.options" :key="option" :value="option">
                       {{ option }}
                     </option>
@@ -134,8 +271,15 @@ const handleKeydown = (event) => {
                     :id="field.key"
                     v-model="editData[field.key]"
                     type="datetime-local"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    :class="[
+                      'mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                      errors[field.key] ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                    ]"
                   />
+                  
+                  <p v-if="errors[field.key]" class="mt-1 text-sm text-red-600">
+                    {{ errors[field.key] }}
+                  </p>
                 </div>
               </form>
             </div>
