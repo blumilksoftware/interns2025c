@@ -46,16 +46,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <button @click="isSidebarOpen = true" class="sm:hidden fixed top-4 left-4 z-30 bg-gray-800 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+  <button @click="isSidebarOpen = true" class="xl:hidden fixed top-4 left-4 z-30 bg-gray-800 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
     <Bars3Icon class="h-6 w-6" />
   </button>
-  
-  <div class="hidden sm:flex min-w-[150px] w-100 flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+  <div class="hidden xl:flex min-w-[100px] max-w-xs flex-shrink-0 flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
     <div class="flex h-16 shrink-0 justify-between items-center">
       <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
-      <button 
+      <button
         @click="goToHome"
-        class="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-800 text-white hover:text-gray-800 hover:bg-gray-300 rounded transition-colors duration-200"
+        class="flex items-center gap-1 px-2 py-1 text-xs ml-4 font-medium bg-gray-800 text-white hover:text-gray-800 hover:bg-gray-300 rounded transition-colors duration-200"
       >
         <span>←</span>
         <span class="hidden sm:inline">Home</span>
@@ -74,7 +73,7 @@ onBeforeUnmount(() => {
                 </DisclosureButton>
                 <DisclosurePanel as="ul" class="mt-1 px-2">
                   <li v-for="subItem in item.children" :key="subItem.name">
-                    <button 
+                    <button
                       @click="handleDataSetChange(subItem.key)"
                       :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block w-full text-left rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']"
                     >
@@ -96,9 +95,9 @@ onBeforeUnmount(() => {
       </ul>
     </nav>
   </div>
-  
+
   <transition name="fade">
-    <div v-if="isSidebarOpen" class="fixed inset-0 z-40 flex">
+    <div v-if="isSidebarOpen" class="fixed inset-0 z-40 flex xl:hidden">
       <div class="fixed inset-0 bg-black/20" @click="closeSidebar"></div>
       <div class="relative w-64 bg-white h-full shadow-xl flex flex-col gap-y-5 px-6 py-4">
         <div class="flex h-16 shrink-0 justify-between items-center">
@@ -120,7 +119,7 @@ onBeforeUnmount(() => {
                     </DisclosureButton>
                     <DisclosurePanel as="ul" class="mt-1 px-2">
                       <li v-for="subItem in item.children" :key="subItem.name">
-                        <button 
+                        <button
                           @click="handleDataSetChange(subItem.key)"
                           :class="[subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block w-full text-left rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700']"
                         >

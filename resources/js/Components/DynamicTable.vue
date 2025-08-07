@@ -44,49 +44,47 @@ function getColumnWidth(key, value) {
   
   switch (key) {
     case 'id':
-      return 'w-16' // 64px
+      return 'w-12 sm:w-16' // 48px on mobile, 64px on desktop
     case 'name':
-      return 'w-32' // 128px
+      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
     case 'type':
-      return 'w-20' // 80px
+      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
     case 'breed':
-      return 'w-36' // 144px
+      return 'w-28 sm:w-36' // 112px on mobile, 144px on desktop
     case 'age':
-      return 'w-16' // 64px
+      return 'w-12 sm:w-16' // 48px on mobile, 64px on desktop
     case 'status':
-      return 'w-24' // 96px
+      return 'w-20 sm:w-24' // 80px on mobile, 96px on desktop
     case 'shelter':
-      return 'w-40' // 160px
+      return 'w-32 sm:w-40' // 128px on mobile, 160px on desktop
     case 'created_at':
-      return 'w-32' // 128px
+      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
     case 'email':
-      return 'w-48' // 192px
+      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
     case 'role':
-      return 'w-24' // 96px
+      return 'w-20 sm:w-24' // 80px on mobile, 96px on desktop
     case 'last_login':
-      return 'w-32' // 128px
+      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
     case 'location':
-      return 'w-32' // 128px
+      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
     case 'capacity':
-      return 'w-20' // 80px
+      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
     case 'current_occupancy':
-      return 'w-28' // 112px
+      return 'w-20 sm:w-28' // 80px on mobile, 112px on desktop
     case 'rating':
-      return 'w-20' // 80px
+      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
     case 'action':
-      return 'w-32' // 128px
+      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
     case 'user_email':
-      return 'w-48' // 192px
+      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
     case 'ip_address':
-      return 'w-36' // 144px
+      return 'w-28 sm:w-36' // 112px on mobile, 144px on desktop
     case 'timestamp':
-      return 'w-40' // 160px
-    case 'action':
-      return 'w-32' // 128px
+      return 'w-32 sm:w-40' // 128px on mobile, 160px on desktop
     case 'details':
-      return 'w-64' // 256px
+      return 'w-48 sm:w-64' // 192px on mobile, 256px on desktop
     case 'user_agent':
-      return 'w-48' // 192px
+      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
     default:
       return 'w-auto'
   }
@@ -204,16 +202,16 @@ const clearFilters = () => {
 
 <template>
   <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <div class="flex justify-between items-center">
+    <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h3 class="text-lg font-medium text-gray-900">Dynamic Data Table</h3>
-          <p class="text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
+          <h3 class="text-base lg:text-lg font-medium text-gray-900">Dynamic Data Table</h3>
+          <p class="text-xs lg:text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
         </div>
-        <div class="flex space-x-2">
+        <div class="flex flex-col lg:flex-row gap-2 w-full lg:w-auto">
           <button
             @click="showFilters = !showFilters"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
@@ -222,7 +220,7 @@ const clearFilters = () => {
           </button>
           <button
             @click="clearFilters"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Clear All
           </button>
@@ -230,7 +228,7 @@ const clearFilters = () => {
       </div>
       
       <!-- Filters -->
-      <div v-if="showFilters" class="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div v-if="showFilters" class="mt-4 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div v-for="column in columns" :key="column.key" class="space-y-1">
           <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">
             {{ column.label }}
@@ -257,7 +255,7 @@ const clearFilters = () => {
               @click="handleSort(column.key)"
               :class="[
                 column.width, 
-                'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
+                'px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
               ]"
             >
               <div class="flex items-center justify-between">
@@ -290,7 +288,7 @@ const clearFilters = () => {
                 </div>
               </div>
             </th>
-            <th class="w-20 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th class="w-20 px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
           </tr>
@@ -300,12 +298,12 @@ const clearFilters = () => {
             <td 
               v-for="column in columns" 
               :key="column.key"
-              :class="[column.width, 'px-6 py-4 whitespace-nowrap text-sm text-gray-900']"
+              :class="[column.width, 'px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900']"
             >
               <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
               <span v-else v-html="formatValue(column.key, row[column.key])"></span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <button
                 @click="handleEdit(row)"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
@@ -316,16 +314,6 @@ const clearFilters = () => {
           </tr>
         </tbody>
       </table>
-    </div>
-    
-    <!-- Results information -->
-    <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
-      <p class="text-sm text-gray-600">
-        Showing {{ paginatedData.length }} of {{ filteredData.length }} results
-        <span v-if="Object.keys(filters).length > 0" class="text-indigo-600">
-          (filtered from {{ data.length }} total)
-        </span>
-      </p>
     </div>
     
     <!-- Pagination -->

@@ -51,7 +51,7 @@ const dataSets = {
     { id: 7, action: 'User Created', user_email: 'admin@example.com', ip_address: '192.168.1.106', status: 'Success', timestamp: '2024-01-30 10:00:00' },
     { id: 8, action: 'Data Export', user_email: 'diana@example.com', ip_address: '192.168.1.107', status: 'Success', timestamp: '2024-01-30 09:55:00' },
     { id: 9, action: 'System Backup', user_email: 'system', ip_address: '192.168.1.108', status: 'Success', timestamp: '2024-01-30 09:50:00' },
-    { id: 10, action: 'Error Logged', user_email: 'fiona@example.com', ip_address: '192.168.1.109', status: 'Error', timestamp: '2024-01-30 09:45:00' },
+    { id: 10, action: 'Error Logged', user: 'fiona@example.com', ip_address: '192.168.1.109', status: 'Error', timestamp: '2024-01-30 09:45:00' },
   ]
 }
 
@@ -141,23 +141,20 @@ const clearSearch = () => {
 </script>
 
 <template>
-  <div class="flex flex-row min-h-screen">
+  <div class="flex flex-col xl:flex-row min-h-screen bg-gray-100">
     <AdminSidebar @data-set-change="handleDataSetChange" />
-    
-    <div class="flex-1 bg-gray-100">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
-        
-        <div class="mb-6">
-          <h2 class="text-lg font-medium text-gray-900">
+    <div class="flex-1">
+      <div class="w-full px-2 sm:px-4 md:px-6 py-4">
+        <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">Dashboard</h1>
+        <div class="mb-2 sm:mb-4">
+          <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
             Currently viewing: <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
-            <span class="text-sm text-gray-500 ml-2">({{ tableData.length }} records)</span>
+            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData.length }} records)</span>
           </h2>
         </div>
-        
-        <div class="mb-6">
-          <div class="flex gap-4 items-end">
-            <div class="flex-1">
+        <div class="mb-2 sm:mb-4">
+          <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-end">
+            <div class="w-full sm:flex-1">
               <label for="column-select" class="block text-sm font-medium text-gray-700 mb-1">
                 Search in column
               </label>
@@ -175,8 +172,7 @@ const clearSearch = () => {
                 </option>
               </select>
             </div>
-
-            <div class="flex-1">
+            <div class="w-full sm:flex-1">
               <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">
                 Search query
               </label>
@@ -208,7 +204,6 @@ const clearSearch = () => {
               </div>
             </div>
           </div>
-          
           <div v-if="searchQuery" class="mt-2 text-sm text-gray-600">
             Showing {{ tableData.length }} of {{ dataSets[currentDataSet].length }} results for "{{ searchQuery }}"
             <span v-if="selectedColumn !== 'all'">
@@ -216,23 +211,23 @@ const clearSearch = () => {
             </span>
           </div>
         </div>
-        
-        <DynamicTable 
-          :data="tableData"
-          :current-page="currentPage"
-          :items-per-page="itemsPerPage"
-          @page-change="handlePageChange"
-          @edit-item="handleEditItem"
-        />
+        <div class="overflow-x-auto">
+          <DynamicTable 
+            :data="tableData"
+            :current-page="currentPage"
+            :items-per-page="itemsPerPage"
+            @page-change="handlePageChange"
+            @edit-item="handleEditItem"
+          />
+        </div>
       </div>
+      <EditModal
+        :is-open="isModalOpen"
+        :item="editingItem"
+        :data-set-type="currentDataSet"
+        @close="closeModal"
+        @save="saveChanges"
+      />
     </div>
-    
-    <EditModal
-      :is-open="isModalOpen"
-      :item="editingItem"
-      :data-set-type="currentDataSet"
-      @close="closeModal"
-      @save="saveChanges"
-    />
   </div>
 </template>
