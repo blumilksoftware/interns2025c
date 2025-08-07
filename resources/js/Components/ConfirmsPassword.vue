@@ -48,21 +48,24 @@ const startConfirmingPassword = () => {
   })
 }
 
-const confirmPassword = () => {
+const confirmPassword = async () => {
   form.processing = true
 
-  axios.post(route('password.confirm'), {
-    password: form.password,
-  }).then(() => {
+  try {
+    await axios.post(route('password.confirm'), {
+      password: form.password,
+    })
+    
     form.processing = false
     closeModal()
-    return nextTick().then(() => emit('confirmed'))
-  }).catch(error => {
+    await nextTick()
+    emit('confirmed')
+  } catch (error) {
     form.processing = false
     form.error = error.response.data.errors.password[0]
     passwordInput.value.focus()
     throw error
-  })
+  }
 }
 
 const closeModal = () => {
