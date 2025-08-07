@@ -112,7 +112,7 @@ const handleKeydown = (event) => {
                     :id="field.key"
                     v-model="editData[field.key]"
                     :type="field.type"
-                    :step="field.type === 'number' ? '0.1' : undefined"
+                    :step="field.type === 'number' ? '1' : undefined"
                     :min="field.key === 'age' || field.key === 'capacity' || field.key === 'current_occupancy' ? '0' : undefined"
                     :max="field.key === 'rating' ? '5' : undefined"
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

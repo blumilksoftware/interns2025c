@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import AdminSidebar from '@/Components/AdminSidebar.vue'
 import DynamicTable from '@/Components/DynamicTable.vue'
 import EditModal from '@/Components/EditModal.vue'
@@ -58,16 +58,57 @@ const dataSets = {
 const currentDataSet = ref('pets')
 const currentPage = ref(1)
 const itemsPerPage = 10
+const searchQuery = ref('')
+const selectedColumn = ref('all') // Nowe pole dla wybranej kolumny
 
-const tableData = ref(dataSets.pets)
+// Pobieranie dostępnych kolumn dla aktualnego datasetu
+const availableColumns = computed(() => {
+  if (dataSets[currentDataSet.value].length === 0) return []
+  
+  const firstRow = dataSets[currentDataSet.value][0]
+  const columns = Object.keys(firstRow).map(key => ({
+    value: key,
+    label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')
+  }))
+  
+  // Dodaj opcję "All columns"
+  return [
+    { value: 'all', label: 'All columns' },
+    ...columns
+  ]
+})
+
+// Filtrowanie danych na podstawie wyszukiwania
+const filteredData = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return dataSets[currentDataSet.value]
+  }
+  
+  const query = searchQuery.value.toLowerCase()
+  return dataSets[currentDataSet.value].filter(item => {
+    if (selectedColumn.value === 'all') {
+      // Wyszukiwanie we wszystkich kolumnach
+      return Object.values(item).some(value => 
+        String(value).toLowerCase().includes(query)
+      )
+    } else {
+      // Wyszukiwanie tylko w wybranej kolumnie
+      const value = item[selectedColumn.value]
+      return String(value).toLowerCase().includes(query)
+    }
+  })
+})
+
+const tableData = computed(() => filteredData.value)
   
 const isModalOpen = ref(false)
 const editingItem = ref({})
 
 const handleDataSetChange = (dataSetKey) => {
   currentDataSet.value = dataSetKey
-  tableData.value = dataSets[dataSetKey]
   currentPage.value = 1
+  searchQuery.value = '' // Reset wyszukiwania przy zmianie datasetu
+  selectedColumn.value = 'all' // Reset wybranej kolumny
 }
 
 const handlePageChange = (page) => {
@@ -98,6 +139,10 @@ const saveChanges = (updatedItem) => {
   
   closeModal()
 }
+
+const clearSearch = () => {
+  searchQuery.value = ''
+}
 </script>
 
 <template>
@@ -113,6 +158,71 @@ const saveChanges = (updatedItem) => {
             Currently viewing: <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
             <span class="text-sm text-gray-500 ml-2">({{ tableData.length }} records)</span>
           </h2>
+        </div>
+        
+        <!-- Pole wyszukiwania -->
+        <div class="mb-6">
+          <div class="flex gap-4 items-end">
+            <!-- Wybór kolumny -->
+            <div class="flex-1">
+              <label for="column-select" class="block text-sm font-medium text-gray-700 mb-1">
+                Search in column
+              </label>
+              <select
+                id="column-select"
+                v-model="selectedColumn"
+                class="block w-full border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option 
+                  v-for="column in availableColumns" 
+                  :key="column.value" 
+                  :value="column.value"
+                >
+                  {{ column.label }}
+                </option>
+              </select>
+            </div>
+            
+            <!-- Pole wyszukiwania -->
+            <div class="flex-1">
+              <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">
+                Search query
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  id="search-input"
+                  v-model="searchQuery"
+                  type="text"
+                  :placeholder="selectedColumn === 'all' ? 'Search in all fields...' : `Search in ${availableColumns.find(col => col.value === selectedColumn)?.label.toLowerCase()}...`"
+                  class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    v-if="searchQuery"
+                    @click="clearSearch"
+                    type="button"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div v-if="searchQuery" class="mt-2 text-sm text-gray-600">
+            Showing {{ tableData.length }} of {{ dataSets[currentDataSet].length }} results for "{{ searchQuery }}"
+            <span v-if="selectedColumn !== 'all'">
+              in {{ availableColumns.find(col => col.value === selectedColumn)?.label.toLowerCase() }}
+            </span>
+          </div>
         </div>
         
         <DynamicTable 
