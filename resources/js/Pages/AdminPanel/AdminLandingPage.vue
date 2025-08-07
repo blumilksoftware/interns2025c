@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import AdminSidebar from '@/Components/AdminSidebar.vue'
 import DynamicTable from '@/Components/DynamicTable.vue'
+import EditModal from '@/Components/EditModal.vue'
 
 const dataSets = {
   pets: [
@@ -59,6 +60,9 @@ const currentPage = ref(1)
 const itemsPerPage = 10
 
 const tableData = ref(dataSets.pets)
+  
+const isModalOpen = ref(false)
+const editingItem = ref({})
 
 const handleDataSetChange = (dataSetKey) => {
   currentDataSet.value = dataSetKey
@@ -68,6 +72,31 @@ const handleDataSetChange = (dataSetKey) => {
 
 const handlePageChange = (page) => {
   currentPage.value = page
+}
+
+const handleEditItem = (item) => {
+  editingItem.value = item
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+  editingItem.value = {}
+}
+
+const saveChanges = (updatedItem) => {
+  const index = tableData.value.findIndex(item => item.id === updatedItem.id)
+  if (index !== -1) {
+    tableData.value[index] = { ...updatedItem }
+    
+    const dataSetKey = currentDataSet.value
+    const dataSetIndex = dataSets[dataSetKey].findIndex(item => item.id === updatedItem.id)
+    if (dataSetIndex !== -1) {
+      dataSets[dataSetKey][dataSetIndex] = { ...updatedItem }
+    }
+  }
+  
+  closeModal()
 }
 </script>
 
@@ -91,8 +120,17 @@ const handlePageChange = (page) => {
           :current-page="currentPage"
           :items-per-page="itemsPerPage"
           @page-change="handlePageChange"
+          @edit-item="handleEditItem"
         />
       </div>
     </div>
+    
+    <EditModal
+      :is-open="isModalOpen"
+      :item="editingItem"
+      :data-set-type="currentDataSet"
+      @close="closeModal"
+      @save="saveChanges"
+    />
   </div>
 </template>
