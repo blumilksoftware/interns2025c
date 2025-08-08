@@ -4,34 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
-/**
- * @property string $name
- * @property string $email
- * @property string $password
- * @property Carbon $email_verified_at
- * @property Carbon $created_at
- * @property Carbon $updated_at
- */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
+
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use Notifiable;
+    use TwoFactorAuthenticatable;
 
     protected $fillable = [
         "name",
         "email",
         "password",
+        "role",
     ];
     protected $hidden = [
         "password",
         "remember_token",
+        "two_factor_recovery_codes",
+        "two_factor_secret",
     ];
 
     protected function casts(): array

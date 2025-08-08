@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import laravel from 'laravel-vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
 
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
@@ -16,18 +15,6 @@ export default ({ mode }) => {
       strictPort: true,
       origin: 'https://' + process.env.VITE_DEV_SERVER_DOCKER_HOST_NAME,
       cors: true, // Allow any origin
-      watch: {
-        ignored: [
-          '**/.idea/**',
-          '**/app/**',
-          '**/tests/**',
-          '**/bootstrap/**',
-          '**/public/**',
-          '**/vendor/**',
-          '**/storage/**',
-          '**/node_modules/**',
-        ],
-      },
     },
     resolve: {
       alias: {
@@ -36,7 +23,7 @@ export default ({ mode }) => {
     },
     plugins: [
       laravel({
-        input: 'resources/js/app.ts',
+        input: ['resources/css/app.css', 'resources/js/app.js'],
         refresh: true,
       }),
       vue({
@@ -47,7 +34,6 @@ export default ({ mode }) => {
           },
         },
       }),
-      tailwindcss(),
     ],
   })
 }
