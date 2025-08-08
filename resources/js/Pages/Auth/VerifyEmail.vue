@@ -32,36 +32,39 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
       <AuthenticationCardLogo />
     </template>
 
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-center text-m text-gray-600 dark:text-gray-400">
       {{ t('auth.emailVerification') }}
     </div>
 
-    <div v-if="verificationLinkSent" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-      {{ t('auth.emailVerification') }}
+    <div v-if="verificationLinkSent" class="mb-4 text-center font-medium text-sm text-green-600 dark:text-green-400">
+      {{ t('auth.emailVerificationSent') }}
     </div>
 
     <form @submit.prevent="submit">
-      <div class="mt-4 flex items-center justify-between">
+      <div class="mt-4 flex flex-col items-center justify-between gap-4">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
           {{ t('auth.resendVerificationEmail') }}
         </PrimaryButton>
 
-        <div>
-          <Link
-            :href="route('profile.show')"
-            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-          >
-            {{ t('auth.editProfile') }}
-          </Link>
+        <div class="flex items-center justify-between gap-4">
+          <PrimaryButton>
+            <Link
+              :href="route('profile.show')"
+              class="cursor-pointer"
+            >
+              {{ t('auth.editProfile') }}
+            </Link>
+          </PrimaryButton>
 
-          <Link
-            :href="route('logout')"
-            method="post"
-            as="button"
-            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 ms-2"
-          >
-            {{ t('auth.logOut') }}
-          </Link>
+          <PrimaryButton>
+            <Link
+              :href="route('logout')"
+              method="post"
+              class="cursor-pointer"
+            >
+              {{ t('auth.logOut') }}
+            </Link>
+          </PrimaryButton>
         </div>
       </div>
     </form>

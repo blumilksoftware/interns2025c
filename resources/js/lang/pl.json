@@ -19,7 +19,8 @@
     "recoveryCode": "Kod zapasowy",
     "useRecoveryCode": "Użyj kodu zapasowego",
     "useAuthenticationCode": "Użyj kodu autoryzacyjnego",
-    "emailVerification": "Potwierdź swoją e-mail",
+    "emailVerification": "Potwierdź swój e-mail klikając w link, który Ci wysłaliśmy.",
+    "emailVerificationSent": "E-mail potwierdzający został wysłany!",
     "resendVerificationEmail": "Wyślij ponownie e-mail potwierdzający",
     "editProfile": "Edytuj profil",
     "logOut": "Wyloguj"
@@ -48,9 +49,9 @@
   },
   "validation": {
     "min": {
-      "string": "Pole :attribute musi mieć co najmniej :min znaków."
+      "string": "Hasło musi mieć co najmniej 8 znaków"
     },
-    "confirmed": "Potwierdzenie pola :attribute nie zgadza się.",
+    "confirmed": "Hasła muszą być takie same",
     "confirm": "Potwierdź"
   },
   "title": {
@@ -60,6 +61,6 @@
     "login": "Logowanie",
     "resetPassword": "Zresetuj hasło",
     "twoFactorConfirmation": "Potwierdź dostęp do swojego konta",
-    "emailVerification": "Potwierdź swoją e-mail"
+    "emailVerification": "Potwierdź swój e-mail"
   }
 }
