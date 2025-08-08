@@ -56,13 +56,6 @@ onBeforeUnmount(() => {
   <div class="hidden xl:flex min-w-[100px] max-w-xs shrink-0 flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
     <div class="flex h-16 shrink-0 justify-between items-center">
       <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async">
-      <button
-        class="flex items-center gap-1 px-2 py-1 text-xs ml-4 font-medium bg-gray-800 text-white hover:text-gray-800 hover:bg-gray-300 rounded transition-colors duration-200"
-        @click="goToHome"
-      >
-        <span>←</span>
-        <span class="hidden sm:inline">Home</span>
-      </button>
     </div>
     <nav class="flex flex-1 flex-col">
       <ul role="list" class="flex flex-1 flex-col gap-y-7">
