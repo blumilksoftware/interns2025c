@@ -5,8 +5,12 @@ import InputError from './InputError.vue'
 import PrimaryButton from './PrimaryButton.vue'
 import SecondaryButton from './SecondaryButton.vue'
 import TextInput from './TextInput.vue'
+import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
 
 const emit = defineEmits(['confirmed'])
+const { t } = useI18n()
 
 defineProps({
   title: {

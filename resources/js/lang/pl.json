@@ -1,5 +1,5 @@
 {
-  "auth": {
+"auth": {
     "name": "Imię",
     "email": "E-mail",
     "password": "Hasło",
@@ -62,5 +62,8 @@
     "resetPassword": "Zresetuj hasło",
     "twoFactorConfirmation": "Potwierdź dostęp do swojego konta",
     "emailVerification": "Potwierdź swój e-mail"
-  }
+  },
+  "" : "",
+  "The provided password was incorrect.": "Podane hasło jest nieprawidłowe.",
+  "The password is incorrect." : "Podane hasło jest nieprawidłowe."
 }

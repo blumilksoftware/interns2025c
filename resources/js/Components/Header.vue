@@ -31,8 +31,8 @@ const mobileMenuOpen = ref(false)
       </div>
       <PopoverGroup class="hidden lg:flex lg:gap-x-12">
         <NavLink href="#">Adopt Me!</NavLink>
-        <NavLink href="#" class="">About Adoption</NavLink>
-        <NavLink href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</NavLink>
+        <NavLink href="#">About Adoption</NavLink>
+        <NavLink href="#">Contact Us</NavLink>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
         <NavLink href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></NavLink>
@@ -53,13 +53,13 @@ const mobileMenuOpen = ref(false)
           </div>
           <div class="mt-6 flow-root">
             <div class="-my-6 divide-y divide-gray-500/10">
-              <div class="space-y-2 py-6">
-                <NavLink href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Adopt Me!</NavLink>
-                <NavLink href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">About Adoption</NavLink>
-                <NavLink href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Contact Us</NavLink>
+              <div class="space-y-2 py-6 flex flex-col">
+                <NavLink href="#">Adopt Me!</NavLink>
+                <NavLink href="#">About Adoption</NavLink>
+                <NavLink href="#">Contact Us</NavLink>
               </div>
               <div class="py-6">
-                <NavLink href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</NavLink>
+                <NavLink href="/login">Log in</NavLink>
               </div>
             </div>
           </div>

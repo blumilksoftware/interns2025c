@@ -23,7 +23,7 @@ return [
     ],
     "boolean" => "Pole :attribute musi być wartością prawda lub fałsz.",
     "can" => "Pole :attribute zawiera nieautoryzowaną wartość.",
-    "confirmed" => "Potwierdzenie pola :attribute nie pasuje.",
+    "confirmed" => "Potwierdzenie nie pasuje.",
     "contains" => "Pole :attribute nie zawiera wymaganego elementu.",
     "current_password" => "Hasło jest nieprawidłowe.",
     "date" => "Pole :attribute musi być prawidłową datą.",
@@ -124,7 +124,7 @@ return [
     "prohibited_unless" => "Pole :attribute jest zabronione, chyba że :other jest w :values.",
     "prohibits" => "Pole :attribute zabrania obecności :other.",
     "regex" => "Format pola :attribute jest nieprawidłowy.",
-    "required" => "Pole :attribute jest wymagane.",
+    "required" => ":attribute jest wymagane.",
     "required_array_keys" => "Pole :attribute musi zawierać wpisy dla: :values.",
     "required_if" => "Pole :attribute jest wymagane, gdy :other jest :value.",
     "required_if_accepted" => "Pole :attribute jest wymagane, gdy :other jest zaakceptowane.",
@@ -151,9 +151,14 @@ return [
     "ulid" => "Pole :attribute musi być prawidłowym ULID.",
     "uuid" => "Pole :attribute musi być prawidłowym UUID.",
     "phone" => "Pole :attribute musi być poprawnym numerem telefonu.",
+    "validation" => [
+        "password" => [
+            "confirmed" => "Hasła muszą być takie same.",
+        ],
+    ],
     "attributes" => [
-        "password" => "hasło",
-        "current_password" => "aktualne hasło",
+        "password" => "Hasło",
+        "current_password" => "Aktualne hasło",
     ],
     "custom" => [],
 ];

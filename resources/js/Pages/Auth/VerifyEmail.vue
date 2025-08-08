@@ -46,25 +46,25 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
           {{ t('auth.resendVerificationEmail') }}
         </PrimaryButton>
 
-        <div class="flex items-center justify-between gap-4">
-          <PrimaryButton>
-            <Link
-              :href="route('profile.show')"
-              class="cursor-pointer"
-            >
+        <div class="flex items-center justify-around w-full">
+          <Link
+            :href="route('profile.show')"
+            class="cursor-pointer"
+          >
+            <PrimaryButton>
               {{ t('auth.editProfile') }}
-            </Link>
-          </PrimaryButton>
+            </PrimaryButton>
+          </Link>
 
-          <PrimaryButton>
-            <Link
-              :href="route('logout')"
-              method="post"
-              class="cursor-pointer"
-            >
+          <Link
+            :href="route('logout')"
+            method="post"
+            class="cursor-pointer"
+          >
+            <PrimaryButton>
               {{ t('auth.logOut') }}
-            </Link>
-          </PrimaryButton>
+            </PrimaryButton>
+          </Link>
         </div>
       </div>
     </form>
