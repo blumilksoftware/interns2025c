@@ -46,12 +46,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <button @click="isSidebarOpen = true" class="xl:hidden fixed top-4 left-4 z-30 bg-gray-800 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+  <button @click="isSidebarOpen = true" class="xl:hidden fixed top-4 left-4 z-30 bg-gray-800/20 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
     <Bars3Icon class="h-6 w-6" />
   </button>
   <div class="hidden xl:flex min-w-[100px] max-w-xs flex-shrink-0 flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
     <div class="flex h-16 shrink-0 justify-between items-center">
-      <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+      <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async" />
       <button
         @click="goToHome"
         class="flex items-center gap-1 px-2 py-1 text-xs ml-4 font-medium bg-gray-800 text-white hover:text-gray-800 hover:bg-gray-300 rounded transition-colors duration-200"
@@ -87,8 +87,8 @@ onBeforeUnmount(() => {
         </li>
         <li class="-mx-6 mt-auto">
           <a href="#" class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50">
-            <img class="size-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-            <span class="sr-only">Your profile</span>
+            <img class="size-8 rounded-full bg-gray-50" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async" />
+            <span class="sr-only">Go to your profile</span>
             <span aria-hidden="true">Tomasz Rebizant</span>
           </a>
         </li>
@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
       <div class="fixed inset-0 bg-black/20" @click="closeSidebar"></div>
       <div class="relative w-64 bg-white h-full shadow-xl flex flex-col gap-y-5 px-6 py-4">
         <div class="flex h-16 shrink-0 justify-between items-center">
-          <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async" />
           <button @click="closeSidebar" class="text-gray-700 hover:text-gray-900 p-2 rounded focus:outline-none">
             <XMarkIcon class="h-6 w-6" />
           </button>
@@ -133,8 +133,8 @@ onBeforeUnmount(() => {
             </li>
             <li class="-mx-6 mt-auto">
               <a href="#" class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50">
-                <img class="size-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                <span class="sr-only">Your profile</span>
+                <img class="size-8 rounded-full bg-gray-50" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async" />
+                <span class="sr-only">Go to your profile</span>
                 <span aria-hidden="true">Tomasz Rebizant</span>
               </a>
             </li>

@@ -145,7 +145,6 @@ const clearSearch = () => {
     <AdminSidebar @data-set-change="handleDataSetChange" />
     <div class="flex-1">
       <div class="w-full px-2 sm:px-4 md:px-6 py-4">
-        <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">Dashboard</h1>
         <div class="mb-2 sm:mb-4">
           <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
             Currently viewing: <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
@@ -178,7 +177,7 @@ const clearSearch = () => {
               </label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
@@ -196,7 +195,7 @@ const clearSearch = () => {
                     type="button"
                     class="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
                   >
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>

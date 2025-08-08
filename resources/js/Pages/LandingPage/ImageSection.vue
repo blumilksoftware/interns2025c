@@ -66,7 +66,7 @@ const animals = [
       </div>
       <div class="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
         <article v-for="post in animals" :key="post.id" class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pt-80 pb-8 sm:pt-48 lg:pt-80">
-          <img :src="post.imageUrl" alt="Pet image" class="absolute inset-0 -z-10 size-full object-cover">
+          <img :src="post.imageUrl" alt="Pet image" class="absolute inset-0 -z-10 size-full object-cover" width="1200" height="800" loading="lazy" decoding="async">
           <div class="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
           <div class="absolute inset-0 -z-10 rounded-2xl ring-1 ring-gray-900/10" />
           <h3 class="mt-3 text-lg/6 font-semibold text-white">

@@ -44,47 +44,47 @@ function getColumnWidth(key, value) {
   
   switch (key) {
     case 'id':
-      return 'w-12 sm:w-16' // 48px on mobile, 64px on desktop
+      return 'w-12 sm:w-16'
     case 'name':
-      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
+      return 'w-24 sm:w-32'
     case 'type':
-      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
+      return 'w-16 sm:w-20'
     case 'breed':
-      return 'w-28 sm:w-36' // 112px on mobile, 144px on desktop
+      return 'w-28 sm:w-36'
     case 'age':
-      return 'w-12 sm:w-16' // 48px on mobile, 64px on desktop
+      return 'w-12 sm:w-16'
     case 'status':
-      return 'w-20 sm:w-24' // 80px on mobile, 96px on desktop
+      return 'w-20 sm:w-24'
     case 'shelter':
-      return 'w-32 sm:w-40' // 128px on mobile, 160px on desktop
+      return 'w-32 sm:w-40'
     case 'created_at':
-      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
+      return 'w-24 sm:w-32'
     case 'email':
-      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
+      return 'w-36 sm:w-48'
     case 'role':
-      return 'w-20 sm:w-24' // 80px on mobile, 96px on desktop
+      return 'w-20 sm:w-24'
     case 'last_login':
-      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
+      return 'w-24 sm:w-32'
     case 'location':
-      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
+      return 'w-24 sm:w-32'
     case 'capacity':
-      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
+      return 'w-16 sm:w-20'
     case 'current_occupancy':
-      return 'w-20 sm:w-28' // 80px on mobile, 112px on desktop
+      return 'w-20 sm:w-28'
     case 'rating':
-      return 'w-16 sm:w-20' // 64px on mobile, 80px on desktop
+      return 'w-16 sm:w-20'
     case 'action':
-      return 'w-24 sm:w-32' // 96px on mobile, 128px on desktop
+      return 'w-24 sm:w-32'
     case 'user_email':
-      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
+      return 'w-36 sm:w-48'
     case 'ip_address':
-      return 'w-28 sm:w-36' // 112px on mobile, 144px on desktop
+      return 'w-28 sm:w-36'
     case 'timestamp':
-      return 'w-32 sm:w-40' // 128px on mobile, 160px on desktop
+      return 'w-32 sm:w-40'
     case 'details':
-      return 'w-48 sm:w-64' // 192px on mobile, 256px on desktop
+      return 'w-48 sm:w-64'
     case 'user_agent':
-      return 'w-36 sm:w-48' // 144px on mobile, 192px on desktop
+      return 'w-36 sm:w-48'
     default:
       return 'w-auto'
   }
@@ -245,7 +245,8 @@ const clearFilters = () => {
       </div>
     </div>
     
-    <div class="overflow-x-auto">
+    <!-- Table -->
+    <div class="overflow-x-auto overflow-y-auto max-h-[50vh]">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -255,7 +256,7 @@ const clearFilters = () => {
               @click="handleSort(column.key)"
               :class="[
                 column.width, 
-                'px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
+                'px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
               ]"
             >
               <div class="flex items-center justify-between">
@@ -298,12 +299,12 @@ const clearFilters = () => {
             <td 
               v-for="column in columns" 
               :key="column.key"
-              :class="[column.width, 'px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900']"
+              :class="[column.width, 'px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-gray-900']"
             >
               <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
               <span v-else v-html="formatValue(column.key, row[column.key])"></span>
             </td>
-            <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-gray-900">
               <button
                 @click="handleEdit(row)"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
