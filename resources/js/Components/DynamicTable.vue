@@ -90,28 +90,7 @@ function getColumnWidth(key, value) {
   }
 }
 
-// Function formatting values
-function formatValue(key, value) {
-  switch (key) {
-  case 'created_at':
-  case 'last_login':
-  case 'timestamp':
-    return new Date(value).toLocaleDateString()
-  case 'rating':
-    return `${value}/5`
-  case 'ip_address':
-    return `<span class="font-mono text-xs">${value}</span>`
-  case 'user_email':
-    return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
-  case 'email':
-    return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
-  case 'details':
-  case 'user_agent':
-    return `<span class="truncate block max-w-xs" title="${value}">${value}</span>`
-  default:
-    return value
-  }
-}
+
 
 // Pagination calculations
 const totalPages = computed(() => Math.ceil(filteredData.value.length / props.itemsPerPage))
@@ -302,7 +281,24 @@ const clearFilters = () => {
               :class="[column.width, 'p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900']"
             >
               <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
-              <span v-else v-html="formatValue(column.key, row[column.key])" />
+              <template v-else-if="column.key === 'ip_address'">
+                <span class="font-mono text-xs">{{ row[column.key] }}</span>
+              </template>
+              <template v-else-if="column.key === 'user_email' || column.key === 'email'">
+                <a :href="`mailto:${row[column.key]}`" class="text-indigo-600 hover:text-indigo-800">{{ row[column.key] }}</a>
+              </template>
+              <template v-else-if="column.key === 'details' || column.key === 'user_agent'">
+                <span class="truncate block max-w-xs" :title="row[column.key]">{{ row[column.key] }}</span>
+              </template>
+              <template v-else-if="column.key === 'created_at' || column.key === 'last_login' || column.key === 'timestamp'">
+                {{ new Date(row[column.key]).toLocaleDateString() }}
+              </template>
+              <template v-else-if="column.key === 'rating'">
+                {{ row[column.key] }}/5
+              </template>
+              <template v-else>
+                {{ row[column.key] }}
+              </template>
             </td>
             <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
               <button
