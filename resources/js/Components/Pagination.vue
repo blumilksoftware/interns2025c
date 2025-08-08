@@ -4,20 +4,20 @@ import { ChevronLeftIcon, ChevronRightIcon, ChevronDoubleLeftIcon, ChevronDouble
 const props = defineProps({
   currentPage: {
     type: Number,
-    required: true
+    required: true,
   },
   totalPages: {
     type: Number,
-    required: true
+    required: true,
   },
   totalItems: {
     type: Number,
-    required: true
+    required: true,
   },
   itemsPerPage: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits(['page-change'])
@@ -47,16 +47,16 @@ const goToNextPage = () => {
     <div class="flex items-center justify-between">
       <div class="flex-1 flex justify-between sm:hidden">
         <button 
-          @click="goToPreviousPage"
           :disabled="currentPage === 1"
           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="goToPreviousPage"
         >
           Previous
         </button>
         <button 
-          @click="goToNextPage"
           :disabled="currentPage === totalPages"
           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="goToNextPage"
         >
           Next
         </button>
@@ -70,33 +70,33 @@ const goToNextPage = () => {
         <div>
           <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button 
-              @click="goToFirstPage"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center p-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="goToFirstPage"
             >
               <span class="sr-only">First</span>
-              <ChevronDoubleLeftIcon class="h-5 w-5" />
+              <ChevronDoubleLeftIcon class="size-5" />
             </button>
             
             <button 
-              @click="goToPreviousPage"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center p-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="goToPreviousPage"
             >
               <span class="sr-only">Previous</span>
-              <ChevronLeftIcon class="h-5 w-5" />
+              <ChevronLeftIcon class="size-5" />
             </button>
             
             <template v-for="page in totalPages" :key="page">
               <button 
                 v-if="page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)"
-                @click="goToPage(page)"
                 :class="[
                   page === currentPage 
                     ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' 
                     : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
                   'relative inline-flex items-center px-4 py-2 border text-sm font-medium'
                 ]"
+                @click="goToPage(page)"
               >
                 {{ page }}
               </button>
@@ -109,21 +109,21 @@ const goToNextPage = () => {
             </template>
             
             <button 
-              @click="goToNextPage"
               :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center p-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="goToNextPage"
             >
               <span class="sr-only">Next</span>
-              <ChevronRightIcon class="h-5 w-5" />
+              <ChevronRightIcon class="size-5" />
             </button>
               
             <button 
-              @click="goToLastPage"
               :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center p-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="goToLastPage"
             >
               <span class="sr-only">Last</span>
-              <ChevronDoubleRightIcon class="h-5 w-5" />
+              <ChevronDoubleRightIcon class="size-5" />
             </button>
           </nav>
         </div>

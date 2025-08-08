@@ -6,16 +6,16 @@ import Pagination from './Pagination.vue'
 const props = defineProps({
   data: {
     type: Array,
-    required: true
+    required: true,
   },
   itemsPerPage: {
     type: Number,
-    default: 10
+    default: 10,
   },
   currentPage: {
     type: Number,
-    default: 1
-  }
+    default: 1,
+  },
 })
 
 const emit = defineEmits(['page-change', 'edit-item'])
@@ -34,7 +34,7 @@ const columns = computed(() => {
   return Object.keys(firstRow).map(key => ({
     key,
     label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' '),
-    width: getColumnWidth(key, firstRow[key])
+    width: getColumnWidth(key, firstRow[key]),
   }))
 })
 
@@ -43,73 +43,73 @@ function getColumnWidth(key, value) {
   const type = typeof value
   
   switch (key) {
-    case 'id':
-      return 'w-12 sm:w-16'
-    case 'name':
-      return 'w-24 sm:w-32'
-    case 'type':
-      return 'w-16 sm:w-20'
-    case 'breed':
-      return 'w-28 sm:w-36'
-    case 'age':
-      return 'w-12 sm:w-16'
-    case 'status':
-      return 'w-20 sm:w-24'
-    case 'shelter':
-      return 'w-32 sm:w-40'
-    case 'created_at':
-      return 'w-24 sm:w-32'
-    case 'email':
-      return 'w-36 sm:w-48'
-    case 'role':
-      return 'w-20 sm:w-24'
-    case 'last_login':
-      return 'w-24 sm:w-32'
-    case 'location':
-      return 'w-24 sm:w-32'
-    case 'capacity':
-      return 'w-16 sm:w-20'
-    case 'current_occupancy':
-      return 'w-20 sm:w-28'
-    case 'rating':
-      return 'w-16 sm:w-20'
-    case 'action':
-      return 'w-24 sm:w-32'
-    case 'user_email':
-      return 'w-36 sm:w-48'
-    case 'ip_address':
-      return 'w-28 sm:w-36'
-    case 'timestamp':
-      return 'w-32 sm:w-40'
-    case 'details':
-      return 'w-48 sm:w-64'
-    case 'user_agent':
-      return 'w-36 sm:w-48'
-    default:
-      return 'w-auto'
+  case 'id':
+    return 'w-12 sm:w-16'
+  case 'name':
+    return 'w-24 sm:w-32'
+  case 'type':
+    return 'w-16 sm:w-20'
+  case 'breed':
+    return 'w-28 sm:w-36'
+  case 'age':
+    return 'w-12 sm:w-16'
+  case 'status':
+    return 'w-20 sm:w-24'
+  case 'shelter':
+    return 'w-32 sm:w-40'
+  case 'created_at':
+    return 'w-24 sm:w-32'
+  case 'email':
+    return 'w-36 sm:w-48'
+  case 'role':
+    return 'w-20 sm:w-24'
+  case 'last_login':
+    return 'w-24 sm:w-32'
+  case 'location':
+    return 'w-24 sm:w-32'
+  case 'capacity':
+    return 'w-16 sm:w-20'
+  case 'current_occupancy':
+    return 'w-20 sm:w-28'
+  case 'rating':
+    return 'w-16 sm:w-20'
+  case 'action':
+    return 'w-24 sm:w-32'
+  case 'user_email':
+    return 'w-36 sm:w-48'
+  case 'ip_address':
+    return 'w-28 sm:w-36'
+  case 'timestamp':
+    return 'w-32 sm:w-40'
+  case 'details':
+    return 'w-48 sm:w-64'
+  case 'user_agent':
+    return 'w-36 sm:w-48'
+  default:
+    return 'w-auto'
   }
 }
 
 // Function formatting values
 function formatValue(key, value) {
   switch (key) {
-    case 'created_at':
-    case 'last_login':
-    case 'timestamp':
-      return new Date(value).toLocaleDateString()
-    case 'rating':
-      return `${value}/5`
-    case 'ip_address':
-      return `<span class="font-mono text-xs">${value}</span>`
-    case 'user_email':
-      return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
-    case 'email':
-      return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
-    case 'details':
-    case 'user_agent':
-      return `<span class="truncate block max-w-xs" title="${value}">${value}</span>`
-    default:
-      return value
+  case 'created_at':
+  case 'last_login':
+  case 'timestamp':
+    return new Date(value).toLocaleDateString()
+  case 'rating':
+    return `${value}/5`
+  case 'ip_address':
+    return `<span class="font-mono text-xs">${value}</span>`
+  case 'user_email':
+    return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
+  case 'email':
+    return `<a href="mailto:${value}" class="text-indigo-600 hover:text-indigo-800">${value}</a>`
+  case 'details':
+  case 'user_agent':
+    return `<span class="truncate block max-w-xs" title="${value}">${value}</span>`
+  default:
+    return value
   }
 }
 
@@ -202,7 +202,7 @@ const clearFilters = () => {
 
 <template>
   <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-    <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+    <div class="p-4 sm:px-6 border-b border-gray-200">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h3 class="text-base lg:text-lg font-medium text-gray-900">Dynamic Data Table</h3>
@@ -210,17 +210,17 @@ const clearFilters = () => {
         </div>
         <div class="flex flex-col lg:flex-row gap-2 w-full lg:w-auto">
           <button
-            @click="showFilters = !showFilters"
             class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            @click="showFilters = !showFilters"
           >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+            <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
             </svg>
             Filters
           </button>
           <button
-            @click="clearFilters"
             class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            @click="clearFilters"
           >
             Clear All
           </button>
@@ -236,60 +236,60 @@ const clearFilters = () => {
           <input
             :id="`filter-${column.key}`"
             v-model="filters[column.key]"
-            @input="handleFilter(column.key, $event.target.value)"
             type="text"
             class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
             :placeholder="`Filter ${column.label.toLowerCase()}...`"
-          />
+            @input="handleFilter(column.key, $event.target.value)"
+          >
         </div>
       </div>
     </div>
     
     <!-- Table -->
-    <div class="overflow-x-auto overflow-y-auto max-h-[50vh]">
+    <div class="overflow-auto max-h-[50vh]">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <th 
               v-for="column in columns" 
               :key="column.key"
-              @click="handleSort(column.key)"
               :class="[
                 column.width, 
-                'px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
+                'p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
               ]"
+              @click="handleSort(column.key)"
             >
               <div class="flex items-center justify-between">
                 <span>{{ column.label }}</span>
                 <div class="flex flex-col ml-1">
                   <svg 
                     v-if="sortColumn === column.key && sortDirection === 'asc'"
-                    class="w-3 h-3 text-indigo-600" 
+                    class="size-3 text-indigo-600" 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
-                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                   </svg>
                   <svg 
                     v-else-if="sortColumn === column.key && sortDirection === 'desc'"
-                    class="w-3 h-3 text-indigo-600" 
+                    class="size-3 text-indigo-600" 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
                   <svg 
                     v-else
-                    class="w-3 h-3 text-gray-400" 
+                    class="size-3 text-gray-400" 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
                 </div>
               </div>
             </th>
-            <th class="w-20 px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
           </tr>
@@ -299,15 +299,15 @@ const clearFilters = () => {
             <td 
               v-for="column in columns" 
               :key="column.key"
-              :class="[column.width, 'px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-gray-900']"
+              :class="[column.width, 'p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900']"
             >
               <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
-              <span v-else v-html="formatValue(column.key, row[column.key])"></span>
+              <span v-else v-html="formatValue(column.key, row[column.key])" />
             </td>
-            <td class="px-2 sm:px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+            <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
               <button
-                @click="handleEdit(row)"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                @click="handleEdit(row)"
               >
                 Edit
               </button>

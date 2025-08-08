@@ -3,8 +3,8 @@
 defineProps({
   status: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 // Badges colors
@@ -16,7 +16,7 @@ const badges = {
   'Inactive': 'bg-red-100 text-red-800',
   'Success': 'bg-green-100 text-green-800',
   'Failed': 'bg-red-100 text-red-800',
-  'Error': 'bg-red-100 text-red-800'
+  'Error': 'bg-red-100 text-red-800',
 }
 
 </script>
