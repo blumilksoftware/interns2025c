@@ -63,6 +63,4 @@ jobs:
         run: composer cs
 
       - name: Execute tests
-        run: |
-          cp .env.ci .env
-          php artisan test --colors=always
+        run: php artisan test --env=ci
