@@ -3,15 +3,10 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
 import SectionBorder from '@/Components/SectionBorder.vue'
-import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue'
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
 
 defineProps({
-  confirmsTwoFactorAuthentication: {
-    type: Boolean,
-    default: false,
-  },
   sessions: {
     type: Array,
     default: () => [],
@@ -37,15 +32,6 @@ defineProps({
 
         <div v-if="$page.props.jetstream.canUpdatePassword">
           <UpdatePasswordForm class="mt-10 sm:mt-0" />
-
-          <SectionBorder />
-        </div>
-
-        <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-          <TwoFactorAuthenticationForm
-            :requires-confirmation="confirmsTwoFactorAuthentication"
-            class="mt-10 sm:mt-0"
-          />
 
           <SectionBorder />
         </div>
