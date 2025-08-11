@@ -12,7 +12,7 @@ class PetTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testStorePetCreatesPet(): void
+    public function testUserCanCreatePet(): void
     {
         $data = [
             "name" => "Buddy",
@@ -28,7 +28,20 @@ class PetTest extends TestCase
         $this->assertDatabaseHas("pets", ["name" => "Buddy"]);
     }
 
-    public function testUpdatePetUpdatesPet(): void
+    public function testCreatePetFailsWithMissingRequiredFields(): void
+    {
+        $data = [
+            "species" => "dog",
+            "description" => "",
+        ];
+
+        $response = $this->post("/pets", $data);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["name", "gender", "description"]);
+    }
+
+    public function testUserCanUpdatePet(): void
     {
         $pet = Pet::factory()->create([
             "name" => "OldName",
@@ -51,7 +64,24 @@ class PetTest extends TestCase
         $this->assertDatabaseHas("pets", ["name" => "NewName"]);
     }
 
-    public function testDeletePetDeletesPet(): void
+    public function testUpdatePetFailsWithInvalidData(): void
+    {
+        $pet = Pet::factory()->create();
+
+        $updateData = [
+            "name" => "",
+            "species" => "",
+            "gender" => "",
+            "description" => "",
+        ];
+
+        $response = $this->put("/pets/{$pet->id}", $updateData);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["name", "species", "gender", "description"]);
+    }
+
+    public function testUserCanDeletePet(): void
     {
         $pet = Pet::factory()->create();
 
@@ -60,5 +90,19 @@ class PetTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect(route("pets.index"));
         $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+    }
+
+    public function testDeletingNonExistentPetReturnsNotFound(): void
+    {
+        $response = $this->delete("/pets/999999");
+
+        $response->assertStatus(404);
+    }
+
+    public function testShowingNonExistentPetReturnsNotFound(): void
+    {
+        $response = $this->get("/pets/999999");
+
+        $response->assertStatus(404);
     }
 }

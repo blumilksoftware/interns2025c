@@ -19,10 +19,8 @@ class PetController extends Controller
         return Inertia::render("Pets/Index", ["pets" => $pets]);
     }
 
-    public function show(int $id): Response
+    public function show(Pet $pet): Response
     {
-        $pet = Pet::findOrFail($id);
-
         return Inertia::render("Pets/Show", ["pet" => $pet]);
     }
 
@@ -33,17 +31,15 @@ class PetController extends Controller
         return redirect()->route("pets.index")->with("success", "Pet created successfully.");
     }
 
-    public function update(PetRequest $request, int $id): RedirectResponse
+    public function update(PetRequest $request, Pet $pet): RedirectResponse
     {
-        $pet = Pet::findOrFail($id);
         $pet->update($request->validated());
 
         return redirect()->route("pets.index")->with("success", "Pet updated successfully.");
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(Pet $pet): RedirectResponse
     {
-        $pet = Pet::findOrFail($id);
         $pet->delete();
 
         return redirect()->route("pets.index")->with("success", "Pet deleted successfully.");
