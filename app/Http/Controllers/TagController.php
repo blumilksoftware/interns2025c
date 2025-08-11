@@ -11,11 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class TagController extends Controller
 {
-    public function store(TagRequest $request): JsonResponse
+    public function store(TagRequest $request): TagResource
     {
         $tag = Tag::query()->create($request->validated());
 
-        return response()->json($tag, 201);
+        return new TagResource($tag);
     }
 
     public function update(TagRequest $request, int|string $id): TagResource
