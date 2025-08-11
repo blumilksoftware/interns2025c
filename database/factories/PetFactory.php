@@ -47,7 +47,7 @@ class PetFactory extends Factory
             "quarantine_end_date" => $this->faker->optional()->date(),
             "found_location" => $this->faker->optional()->city(),
             "adoption_status" => $this->faker->optional()->randomElement(["available", "adopted", "pending", "fostered"]),
-            "shelter_id" => PetShelter::factory(),
+            // "shelter_id" => PetShelter::factory(),
         ];
     }
 }
