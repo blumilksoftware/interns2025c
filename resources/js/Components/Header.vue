@@ -12,6 +12,8 @@ import {
 import NavLink from './NavLink.vue'
 
 const mobileMenuOpen = ref(false)
+const isLoggedIn = ref(false)
+
 </script>
 
 <template>
@@ -35,7 +37,8 @@ const mobileMenuOpen = ref(false)
         <NavLink href="#">Contact Us</NavLink>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <NavLink href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></NavLink>
+        <NavLink v-if="$page.props.auth.user" href="/user/profile" class="text-sm/6 font-semibold text-gray-900">Profile</NavLink>
+        <NavLink v-else href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></NavLink>
       </div>
     </nav>
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">
@@ -59,7 +62,8 @@ const mobileMenuOpen = ref(false)
                 <NavLink href="#">Contact Us</NavLink>
               </div>
               <div class="py-6">
-                <NavLink href="/login">Log in</NavLink>
+                <NavLink v-if="$page.props.auth.user" href="/user/profile">Profile</NavLink>
+                <NavLink v-else href="/login">Log in</NavLink>
               </div>
             </div>
           </div>
