@@ -5,47 +5,47 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PetRequest;
-use App\Http\Resources\PetResource;
 use App\Models\Pet;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PetController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(): Response
     {
         $pets = Pet::all();
 
-        return PetResource::collection($pets);
+        return Inertia::render("Pets/Index", ["pets" => $pets]);
     }
 
-    public function show(int|string $id): PetResource
+    public function show(int $id): Response
     {
         $pet = Pet::findOrFail($id);
 
-        return new PetResource($pet);
+        return Inertia::render("Pets/Show", ["pet" => $pet]);
     }
 
-    public function store(PetRequest $request): PetResource
+    public function store(PetRequest $request): RedirectResponse
     {
-        $pet = Pet::create($request->validated());
+        Pet::create($request->validated());
 
-        return new PetResource($pet);
+        return redirect()->route("pets.index")->with("success", "Pet created successfully.");
     }
 
-    public function update(PetRequest $request, int|string $id): PetResource
+    public function update(PetRequest $request, int $id): RedirectResponse
     {
         $pet = Pet::findOrFail($id);
-
         $pet->update($request->validated());
 
-        return new PetResource($pet);
+        return redirect()->route("pets.index")->with("success", "Pet updated successfully.");
     }
 
-    public function destroy(Pet $pet): JsonResponse
+    public function destroy(int $id): RedirectResponse
     {
+        $pet = Pet::findOrFail($id);
         $pet->delete();
 
-        return response()->json(null, 204);
+        return redirect()->route("pets.index")->with("success", "Pet deleted successfully.");
     }
 }

@@ -19,12 +19,12 @@ class PetTest extends TestCase
             "species" => "dog",
             "gender" => "male",
             "description" => "Friendly dog",
-            // 'shelter_id' => 1,
         ];
 
         $response = $this->post("/pets", $data);
 
-        $response->assertStatus(201);
+        $response->assertStatus(302);
+        $response->assertRedirect(route("pets.index"));
         $this->assertDatabaseHas("pets", ["name" => "Buddy"]);
     }
 
@@ -35,7 +35,6 @@ class PetTest extends TestCase
             "species" => "cat",
             "gender" => "female",
             "description" => "Calm cat",
-            // 'shelter_id' => 1,
         ]);
 
         $updateData = [
@@ -43,12 +42,12 @@ class PetTest extends TestCase
             "species" => "cat",
             "gender" => "female",
             "description" => "Very calm cat",
-            // 'shelter_id' => 2,
         ];
 
         $response = $this->put("/pets/{$pet->id}", $updateData);
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
+        $response->assertRedirect(route("pets.index"));
         $this->assertDatabaseHas("pets", ["name" => "NewName"]);
     }
 
@@ -58,7 +57,8 @@ class PetTest extends TestCase
 
         $response = $this->delete("/pets/{$pet->id}");
 
-        $response->assertStatus(204);
+        $response->assertStatus(302);
+        $response->assertRedirect(route("pets.index"));
         $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
     }
 }

@@ -8,4 +8,4 @@ use Inertia\Response;
 
 Route::get("/", fn(): Response => inertia("LandingPage"));
 
-Route::resource("pets", PetController::class);
+Route::resource("pets", PetController::class)->except(["create", "edit"]);
