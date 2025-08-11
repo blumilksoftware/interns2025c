@@ -1,4 +1,9 @@
 {
+  "We can't find a user with that email address.": "Nie możemy znaleźć podanego adresu e-mail.",
+  "We have emailed your password reset link.": "Wysłaliśmy link do resetowania hasła na podany adres e-mail.",
+  "Please wait before retrying.": "Proszę poczekać przed ponowną próbą.",
+  "This password reset token is invalid.": "Token resetowania hasła jest nieprawidłowy.",
+  "Your password has been reset.": "Twoje hasło zostało zresetowane.",
 "auth": {
     "name": "Imię",
     "email": "E-mail",
