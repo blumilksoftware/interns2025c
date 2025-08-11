@@ -10,8 +10,8 @@ const emit = defineEmits(['data-set-change', 'close'])
 const props = defineProps({
   isOpen: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const navigation = [

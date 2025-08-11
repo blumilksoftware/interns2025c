@@ -29,7 +29,7 @@ export const columnWidths = {
   rating: 'w-16 sm:w-20',
   age: 'w-12 sm:w-16',
   
-  role: 'w-20 sm:w-24'
+  role: 'w-20 sm:w-24',
 }
 
  

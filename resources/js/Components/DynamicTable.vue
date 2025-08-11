@@ -166,7 +166,7 @@ const clearFilters = () => {
       <div v-if="showFilters" class="mt-4 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div v-for="column in columns" :key="column.key" class="space-y-1">
           <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">{{ column.label }}</label>
-          <input :id="`filter-${column.key}`" v-model="filters[column.key]" type="text" class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" :placeholder="`Filter ${column.label.toLowerCase()}...`" @input="handleFilter(column.key, $event.target.value)" />
+          <input :id="`filter-${column.key}`" v-model="filters[column.key]" type="text" class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" :placeholder="`Filter ${column.label.toLowerCase()}...`" @input="handleFilter(column.key, $event.target.value)">
         </div>
       </div>
     </div>
