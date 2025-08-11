@@ -15,41 +15,41 @@ class PetTest extends TestCase
     public function testStorePetCreatesPet(): void
     {
         $data = [
-            'name' => 'Buddy',
-            'species' => 'dog',
-            'gender' => 'male',
-            'description' => 'Friendly dog',
+            "name" => "Buddy",
+            "species" => "dog",
+            "gender" => "male",
+            "description" => "Friendly dog",
             // 'shelter_id' => 1,
         ];
 
-        $response = $this->post('/pets', $data);
+        $response = $this->post("/pets", $data);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('pets', ['name' => 'Buddy']);
+        $this->assertDatabaseHas("pets", ["name" => "Buddy"]);
     }
 
     public function testUpdatePetUpdatesPet(): void
     {
         $pet = Pet::factory()->create([
-            'name' => 'OldName',
-            'species' => 'cat',
-            'gender' => 'female',
-            'description' => 'Calm cat',
+            "name" => "OldName",
+            "species" => "cat",
+            "gender" => "female",
+            "description" => "Calm cat",
             // 'shelter_id' => 1,
         ]);
 
         $updateData = [
-            'name' => 'NewName',
-            'species' => 'cat',
-            'gender' => 'female',
-            'description' => 'Very calm cat',
+            "name" => "NewName",
+            "species" => "cat",
+            "gender" => "female",
+            "description" => "Very calm cat",
             // 'shelter_id' => 2,
         ];
 
         $response = $this->put("/pets/{$pet->id}", $updateData);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('pets', ['name' => 'NewName']);
+        $this->assertDatabaseHas("pets", ["name" => "NewName"]);
     }
 
     public function testDeletePetDeletesPet(): void
@@ -59,6 +59,6 @@ class PetTest extends TestCase
         $response = $this->delete("/pets/{$pet->id}");
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing('pets', ['id' => $pet->id]);
+        $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
     }
 }

@@ -12,16 +12,19 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PetController extends Controller
 {
-public function index(): AnonymousResourceCollection
-{
-    $pets = Pet::all();
-    return PetResource::collection($pets);
-}
-public function show(int|string $id): PetResource
-{
-    $pet = Pet::findOrFail($id);
-    return new PetResource($pet);
-}
+    public function index(): AnonymousResourceCollection
+    {
+        $pets = Pet::all();
+
+        return PetResource::collection($pets);
+    }
+
+    public function show(int|string $id): PetResource
+    {
+        $pet = Pet::findOrFail($id);
+
+        return new PetResource($pet);
+    }
 
     public function store(PetRequest $request): PetResource
     {
