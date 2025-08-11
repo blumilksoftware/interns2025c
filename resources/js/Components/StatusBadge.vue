@@ -1,5 +1,4 @@
 <script setup>
-// Status badge component
 defineProps({
   status: {
     type: String,
@@ -7,7 +6,6 @@ defineProps({
   },
 })
 
-// Badges colors
 const badges = {
   'Available': 'bg-green-100 text-green-800',
   'Adopted': 'bg-blue-100 text-blue-800',

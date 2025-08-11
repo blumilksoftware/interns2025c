@@ -39,7 +39,7 @@ const goToAdmin = () => {
         <a href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</a>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <button class="text-sm/6 font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200" @click="goToAdmin">Log in <span aria-hidden="true">&rarr;</span></button>
+        <a href="#" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
       </div>
     </nav>
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">

@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
-import StatusBadge from './StatusBadge.vue'
+import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
+import { getWidthByPattern } from '../data/columnWidths.js'
 
 const props = defineProps({
   data: {
@@ -20,13 +21,11 @@ const props = defineProps({
 
 const emit = defineEmits(['page-change', 'edit-item'])
 
-// State for filtering and sorting
 const filters = ref({})
 const sortColumn = ref('')
 const sortDirection = ref('asc')
 const showFilters = ref(false)
 
-// Automatic column detection
 const columns = computed(() => {
   if (props.data.length === 0) return []
   
@@ -34,65 +33,41 @@ const columns = computed(() => {
   return Object.keys(firstRow).map(key => ({
     key,
     label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' '),
-    width: getColumnWidth(key, firstRow[key]),
+    width: getColumnWidth(key, firstRow[key], props.data),
   }))
 })
 
-// Function determining column width based on data type
-function getColumnWidth(key, value) {
-  const type = typeof value
-  
-  switch (key) {
-  case 'id':
-    return 'w-12 sm:w-16'
-  case 'name':
-    return 'w-24 sm:w-32'
-  case 'type':
-    return 'w-16 sm:w-20'
-  case 'breed':
-    return 'w-28 sm:w-36'
-  case 'age':
-    return 'w-12 sm:w-16'
-  case 'status':
-    return 'w-20 sm:w-24'
-  case 'shelter':
-    return 'w-32 sm:w-40'
-  case 'created_at':
-    return 'w-24 sm:w-32'
-  case 'email':
-    return 'w-36 sm:w-48'
-  case 'role':
-    return 'w-20 sm:w-24'
-  case 'last_login':
-    return 'w-24 sm:w-32'
-  case 'location':
-    return 'w-24 sm:w-32'
-  case 'capacity':
-    return 'w-16 sm:w-20'
-  case 'current_occupancy':
-    return 'w-20 sm:w-28'
-  case 'rating':
-    return 'w-16 sm:w-20'
-  case 'action':
-    return 'w-24 sm:w-32'
-  case 'user_email':
-    return 'w-36 sm:w-48'
-  case 'ip_address':
-    return 'w-28 sm:w-36'
-  case 'timestamp':
-    return 'w-32 sm:w-40'
-  case 'details':
-    return 'w-48 sm:w-64'
-  case 'user_agent':
-    return 'w-36 sm:w-48'
-  default:
-    return 'w-auto'
+function getColumnWidth(key, value, allData = []) {
+  const patternWidth = getWidthByPattern(key)
+  if (patternWidth) {
+    return patternWidth
   }
+
+  const type = typeof value
+  const isNumber = type === 'number'
+  const isBoolean = type === 'boolean'
+  const isDate = value instanceof Date || (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value))
+
+  if (isNumber) return 'w-16 sm:w-20'
+  if (isBoolean) return 'w-16 sm:w-20'
+  if (isDate) return 'w-24 sm:w-32'
+
+  if (allData.length > 0) {
+    const maxLength = Math.max(...allData.map(row => {
+      const val = row[key]
+      return val ? val.toString().length : 0
+    }))
+
+    if (maxLength <= 5) return 'w-12 sm:w-16'
+    if (maxLength <= 10) return 'w-20 sm:w-24'
+    if (maxLength <= 20) return 'w-28 sm:w-36'
+    if (maxLength <= 40) return 'w-36 sm:w-48'
+    if (maxLength <= 80) return 'w-48 sm:w-64'
+  }
+
+  return 'w-32 sm:w-40'
 }
 
-
-
-// Pagination calculations
 const totalPages = computed(() => Math.ceil(filteredData.value.length / props.itemsPerPage))
 const paginatedData = computed(() => {
   const start = (props.currentPage - 1) * props.itemsPerPage
@@ -100,21 +75,17 @@ const paginatedData = computed(() => {
   return filteredData.value.slice(start, end)
 })
 
-// Page change function
 const handlePageChange = (page) => {
   emit('page-change', page)
 }
 
-// Edit item function
 const handleEdit = (item) => {
   emit('edit-item', item)
 }
 
-// Data filtering function
 const filteredData = computed(() => {
   let result = [...props.data]
   
-  // Apply filters
   Object.keys(filters.value).forEach(key => {
     if (filters.value[key] && filters.value[key].trim() !== '') {
       result = result.filter(item => {
@@ -129,7 +100,6 @@ const filteredData = computed(() => {
     }
   })
   
-  // Apply sorting
   if (sortColumn.value && sortDirection.value) {
     result.sort((a, b) => {
       const aValue = a[sortColumn.value]
@@ -152,7 +122,6 @@ const filteredData = computed(() => {
   return result
 })
 
-// Sorting function
 const handleSort = (column) => {
   if (sortColumn.value === column) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
@@ -162,7 +131,6 @@ const handleSort = (column) => {
   }
 }
 
-// Filtering function
 const handleFilter = (column, value) => {
   if (value && value.trim() !== '') {
     filters.value[column] = value
@@ -171,7 +139,6 @@ const handleFilter = (column, value) => {
   }
 }
 
-// Clear filters function
 const clearFilters = () => {
   filters.value = {}
   sortColumn.value = ''
@@ -188,138 +155,52 @@ const clearFilters = () => {
           <p class="text-xs lg:text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
         </div>
         <div class="flex flex-col lg:flex-row gap-2 w-full lg:w-auto">
-          <button
-            class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            @click="showFilters = !showFilters"
-          >
-            <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
-            </svg>
+          <button class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="showFilters = !showFilters">
+            <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" /></svg>
             Filters
           </button>
-          <button
-            class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            @click="clearFilters"
-          >
-            Clear All
-          </button>
+          <button class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="clearFilters">Clear All</button>
         </div>
       </div>
-      
-      <!-- Filters -->
+
       <div v-if="showFilters" class="mt-4 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div v-for="column in columns" :key="column.key" class="space-y-1">
-          <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">
-            {{ column.label }}
-          </label>
-          <input
-            :id="`filter-${column.key}`"
-            v-model="filters[column.key]"
-            type="text"
-            class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
-            :placeholder="`Filter ${column.label.toLowerCase()}...`"
-            @input="handleFilter(column.key, $event.target.value)"
-          >
+          <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">{{ column.label }}</label>
+          <input :id="`filter-${column.key}`" v-model="filters[column.key]" type="text" class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" :placeholder="`Filter ${column.label.toLowerCase()}...`" @input="handleFilter(column.key, $event.target.value)" />
         </div>
       </div>
     </div>
-    
-    <!-- Table -->
+
     <div class="overflow-auto max-h-[50vh]">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th 
-              v-for="column in columns" 
-              :key="column.key"
-              :class="[
-                column.width, 
-                'p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none'
-              ]"
-              @click="handleSort(column.key)"
-            >
+            <th v-for="column in columns" :key="column.key" :class="[column.width, 'p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none']" @click="handleSort(column.key)">
               <div class="flex items-center justify-between">
                 <span>{{ column.label }}</span>
                 <div class="flex flex-col ml-1">
-                  <svg 
-                    v-if="sortColumn === column.key && sortDirection === 'asc'"
-                    class="size-3 text-indigo-600" 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                  >
-                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
-                  </svg>
-                  <svg 
-                    v-else-if="sortColumn === column.key && sortDirection === 'desc'"
-                    class="size-3 text-indigo-600" 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                  >
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
-                  <svg 
-                    v-else
-                    class="size-3 text-gray-400" 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                  >
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
+                  <svg v-if="sortColumn === column.key && sortDirection === 'asc'" class="size-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                  <svg v-else-if="sortColumn === column.key && sortDirection === 'desc'" class="size-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                  <svg v-else class="size-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                 </div>
               </div>
             </th>
-            <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
+            <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="row in paginatedData" :key="row.id" class="hover:bg-gray-50">
-            <td 
-              v-for="column in columns" 
-              :key="column.key"
-              :class="[column.width, 'p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900']"
-            >
-              <StatusBadge v-if="column.key === 'status'" :status="row[column.key]" />
-              <template v-else-if="column.key === 'ip_address'">
-                <span class="font-mono text-xs">{{ row[column.key] }}</span>
-              </template>
-              <template v-else-if="column.key === 'user_email' || column.key === 'email'">
-                <a :href="`mailto:${row[column.key]}`" class="text-indigo-600 hover:text-indigo-800">{{ row[column.key] }}</a>
-              </template>
-              <template v-else-if="column.key === 'details' || column.key === 'user_agent'">
-                <span class="truncate block max-w-xs" :title="row[column.key]">{{ row[column.key] }}</span>
-              </template>
-              <template v-else-if="column.key === 'created_at' || column.key === 'last_login' || column.key === 'timestamp'">
-                {{ new Date(row[column.key]).toLocaleDateString() }}
-              </template>
-              <template v-else-if="column.key === 'rating'">
-                {{ row[column.key] }}/5
-              </template>
-              <template v-else>
-                {{ row[column.key] }}
-              </template>
+            <td v-for="column in columns" :key="column.key" :class="[column.width, 'p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900']">
+              <CellContent :column-key="column.key" :value="row[column.key]" />
             </td>
             <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
-              <button
-                class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                @click="handleEdit(row)"
-              >
-                Edit
-              </button>
+              <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">Edit</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    
-    <!-- Pagination -->
-    <Pagination 
-      :current-page="currentPage"
-      :total-pages="totalPages"
-      :total-items="filteredData.length"
-      :items-per-page="itemsPerPage"
-      @page-change="handlePageChange"
-    />
+
+    <Pagination :current-page="currentPage" :total-pages="totalPages" :total-items="filteredData.length" :items-per-page="itemsPerPage" @page-change="handlePageChange" />
   </div>
 </template> 
