@@ -12,7 +12,15 @@ const kind = computed(() => getKindForColumn(props.columnKey))
 
 function formatDate(v) {
   const d = new Date(v)
-  return isNaN(d.getTime()) ? String(v ?? '') : d.toLocaleDateString()
+  if (isNaN(d.getTime())) {
+    return String(v ?? '')
+  }
+  
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  
+  return `${day}-${month}-${year}`
 }
 </script>
 

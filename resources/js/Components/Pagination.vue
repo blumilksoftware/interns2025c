@@ -63,8 +63,11 @@ const goToNextPage = () => {
       </div>
       <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div>
-          <p class="text-sm text-gray-700">
+          <p v-if="totalItems > 0" class="text-sm text-gray-700">
             Showing <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> to <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span> of <span class="font-medium">{{ totalItems }}</span> results
+          </p>
+          <p v-else class="text-sm text-gray-700">
+            <span class="font-medium">Empty table</span> - no data available
           </p>
         </div>
         <div>

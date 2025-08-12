@@ -1,5 +1,13 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { dataSets } from '../data/adminData.js'
+import { 
+  getColumnType, 
+  getColumnOptions, 
+  getColumnAttributes, 
+  getColumnLabel, 
+  isColumnEditable, 
+} from '../data/columnConfig.js'
 
 const props = defineProps({
   isOpen: {
@@ -30,80 +38,21 @@ const editableFields = computed(() => {
   if (!props.item || Object.keys(props.item).length === 0) return []
   
   const fields = Object.keys(props.item).filter(key => {
-    if (key === 'id' || key === 'created_at') return false
+    // Wyklucz pola, które nie powinny być edytowalne
+    if (key === 'id') return false
     
-    if (props.dataSetType === 'users' && key === 'last_login') return false
-    
-    return true
+    // Sprawdź czy pole jest edytowalne według konfiguracji
+    return isColumnEditable(props.dataSetType, key)
   })
   
   return fields.map(field => ({
     key: field,
-    label: field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' '),
-    type: getFieldType(field),
-    options: getFieldOptions(field),
+    label: getColumnLabel(props.dataSetType, field),
+    type: getColumnType(props.dataSetType, field),
+    options: getColumnOptions(props.dataSetType, field),
+    attributes: getColumnAttributes(props.dataSetType, field),
   }))
 })
-
-function getFieldType(field) {
-  switch (field) {
-  case 'status':
-  case 'type':
-  case 'role':
-  case 'shelter':
-    return 'select'
-  case 'age':
-  case 'capacity':
-  case 'current_occupancy':
-    return 'number'
-  case 'rating':
-    return 'number'
-  case 'email':
-  case 'user_email':
-    return 'email'
-  case 'ip_address':
-    return 'text'
-  case 'timestamp':
-    return 'datetime-local'
-  default:
-    return 'text'
-  }
-}
-
-function getFieldOptions(field) {
-  switch (field) {
-  case 'status':
-    if (props.dataSetType === 'pets') {
-      return ['Available', 'Adopted']
-    } else if (props.dataSetType === 'users') {
-      return ['Active', 'Inactive']
-    } else if (props.dataSetType === 'logs') {
-      return ['Success', 'Failed', 'Error']
-    }
-    return ['Available', 'Adopted', 'Pending', 'Active', 'Inactive', 'Success', 'Failed', 'Error']
-    
-  case 'type':
-    if (props.dataSetType === 'pets') {
-      return ['Dog', 'Cat', 'Other']
-    }
-    return ['Dog', 'Cat', 'Bird', 'Fish', 'Other']
-    
-  case 'role':
-    if (props.dataSetType === 'users') {
-      return ['Admin', 'Shelter Caretaker', 'User']
-    }
-    return ['Admin', 'User', 'Moderator']
-    
-  case 'shelter':
-    if (props.dataSetType === 'pets') {
-      return ['Happy Paws', 'Cat Care', 'Animal Haven', 'Pet Paradise', 'Furry Friends', 'Safe Haven', 'Companion Care', 'Animal Rescue']
-    }
-    return []
-    
-  default:
-    return []
-  }
-}
 
 
 
@@ -152,9 +101,19 @@ const handleKeydown = (event) => {
                     :id="field.key"
                     v-model="editData[field.key]"
                     :type="field.type"
-                    :step="field.type === 'number' ? (field.key === 'age' ? '1' : field.key === 'rating' ? '0.1' : '1') : undefined"
+                    :min="field.attributes.min"
+                    :max="field.attributes.max"
+                    :step="field.attributes.step"
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
+                  
+                  <textarea
+                    v-else-if="field.type === 'textarea'"
+                    :id="field.key"
+                    v-model="editData[field.key]"
+                    rows="3"
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
                   
                   <select
                     v-else-if="field.type === 'select'"

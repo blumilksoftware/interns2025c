@@ -1,12 +1,43 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
-import { getWidthByPattern } from '../data/columnWidths.js'
+import { getColumnWidth, getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '../data/columnConfig.js'
+
+function formatDateForFilter(v) {
+  const d = new Date(v)
+  if (isNaN(d.getTime())) {
+    return String(v ?? '')
+  }
+  
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  
+  return `${day}-${month}-${year}`
+}
+
+function getFilterType(dataSetType, columnKey) {
+  const columnType = getColumnType(dataSetType, columnKey)
+  
+  if (columnType === 'datetime-local' || columnType === 'date') {
+    return 'date'
+  }
+  
+  if (columnType === 'select') {
+    return 'select'
+  }
+  
+  return 'text'
+}
 
 const props = defineProps({
   data: {
     type: Array,
+    required: true,
+  },
+  dataSetType: {
+    type: String,
     required: true,
   },
   itemsPerPage: {
@@ -26,47 +57,21 @@ const sortColumn = ref('')
 const sortDirection = ref('asc')
 const showFilters = ref(false)
 
+watch(() => props.dataSetType, () => {
+  filters.value = {}
+})
+
 const columns = computed(() => {
   if (props.data.length === 0) return []
   
   const firstRow = props.data[0]
   return Object.keys(firstRow).map(key => ({
     key,
-    label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' '),
-    width: getColumnWidth(key, firstRow[key], props.data),
+    label: getColumnLabel(props.dataSetType, key),
+    width: getColumnWidth(props.dataSetType, key),
+    renderer: getColumnRenderer(props.dataSetType, key),
   }))
 })
-
-function getColumnWidth(key, value, allData = []) {
-  const patternWidth = getWidthByPattern(key)
-  if (patternWidth) {
-    return patternWidth
-  }
-
-  const type = typeof value
-  const isNumber = type === 'number'
-  const isBoolean = type === 'boolean'
-  const isDate = value instanceof Date || (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value))
-
-  if (isNumber) return 'w-16 sm:w-20'
-  if (isBoolean) return 'w-16 sm:w-20'
-  if (isDate) return 'w-24 sm:w-32'
-
-  if (allData.length > 0) {
-    const maxLength = Math.max(...allData.map(row => {
-      const val = row[key]
-      return val ? val.toString().length : 0
-    }))
-
-    if (maxLength <= 5) return 'w-12 sm:w-16'
-    if (maxLength <= 10) return 'w-20 sm:w-24'
-    if (maxLength <= 20) return 'w-28 sm:w-36'
-    if (maxLength <= 40) return 'w-36 sm:w-48'
-    if (maxLength <= 80) return 'w-48 sm:w-64'
-  }
-
-  return 'w-32 sm:w-40'
-}
 
 const totalPages = computed(() => Math.ceil(filteredData.value.length / props.itemsPerPage))
 const paginatedData = computed(() => {
@@ -93,9 +98,65 @@ const filteredData = computed(() => {
         if (value === null || value === undefined) return false
         
         const filterValue = filters.value[key].toLowerCase()
-        const itemValue = value.toString().toLowerCase()
+        const filterType = getFilterType(props.dataSetType, key)
         
-        return itemValue.includes(filterValue)
+        if (filterType === 'date') {
+          if (filterValue.includes('-')) {
+            const parts = filterValue.split('-')
+            
+            const itemDate = new Date(value)
+            if (isNaN(itemDate.getTime())) {
+              return false
+            }
+            
+            const itemDay = String(itemDate.getDate()).padStart(2, '0')
+            const itemMonth = String(itemDate.getMonth() + 1).padStart(2, '0')
+            const itemYear = itemDate.getFullYear().toString()
+            
+            if (parts.length >= 1 && parts[0]) {
+              if (!itemDay.startsWith(parts[0])) {
+                return false
+              }
+            }
+            
+            if (parts.length >= 2 && parts[1]) {
+              if (!itemMonth.startsWith(parts[1])) {
+                return false
+              }
+            }
+            
+            if (parts.length >= 3 && parts[2]) {
+              if (!itemYear.startsWith(parts[2])) {
+                return false
+              }
+            }
+            
+            return true
+          }
+          
+          const itemDate = new Date(value)
+          if (isNaN(itemDate.getTime())) {
+            return false
+          }
+          
+          const formattedDate = formatDateForFilter(value)
+          return formattedDate.toLowerCase().includes(filterValue.toLowerCase())
+        } else if (filterType === 'select') {
+          return value.toString().toLowerCase() === filterValue
+        } else {
+          const isDateField = /(date|created_at|updated_at|timestamp|last_login)/i.test(key)
+          
+          let itemValue
+          if (isDateField) {
+            const originalValue = value.toString().toLowerCase()
+            const formattedValue = formatDateForFilter(value).toLowerCase()
+            itemValue = `${originalValue} ${formattedValue}`
+          } else {
+            itemValue = value.toString().toLowerCase()
+          }
+          
+          return itemValue.includes(filterValue)
+        }
       })
     }
   })
@@ -139,10 +200,40 @@ const handleFilter = (column, value) => {
   }
 }
 
+const handleDateFilter = (column, value) => {
+  if (value && value.trim() !== '') {
+    const parts = value.split('-')
+    if (parts.length === 3) {
+      const day = parts[0]
+      const month = parts[1]
+      const year = parts[2]
+      
+      if (day && month && year && day.length === 2 && month.length === 2 && year.length === 4) {
+        filters.value[column] = value
+      } else {
+        filters.value[column] = value
+      }
+    } else {
+      filters.value[column] = value
+    }
+  } else {
+    delete filters.value[column]
+  }
+}
+
 const clearFilters = () => {
   filters.value = {}
   sortColumn.value = ''
   sortDirection.value = 'asc'
+}
+
+const handleNativeDateChange = (columnKey, date) => {
+  if (date) {
+    const parts = date.split('-')
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`
+    
+    filters.value[columnKey] = formattedDate
+  }
 }
 </script>
 
@@ -166,7 +257,54 @@ const clearFilters = () => {
       <div v-if="showFilters" class="mt-4 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div v-for="column in columns" :key="column.key" class="space-y-1">
           <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">{{ column.label }}</label>
-          <input :id="`filter-${column.key}`" v-model="filters[column.key]" type="text" class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" :placeholder="`Filter ${column.label.toLowerCase()}...`" @input="handleFilter(column.key, $event.target.value)">
+          
+          <div v-if="getFilterType(props.dataSetType, column.key) === 'date'" class="relative">
+            <input 
+              :id="`filter-${column.key}`" 
+              v-model="filters[column.key]" 
+              type="text" 
+              class="block w-full pr-8 border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="DD-MM-YYYY"
+              @input="handleDateFilter(column.key, $event.target.value)"
+            >
+            <input
+              :id="`date-picker-${column.key}`"
+              type="date"
+              class="absolute inset-y-0 right-[-12px] w-20 opacity-0 cursor-pointer"
+              @change="handleNativeDateChange(column.key, $event.target.value)"
+            >
+            <button
+              type="button"
+              class="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-600 pointer-events-none"
+            >
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+          
+          <select 
+            v-else-if="getFilterType(props.dataSetType, column.key) === 'select'"
+            :id="`filter-${column.key}`" 
+            v-model="filters[column.key]" 
+            class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
+            @change="handleFilter(column.key, $event.target.value)"
+          >
+            <option value="">All {{ column.label.toLowerCase() }}</option>
+            <option v-for="option in getColumnOptions(props.dataSetType, column.key)" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          
+          <input 
+            v-else
+            :id="`filter-${column.key}`" 
+            v-model="filters[column.key]" 
+            type="text" 
+            class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" 
+            :placeholder="`Filter ${column.label.toLowerCase()}...`" 
+            @input="handleFilter(column.key, $event.target.value)"
+          >
         </div>
       </div>
     </div>
@@ -200,7 +338,6 @@ const clearFilters = () => {
         </tbody>
       </table>
     </div>
-
     <Pagination :current-page="currentPage" :total-pages="totalPages" :total-items="filteredData.length" :items-per-page="itemsPerPage" @page-change="handlePageChange" />
   </div>
 </template> 

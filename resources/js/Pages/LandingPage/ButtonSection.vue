@@ -6,8 +6,8 @@ import PawPrints from '../../Components/PawPrints.vue'
   <div class="relative isolate overflow-hidden py-20 bg-[#fefae0]/50 backdrop-blur-sm " style="mask: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);">
     <PawPrints />
     
-      <div class="h-1/2 px-6 pt-36 pb-36 sm:px-6 sm:py-16 lg:px-8 text-section">
-        <div class="mx-auto bg-[#fffcef] rounded-full py-6  max-w-2xl text-center responsive-mask">
+    <div class="h-1/2 px-6 py-36 sm:px-6 sm:py-16 lg:px-8 text-section">
+      <div class="mx-auto bg-[#fffcef] rounded-full py-6  max-w-2xl text-center responsive-mask">
         <h2 class="text-4xl font-semibold tracking-tight text-balance text-black sm:text-5xl">Give a loving home to a furry friend today.</h2>
         <p class="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-black">Every animal deserves a second chance. Find your perfect companion and make a difference in their life.</p>
       </div>
