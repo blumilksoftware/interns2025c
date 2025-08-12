@@ -11,18 +11,16 @@ return new class() extends Migration {
     {
         Schema::create("pets", function (Blueprint $table): void {
             $table->id();
-
             $table->string("name");
             $table->string("species");
             $table->string("breed")->nullable();
-            $table->string("gender");
+            $table->string("sex");
             $table->string("age")->nullable();
             $table->string("size")->nullable();
             $table->float("weight", 5, 2)->nullable();
             $table->string("color")->nullable();
             $table->boolean("sterilized")->nullable();
             $table->text("description");
-
             $table->string("health_status")->nullable();
             $table->text("current_treatment")->nullable();
             $table->boolean("vaccinated")->nullable();
@@ -30,21 +28,18 @@ return new class() extends Migration {
             $table->string("chip_number")->nullable();
             $table->boolean("dewormed")->nullable();
             $table->boolean("deflea_treated")->nullable();
-            $table->string("medical_tests")->nullable()->comment();
+            $table->text("medical_tests")->nullable()->comment();
             $table->string("food_type")->nullable();
-
             $table->string("attitude_to_people")->nullable();
             $table->string("attitude_to_dogs")->nullable();
             $table->string("attitude_to_cats")->nullable();
             $table->string("attitude_to_children")->nullable();
             $table->string("activity_level")->nullable();
             $table->text("behavioral_notes")->nullable();
-
             $table->date("admission_date")->nullable();
             $table->date("quarantine_end_date")->nullable();
             $table->string("found_location")->nullable();
             $table->string("adoption_status")->nullable();
-
             $table->timestamps();
         });
     }

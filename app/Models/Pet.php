@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PetHealthStatus;
+use App\Enums\PetSex;
+use App\Enums\PetSpecies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,16 +15,16 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string $name
- * @property string $species
+ * @property PetSpecies $species
  * @property ?string $breed
- * @property string $gender
+ * @property PetSex $sex
  * @property ?string $age
  * @property ?string $size
  * @property ?float $weight
  * @property ?string $color
  * @property ?bool $sterilized
  * @property string $description
- * @property ?string $health_status
+ * @property ?PetHealthStatus $health_status
  * @property ?string $current_treatment
  * @property ?bool $vaccinated
  * @property ?bool $has_chip
@@ -44,11 +47,13 @@ use Illuminate\Support\Carbon;
  */
 class Pet extends Model
 {
-    /** @use HasFactory<PetFactory> */
     use HasFactory;
 
     protected $guarded = [];
     protected $casts = [
+        "species" => PetSpecies::class,
+        "sex" => PetSex::class,
+        "health_status" => PetHealthStatus::class,
         "admission_date" => "date",
         "quarantine_end_date" => "date",
     ];

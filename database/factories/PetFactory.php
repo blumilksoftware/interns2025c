@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetHealthStatus;
+use App\Enums\PetSex;
+use App\Enums\PetSpecies;
 use App\Models\Pet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Pet>
- */
 class PetFactory extends Factory
 {
     protected $model = Pet::class;
@@ -18,16 +18,16 @@ class PetFactory extends Factory
     {
         return [
             "name" => $this->faker->firstName(),
-            "species" => $this->faker->randomElement(["dog", "cat", "rabbit", "bird"]),
+            "species" => $this->faker->randomElement(array_column(PetSpecies::cases(), "value")),
             "breed" => $this->faker->optional()->word(),
-            "gender" => $this->faker->randomElement(["male", "female"]),
+            "sex" => $this->faker->randomElement(array_column(PetSex::cases(), "value")),
             "age" => $this->faker->optional()->numberBetween(1, 20),
             "size" => $this->faker->optional()->randomElement(["small", "medium", "large"]),
             "weight" => $this->faker->optional()->randomFloat(2, 1, 80),
             "color" => $this->faker->optional()->safeColorName(),
             "sterilized" => $this->faker->optional()->boolean(),
             "description" => $this->faker->sentence(10),
-            "health_status" => $this->faker->optional()->word(),
+            "health_status" => $this->faker->optional()->randomElement(array_column(PetHealthStatus::cases(), "value")),
             "current_treatment" => $this->faker->optional()->sentence(3),
             "vaccinated" => $this->faker->optional()->boolean(),
             "has_chip" => $this->faker->optional()->boolean(),

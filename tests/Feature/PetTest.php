@@ -17,7 +17,7 @@ class PetTest extends TestCase
         $data = [
             "name" => "Buddy",
             "species" => "dog",
-            "gender" => "male",
+            "sex" => "male",
             "description" => "Friendly dog",
         ];
 
@@ -38,7 +38,7 @@ class PetTest extends TestCase
         $response = $this->post("/pets", $data);
 
         $response->assertStatus(302);
-        $response->assertSessionHasErrors(["name", "gender", "description"]);
+        $response->assertSessionHasErrors(["name", "sex", "description"]);
     }
 
     public function testUserCanUpdatePet(): void
@@ -46,14 +46,14 @@ class PetTest extends TestCase
         $pet = Pet::factory()->create([
             "name" => "OldName",
             "species" => "cat",
-            "gender" => "female",
+            "sex" => "female",
             "description" => "Calm cat",
         ]);
 
         $updateData = [
             "name" => "NewName",
             "species" => "cat",
-            "gender" => "female",
+            "sex" => "female",
             "description" => "Very calm cat",
         ];
 
@@ -71,14 +71,14 @@ class PetTest extends TestCase
         $updateData = [
             "name" => "",
             "species" => "",
-            "gender" => "",
+            "sex" => "",
             "description" => "",
         ];
 
         $response = $this->put("/pets/{$pet->id}", $updateData);
 
         $response->assertStatus(302);
-        $response->assertSessionHasErrors(["name", "species", "gender", "description"]);
+        $response->assertSessionHasErrors(["name", "species", "sex", "description"]);
     }
 
     public function testUserCanDeletePet(): void
