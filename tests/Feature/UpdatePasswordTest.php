@@ -36,7 +36,7 @@ class UpdatePasswordTest extends TestCase
             "password_confirmation" => "new-password",
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertSessionHasErrors(["current_password"], errorBag: "updatePassword");
 
         $this->assertTrue(Hash::check("password", $user->fresh()->password));
     }
@@ -51,7 +51,7 @@ class UpdatePasswordTest extends TestCase
             "password_confirmation" => "wrong-password",
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertSessionHasErrors(["password"], errorBag: "updatePassword");
 
         $this->assertTrue(Hash::check("password", $user->fresh()->password));
     }

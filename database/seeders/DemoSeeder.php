@@ -50,8 +50,7 @@ class DemoSeeder extends Seeder
                 $randomShelter = $petShelters->random();
                 $randomShelter->users()->attach($user->id);
 
-                // Randomly assign 'shelter' role to only some users (e.g., 30% chance)
-                if (rand(1, 100) <= 30) {
+                if (random_int(1, 100) <= 30) {
                     $user->update(["role" => "shelter"]);
                 }
             }

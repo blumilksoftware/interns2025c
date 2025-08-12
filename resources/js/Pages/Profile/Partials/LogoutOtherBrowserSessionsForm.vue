@@ -60,7 +60,6 @@ const closeModal = () => {
         If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
       </div>
 
-      <!-- Other Browser Sessions -->
       <div v-if="sessions.length > 0" class="mt-5 space-y-6">
         <div v-for="(session, i) in sessions" :key="i" class="flex items-center">
           <div>
@@ -100,7 +99,6 @@ const closeModal = () => {
         </ActionMessage>
       </div>
 
-      <!-- Log Out Other Devices Confirmation Modal -->
       <DialogModal :show="confirmingLogout" @close="closeModal">
         <template #title>
           Log Out Other Browser Sessions

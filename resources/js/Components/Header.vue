@@ -12,7 +12,6 @@ import {
 import NavLink from './NavLink.vue'
 
 const mobileMenuOpen = ref(false)
-
 </script>
 
 <template>
