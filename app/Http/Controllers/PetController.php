@@ -9,19 +9,25 @@ use App\Models\Pet;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Http\Resources\PetResource;
 
 class PetController extends Controller
 {
     public function index(): Response
     {
         $pets = Pet::all();
+        $petsTransformed = PetResource::collection($pets);
 
-        return Inertia::render("Pets/Index", ["pets" => $pets]);
+        return Inertia::render('Pets/Index', [
+            'pets' => $petsTransformed->resolve()
+        ]);
     }
 
     public function show(Pet $pet): Response
     {
-        return Inertia::render("Pets/Show", ["pet" => $pet]);
+        return Inertia::render('Pets/Show', [
+            'pet' => (new PetResource($pet))->resolve()
+        ]);
     }
 
     public function store(PetRequest $request): RedirectResponse
