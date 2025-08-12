@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\Role;
-use App\Models\Pet;
 use App\Models\PetShelter;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -41,7 +40,6 @@ class DemoSeeder extends Seeder
         $users = User::all();
 
         $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
-        $pets = Pet::factory()->count(10)->create();
 
         foreach ($users as $user) {
             $userHasExistingShelter = DB::table("pet_shelter_user")
@@ -58,10 +56,5 @@ class DemoSeeder extends Seeder
                 }
             }
         }
-
-        $pets->each(function (Pet $pet) use ($petShelters): void {
-            $pet->shelter()->associate($petShelters->random());
-            $pet->save();
-        });
     }
 }
