@@ -20,3 +20,5 @@ Route::middleware([
 ])->group(function (): void {
     Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
 });
+
+Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
