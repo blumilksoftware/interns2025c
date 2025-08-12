@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { router } from '@inertiajs/vue3'
 import {
   Dialog,
   DialogPanel,
@@ -11,6 +12,10 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const mobileMenuOpen = ref(false)
+
+const goToAdmin = () => {
+  router.visit('/admin')
+}
 </script>
 
 <template>
@@ -19,7 +24,7 @@ const mobileMenuOpen = ref(false)
       <div class="flex lg:flex-1">
         <a href="#" class="-m-1.5 p-1.5">
           <span class="sr-only">Go to homepage</span>
-          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo">
+          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async">
         </a>
       </div>
       <div class="flex lg:hidden">
@@ -43,7 +48,7 @@ const mobileMenuOpen = ref(false)
           <div class="flex items-center justify-between sticky top-0 bg-white pb-4">
             <a href="#" class="-m-1.5 p-1.5">
               <span class="sr-only">Interns2025c</span>
-              <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="App logo">
+              <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="App logo" height="32" loading="lazy" decoding="async">
             </a>
             <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 z-10" @click="mobileMenuOpen = false">
               <span class="sr-only">Close menu</span>
@@ -58,7 +63,7 @@ const mobileMenuOpen = ref(false)
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Contact Us</a>
               </div>
               <div class="py-6">
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
+                <button class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left" @click="goToAdmin">Log in</button>
               </div>
             </div>
           </div>
