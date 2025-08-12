@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class DemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([
-            DemoSeeder::class,
-        ]);
+        Tag::factory()->count(10)->create();
     }
 }

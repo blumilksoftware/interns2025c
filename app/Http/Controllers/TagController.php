@@ -18,10 +18,8 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    public function update(TagRequest $request, int|string $id): TagResource
+    public function update(TagRequest $request, Tag $tag): TagResource
     {
-        $tag = Tag::findOrFail($id);
-
         $tag->update([
             "name" => $request->name,
         ]);

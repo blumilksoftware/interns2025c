@@ -7,7 +7,7 @@ namespace Database\Seeders;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
-class TagSeeder extends Seeder
+class DemoSeeder extends Seeder
 {
     public function run(): void
     {
