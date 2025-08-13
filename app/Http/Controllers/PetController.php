@@ -5,40 +5,47 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PetRequest;
-use App\Http\Resources\PetResource;
+use App\Http\Resources\PetIndexResource;
+use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PetController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): Response
     {
-        $pets = Pet::all();
-        $petsTransformed = PetResource::collection($pets);
+        $pets = Pet::query()->latest()->paginate(15);
 
         return Inertia::render("Pets/Index", [
-            "pets" => $petsTransformed->resolve(),
+            "pets" => PetIndexResource::collection($pets),
         ]);
     }
 
     public function show(Pet $pet): Response
     {
         return Inertia::render("Pets/Show", [
-            "pet" => (new PetResource($pet))->resolve(),
+            "pet" => new PetShowResource($pet),
         ]);
     }
 
     public function store(PetRequest $request): RedirectResponse
     {
-        Pet::create($request->validated());
+        $this->authorize("store");
+
+        Pet::query()->create($request->validated());
 
         return redirect()->route("pets.index")->with("success", "Pet created successfully.");
     }
 
     public function update(PetRequest $request, Pet $pet): RedirectResponse
     {
+        $this->authorize("update", $pet);
+
         $pet->update($request->validated());
 
         return redirect()->route("pets.index")->with("success", "Pet updated successfully.");
@@ -46,8 +53,11 @@ class PetController extends Controller
 
     public function destroy(Pet $pet): RedirectResponse
     {
+        $this->authorize("delete", $pet);
+
         $pet->delete();
 
-        return redirect()->route("pets.index")->with("success", "Pet deleted successfully.");
+        return redirect()->route("pets.index")
+            ->with("success", "Pet deleted successfully.");
     }
 }
