@@ -4,6 +4,11 @@ import ImageSection from './LandingPage/ImageSection.vue'
 import BackgroundGradient from './BackgroudGradient.vue'
 import ButtonSection from './LandingPage/ButtonSection.vue'
 import Footer from '../Components/Footer.vue'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  document.title = 'Landing Page - interns2025c'
+})
 </script>
 
 <template>
