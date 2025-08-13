@@ -1,12 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import Banner from '@/Components/Banner.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
+
+const { t } = useI18n()
 
 defineProps({
   title: {
@@ -16,7 +19,6 @@ defineProps({
 })
 
 const showingNavigationDropdown = ref(false)
-
 
 const logout = () => {
   router.post(route('logout'))
@@ -40,7 +42,7 @@ const logout = () => {
 
               <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                  Dashboard
+                  {{ t('navigation.dashboard') }}
                 </NavLink>
               </div>
             </div>
@@ -67,22 +69,22 @@ const logout = () => {
 
                     <template #content>
                       <div class="block px-4 py-2 text-xs text-gray-400">
-                        Manage Account
+                        {{ t('navigation.manageAccount') }}
                       </div>
 
                       <DropdownLink :href="route('profile.show')">
-                        Profile
+                        {{ t('navigation.profile') }}
                       </DropdownLink>
 
                       <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')">
-                        API Tokens
+                        {{ t('navigation.apiTokens') }}
                       </DropdownLink>
 
                       <div class="border-t border-gray-200 dark:border-gray-600" />
 
                       <form @submit.prevent="logout">
                         <DropdownLink as="button">
-                          Log Out
+                          {{ t('navigation.logOut') }}
                         </DropdownLink>
                       </form>
                     </template>
@@ -121,7 +123,7 @@ const logout = () => {
           <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
               <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                Dashboard
+                {{ t('navigation.dashboard') }}
               </ResponsiveNavLink>
             </div>
 
@@ -143,16 +145,16 @@ const logout = () => {
 
               <div class="mt-3 space-y-1">
                 <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
-                  Profile
+                  {{ t('navigation.profile') }}
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')" :active="route().current('api-tokens.index')">
-                  API Tokens
+                  {{ t('navigation.apiTokens') }}
                 </ResponsiveNavLink>
 
                 <form method="POST" @submit.prevent="logout">
                   <ResponsiveNavLink as="button">
-                    Log Out
+                    {{ t('navigation.logOut') }}
                   </ResponsiveNavLink>
                 </form>
               </div>
@@ -161,12 +163,14 @@ const logout = () => {
         </div>
       </nav>
 
+      <!-- Page Heading -->
       <header v-if="$slots.header" class="bg-white dark:bg-gray-800 shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <slot name="header" />
         </div>
       </header>
 
+      <!-- Page Content -->
       <main>
         <slot />
       </main>
