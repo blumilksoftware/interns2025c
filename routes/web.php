@@ -6,6 +6,7 @@ use App\Http\Controllers\PetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response;
 
 Route::get("/", fn() => Inertia::render("LandingPage", [
     "canLogin" => Route::has("login"),
