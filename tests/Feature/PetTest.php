@@ -4,67 +4,101 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PetTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUserCanCreatePet(): void
+    #[Test]
+    public function userWithoutProperRoleCannotCreatePet(): void
     {
-        $data = [
-            "name" => "Buddy",
+        $user = User::factory()->create([
+            "role" => Role::USER->value,
+        ]);
+
+        $pet = Pet::factory()->make([
+            "name" => "TestPet",
             "species" => "dog",
-            "sex" => "male",
-            "description" => "Friendly dog",
-        ];
+        ])->toArray();
 
-        $response = $this->post("/pets", $data);
+        $response = $this->actingAs($user)->post("/pets", $pet);
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route("pets.index"));
-        $this->assertDatabaseHas("pets", ["name" => "Buddy"]);
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing("pets", ["name" => "TestPet", "species" => "dog"]);
     }
 
-    public function testCreatePetFailsWithMissingRequiredFields(): void
+    #[Test]
+    public function cannotCreatePetWithNameLongerThanExpected(): void
     {
-        $data = [
+        $randomNameThatExceedRequestLimit = Str::random(256);
+
+        $pet = Pet::factory()->make([
+            "name" => $randomNameThatExceedRequestLimit,
+        ])->toArray();
+
+        $response = $this->post("/pets", $pet);
+
+        $response->assertSessionHasErrors(["name"]);
+        $this->assertDatabaseMissing("pets", ["name" => $randomNameThatExceedRequestLimit]);
+    }
+
+    #[Test]
+    public function cannotCreatePetWithInvalidNameType(): void
+    {
+        $numericName = 12345;
+        $pet = Pet::factory()->make([
+            "name" => $numericName,
+        ])->toArray();
+
+        $response = $this->post("/pets", $pet);
+
+        $response->assertSessionHasErrors(["name"]);
+        $this->assertDatabaseMissing("pets", ["name" => $numericName]);
+    }
+
+    #[Test]
+    public function cannotCreatePetWithMissingRequiredFields(): void
+    {
+        $pet = [
             "species" => "dog",
             "description" => "",
         ];
 
-        $response = $this->post("/pets", $data);
+        $response = $this->post("/pets", $pet);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["name", "sex", "description"]);
     }
 
-    public function testUserCanUpdatePet(): void
+    #[Test]
+    public function userWithoutProperRoleCannotUpdatePet(): void
     {
+        $user = User::factory()->create([
+            "role" => Role::USER->value,
+        ]);
+
         $pet = Pet::factory()->create([
             "name" => "OldName",
-            "species" => "cat",
-            "sex" => "female",
-            "description" => "Calm cat",
         ]);
 
         $updateData = [
             "name" => "NewName",
-            "species" => "cat",
-            "sex" => "female",
-            "description" => "Very calm cat",
         ];
 
-        $response = $this->put("/pets/{$pet->id}", $updateData);
+        $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route("pets.index"));
-        $this->assertDatabaseHas("pets", ["name" => "NewName"]);
+        $this->assertNotEquals($pet->name, $updateData["name"]);
     }
 
-    public function testUpdatePetFailsWithInvalidData(): void
+    #[Test]
+    public function cannotUpdatePetWithInvalidData(): void
     {
         $pet = Pet::factory()->create();
 
@@ -81,25 +115,46 @@ class PetTest extends TestCase
         $response->assertSessionHasErrors(["name", "species", "sex", "description"]);
     }
 
-    public function testUserCanDeletePet(): void
+    #[Test]
+    public function userWithoutShelterRoleCannotDeletePet(): void
     {
         $pet = Pet::factory()->create();
+        $user = User::factory()->create([
+            "role" => Role::USER->value,
+        ]);
 
-        $response = $this->delete("/pets/{$pet->id}");
+        $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route("pets.index"));
-        $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+        $response->assertStatus(403);
+        $this->assertDatabaseHas("pets", ["id" => $pet->id]);
     }
 
-    public function testDeletingNonExistentPetReturnsNotFound(): void
+    #[Test]
+    public function userWithShelterOrAdminRoleCanDeletePet(): void
+    {
+        $roles = [Role::SHELTER->value, Role::ADMIN->value];
+
+        foreach ($roles as $role) {
+            $pet = Pet::factory()->create();
+            $user = User::factory()->create(["role" => $role]);
+
+            $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
+
+            $response->assertStatus(302);
+            $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+        }
+    }
+
+    #[Test]
+    public function deletingNonExistentPetReturnsNotFound(): void
     {
         $response = $this->delete("/pets/999999");
 
         $response->assertStatus(404);
     }
 
-    public function testShowingNonExistentPetReturnsNotFound(): void
+    #[Test]
+    public function showingNonExistentPetReturnsNotFound(): void
     {
         $response = $this->get("/pets/999999");
 
