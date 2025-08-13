@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Role;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,16 @@ class User extends Authenticatable implements MustVerifyEmail
         "password",
         "remember_token",
     ];
+
+    public function haveShelterRole(): bool
+    {
+        return $this->role === Role::SHELTER->value;
+    }
+
+    public function haveAdminRole(): bool
+    {
+        return $this->role === Role::ADMIN->value;
+    }
 
     protected function casts(): array
     {
