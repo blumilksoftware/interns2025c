@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\PetShelterAddressRequest;
+use App\Models\PetShelterAddress;
+use Illuminate\Http\RedirectResponse;
+
+class PetShelterAddressController extends Controller
+{
+    public function update(PetShelterAddressRequest $request, PetShelterAddress $petShelterAddress): RedirectResponse
+    {
+        $petShelterAddress->update($request->validated());
+
+        return redirect("/admin")
+            ->with("success", "Pet shelter address updated successfully.");
+    }
+
+    public function destroy(PetShelterAddress $petShelterAddress): RedirectResponse
+    {
+        $petShelterAddress->update([
+            "address" => null,
+            "city" => null,
+            "postal_code" => null,
+        ]);
+
+        return redirect("/admin")
+            ->with("success", "Pet shelter address deleted successfully.");
+    }
+}

@@ -9,17 +9,18 @@ use Illuminate\Support\Facades\Schema;
 return new class() extends Migration {
     public function up(): void
     {
-        Schema::create("pet_shelter_addresses", function (Blueprint $table): void {
+        Schema::create("pet_shelters", function (Blueprint $table): void {
             $table->id();
-            $table->string("address")->nullable();
-            $table->string("city")->nullable();
-            $table->string("postal_code")->nullable();
+            $table->string("name");
+            $table->string("phone")->unique()->nullable();
+            $table->string("email")->unique()->nullable();
+            $table->longText("description");
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists("pet_shelter_addresses");
+        Schema::dropIfExists("pet_shelters");
     }
 };
