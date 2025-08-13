@@ -8,6 +8,7 @@ use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSpecies;
 use App\Models\Pet;
+use App\Models\PetShelter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PetFactory extends Factory
@@ -16,6 +17,8 @@ class PetFactory extends Factory
 
     public function definition(): array
     {
+        $hasChip = $this->faker->optional()->boolean();
+
         return [
             "name" => $this->faker->firstName(),
             "species" => $this->faker->randomElement(array_column(PetSpecies::cases(), "value")),
@@ -30,8 +33,8 @@ class PetFactory extends Factory
             "health_status" => $this->faker->optional()->randomElement(array_column(PetHealthStatus::cases(), "value")),
             "current_treatment" => $this->faker->optional()->sentence(3),
             "vaccinated" => $this->faker->optional()->boolean(),
-            "has_chip" => $this->faker->optional()->boolean(),
-            "chip_number" => $this->faker->optional()->uuid(),
+            "has_chip" => $hasChip,
+            "chip_number" => $hasChip ? $this->faker->optional()->uuid() : null,
             "dewormed" => $this->faker->optional()->boolean(),
             "deflea_treated" => $this->faker->optional()->boolean(),
             "medical_tests" => $this->faker->optional()->sentence(3),
@@ -46,6 +49,7 @@ class PetFactory extends Factory
             "quarantine_end_date" => $this->faker->optional()->date(),
             "found_location" => $this->faker->optional()->city(),
             "adoption_status" => $this->faker->optional()->randomElement(["available", "adopted", "pending", "fostered"]),
+            "shelter_id" => PetShelter::factory(),
         ];
     }
 }

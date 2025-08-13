@@ -17,7 +17,7 @@ return new class() extends Migration {
             $table->string("sex");
             $table->string("age")->nullable();
             $table->string("size")->nullable();
-            $table->float("weight", 5, 2)->nullable();
+            $table->float("weight", 2)->nullable();
             $table->string("color")->nullable();
             $table->boolean("sterilized")->nullable();
             $table->text("description");
@@ -28,7 +28,7 @@ return new class() extends Migration {
             $table->string("chip_number")->nullable();
             $table->boolean("dewormed")->nullable();
             $table->boolean("deflea_treated")->nullable();
-            $table->text("medical_tests")->nullable()->comment();
+            $table->text("medical_tests")->nullable();
             $table->string("food_type")->nullable();
             $table->string("attitude_to_people")->nullable();
             $table->string("attitude_to_dogs")->nullable();
@@ -40,6 +40,7 @@ return new class() extends Migration {
             $table->date("quarantine_end_date")->nullable();
             $table->string("found_location")->nullable();
             $table->string("adoption_status")->nullable();
+            $table->foreignId("shelter_id")->constrained("pet_shelters");
             $table->timestamps();
         });
     }
