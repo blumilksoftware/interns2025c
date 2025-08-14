@@ -6,7 +6,11 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 import { createI18n } from 'vue-i18n'
 
-import pl from './lang/pl.json'
+const plModules = import.meta.glob('./lang/pl/*.json', { eager: true })
+const pl = Object.values(plModules).reduce((merged, mod) => {
+  const payload = (mod && mod.default) ? mod.default : mod
+  return { ...merged, ...payload }
+}, {})
 
 const i18n = createI18n({
   legacy: false,

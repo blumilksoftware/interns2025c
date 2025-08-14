@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
-Route::get("/", fn() => Inertia::render("LandingPage", [
-    "canLogin" => Route::has("login"),
+Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
+    "canLogin" => Route::has("login"), 
     "canRegister" => Route::has("register"),
     "laravelVersion" => Application::VERSION,
     "phpVersion" => PHP_VERSION,
+    "title" => __("titles.landingPage"),
 ]));
 
 Route::middleware([
@@ -20,8 +21,10 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
-    Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
+    Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
+        "title" => __("titles.dashboard"),
+    ]))->name("dashboard");
+    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
+        "title" => __("titles.adminPanel"),
+    ]))->name("admin");
 });
-
-Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
-Route::resource("pets", PetController::class)->except(["create", "edit"]);

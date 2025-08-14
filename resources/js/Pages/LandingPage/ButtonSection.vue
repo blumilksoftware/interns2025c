@@ -1,5 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import PawPrints from '../../Components/PawPrints.vue'
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -8,8 +11,8 @@ import PawPrints from '../../Components/PawPrints.vue'
     
     <div class="h-1/2 px-6 py-36 sm:px-6 sm:py-16 lg:px-8 text-section">
       <div class="mx-auto bg-[#fffcef] rounded-full py-6  max-w-2xl text-center responsive-mask">
-        <h2 class="text-4xl font-semibold tracking-tight text-balance text-black sm:text-5xl">Give a loving home to a furry friend today.</h2>
-        <p class="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-black">Every animal deserves a second chance. Find your perfect companion and make a difference in their life.</p>
+        <h2 class="text-4xl font-semibold tracking-tight text-balance text-black sm:text-5xl">{{ t('landing.hero.title') }}</h2>
+        <p class="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-black">{{ t('landing.hero.subtitle') }}</p>
       </div>
     </div>
 
@@ -17,10 +20,10 @@ import PawPrints from '../../Components/PawPrints.vue'
       <div class="flex justify-center items-center h-full">
         <div class="flex gap-4">
           <button type="button" class="rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
-            Adopt Now
+            {{ t('landing.hero.adoptButton') }}
           </button>
           <button type="button" class="rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
-            Donate
+            {{ t('landing.hero.donateButton') }}
           </button>
         </div>
       </div>
