@@ -23,7 +23,7 @@ class TagTest extends TestCase
 
         $response = $this->actingAs($admin)->post("/tags", ["name" => "newtag"]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(302);
         $this->assertDatabaseHas("tags", ["name" => "newtag"]);
     }
 
@@ -84,7 +84,7 @@ class TagTest extends TestCase
 
         $response = $this->actingAs($admin)->put("/tags/{$tag->id}", ["name" => "newname"]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
         $this->assertDatabaseHas("tags", ["name" => "newname"]);
     }
 
@@ -158,7 +158,7 @@ class TagTest extends TestCase
 
         $response = $this->actingAs($user)->delete("/tags/{$tag->id}");
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
         $this->assertDatabaseMissing("tags", ["id" => $tag->id]);
     }
 
