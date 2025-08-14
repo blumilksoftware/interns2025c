@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\PetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response;
 
 Route::get("/", fn() => Inertia::render("LandingPage", [
     "canLogin" => Route::has("login"),
@@ -22,3 +24,4 @@ Route::middleware([
 });
 
 Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
+Route::resource("pets", PetController::class)->except(["create", "edit"]);
