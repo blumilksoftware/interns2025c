@@ -1,34 +1,25 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { HeartIcon, StarIcon, CalendarIcon, MapPinIcon } from '@heroicons/vue/20/solid'
+import { bestMatches } from '../../data/petsData.js'
+import { getPetTags } from '../../data/petTagsConfig.js'
 
 const { t } = useI18n()
 
-const petData = {
-  name: 'Rex',
-  type: 'Dog',
-  breed: 'Golden Retriever',
-  age: 5,
-  status: 'Available',
-  shelter: 'Happy Paws',
-  location: 'Warsaw',
-  created_at: '2024-01-15',
-  personality: [
-    t('landing.mvp.friendly'),
-    t('landing.mvp.goodWithChildren'),
-    t('landing.mvp.intelligent'),
-    t('landing.mvp.lovesOutdoor'),
-    t('landing.mvp.familyCompanion'),
-    t('landing.mvp.wellTrained')
-  ]
-}
+const petData = bestMatches[0]
+
+const petTags = getPetTags()
+const petPersonality = computed(() => {
+  if (!petData.tags || !Array.isArray(petData.tags)) return []
+  return petData.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
+})
 
 const characteristics = computed(() => [
-  `${t('landing.mvp.age')}: ${petData.age} ${t('landing.mvp.yearsOld')}`,
+  `${t('landing.mvp.age')}: ${petData.age}`,
   `${t('landing.mvp.breed')}: ${petData.breed}`,
-  `${t('landing.mvp.status')}: ${t('landing.mvp.availableForAdoption')}`,
-  `${t('landing.mvp.location')}: ${petData.shelter}, ${petData.location}`,
+  `${t('landing.mvp.status')}: ${petData.status}`,
+  `${t('landing.mvp.gender')}: ${petData.gender === 'male' ? t('landing.mvp.male') : t('landing.mvp.female')}`,
   `${t('landing.mvp.health')}: ${t('landing.mvp.vaccinated')}`,
   `${t('landing.mvp.temperament')}: ${t('landing.mvp.gentle')}`
 ])
@@ -42,7 +33,7 @@ const characteristics = computed(() => [
         <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
          <div class="mx-auto flex max-w-4xl bg-gradient-to-br from-white to-yellow-50 flex-col sm:flex-row border-b-2 border-[#FFD700] sm:border-b-0 sm:ring-2 ring-[#FFD700] sm:shadow-[0_0_30px_rgba(255,215,0,0.3)]  sm:rounded-2xl lg:mx-0 lg:max-w-none xl:gap-x-16">
            <div class="flex items-center justify-center sm:relative overflow-hidden flex-shrink-0 w-full sm:w-72 md:w-80 lg:w-1/3 aspect-[4/3] md:aspect-auto min-h-[240px] md:min-h-[340px] lg:min-h-[420px] rounded-xl lg:rounded-l-xl md:rounded-r-none sm:ring-2 sm:ring-[#FFD700] sm:hadow-[0_0_20px_rgba(255,215,0,0.4)] md:ring-0 md:shadow-none">
-             <img class="w-4/5 sm:w-full rounded-xl md:rounded-none h-full object-cover object-center" src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Rex the Golden Retriever" />
+             <img class="w-4/5 sm:w-full rounded-xl md:rounded-none h-full object-cover object-center" :src="petData.imageUrl" :alt="`${petData.name} - ${petData.breed}`" />
             </div>
                                                                                             <div class="w-full flex-auto px-4 py-4 sm:px-8 sm:py-8">
               <div class="flex items-center justify-between mb-3">
@@ -57,18 +48,18 @@ const characteristics = computed(() => [
             <div class="mt-4 flex gap-4 text-sm font-medium">
               <div class="flex items-center gap-2">
                 <CalendarIcon class="h-5 w-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.age }} {{ t('landing.mvp.yearsOld') }}</span>
+                <span class="text-gray-700">{{ petData.age }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <MapPinIcon class="h-5 w-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.shelter }}</span>
+                <span class="text-gray-700">{{ petData.breed }}</span>
               </div>
             </div>
 
             <div class="mt-4">
               <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('landing.mvp.personalityTraits') }}</h3>
               <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-2 text-sm/5 font-medium text-gray-700 sm:grid-cols-2 lg:grid">
-                <li v-for="trait in petData.personality" :key="trait" class="flex gap-x-3">
+                <li v-for="trait in petPersonality" :key="trait" class="flex gap-x-3">
                   <StarIcon class="h-5 w-5 flex-none text-yellow-500" aria-hidden="true" />
                   {{ trait }}
                 </li>

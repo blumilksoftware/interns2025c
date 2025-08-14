@@ -20,7 +20,8 @@
       "actions": "Akcje",
       "edit": "Edytuj",
       "all": "Wszystkie",
-      "filterPlaceholder": "Filtruj {field}..."
+      "filterPlaceholder": "Filtruj {field}...",
+      "noResults": "Brak wyników pasujących do filtrów"
     },
     "modal": {
       "edit": "Edytuj {type}",

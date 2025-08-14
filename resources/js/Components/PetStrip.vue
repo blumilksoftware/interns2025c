@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
+import { getPetTags } from '../data/petTagsConfig.js'
 
 const { t } = useI18n()
 
@@ -25,18 +26,7 @@ const scrollContainer = ref(null)
 const canScrollLeft = ref(false)
 const canScrollRight = ref(true)
 
-const petTags = {
-  friendly: { name: t('landing.petTags.friendly'), emoji: '😊', color: 'bg-white text-green-600 border-green-300' },
-  gentle: { name: t('landing.petTags.gentle'), emoji: '🥰', color: 'bg-white text-pink-600 border-pink-300' },
-  energetic: { name: t('landing.petTags.energetic'), emoji: '⚡', color: 'bg-white text-yellow-600 border-yellow-300' },
-  playful: { name: t('landing.petTags.playful'), emoji: '🎾', color: 'bg-white text-blue-600 border-blue-300' },
-  calm: { name: t('landing.petTags.calm'), emoji: '😌', color: 'bg-white text-indigo-600 border-indigo-300' },
-  loyal: { name: t('landing.petTags.loyal'), emoji: '❤️', color: 'bg-white text-red-600 border-red-300' },
-  smart: { name: t('landing.petTags.smart'), emoji: '🧠', color: 'bg-white text-purple-600 border-purple-300' },
-  protective: { name: t('landing.petTags.protective'), emoji: '🛡️', color: 'bg-white text-gray-600 border-gray-300' },
-  social: { name: t('landing.petTags.social'), emoji: '👥', color: 'bg-white text-teal-600 border-teal-300' },
-  active: { name: t('landing.petTags.active'), emoji: '🏃', color: 'bg-white text-orange-600 border-orange-300' }
-}
+const petTags = getPetTags()
 
 const toggleLike = (petId) => {
   if (likedPets.value.has(petId)) {
@@ -46,7 +36,7 @@ const toggleLike = (petId) => {
   }
 }
 
-const getPetTags = (pet) => {
+const getPetTagsForPet = (pet) => {
   if (!pet.tags || !Array.isArray(pet.tags)) return []
   return pet.tags.map(tagId => petTags[tagId]).filter(Boolean)
 }
@@ -73,7 +63,6 @@ const showPetListHandler = () => {
   emit('showPetList', { title: props.title, pets: props.pets })
 }
 
-// Sprawdź pozycję scroll po załadowaniu komponentu
 nextTick(() => {
   checkScrollPosition()
   if (scrollContainer.value) {
@@ -95,7 +84,6 @@ nextTick(() => {
     </div>
     
     <div class="relative group">
-      <!-- Lewa strzałka -->
       <button 
         v-show="canScrollLeft"
         @click="scrollLeft"
@@ -104,7 +92,6 @@ nextTick(() => {
         <ChevronLeftIcon class="w-6 h-6 text-gray-700" />
       </button>
       
-      <!-- Prawa strzałka -->
       <button 
         v-show="canScrollRight"
         @click="scrollRight"
@@ -113,7 +100,6 @@ nextTick(() => {
         <ChevronRightIcon class="w-6 h-6 text-gray-700" />
       </button>
       
-      <!-- Kontener z przewijaniem -->
       <div 
         ref="scrollContainer"
         class="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
@@ -127,7 +113,6 @@ nextTick(() => {
           <div class="relative aspect-square">
             <img class="w-full h-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" />
 
-            <!-- Przycisk like -->
             <button 
               @click="toggleLike(pet.id)" 
               class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95"
@@ -136,7 +121,6 @@ nextTick(() => {
               <HeartOutlineIcon v-else class="w-5 h-5 text-purple-600 heart-icon" />
             </button>
             
-            <!-- Ikona płci -->
             <div class="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center text-white text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
               <span v-if="pet.gender === 'male'" class="text-blue-400">♂</span>
               <span v-else class="text-pink-400">♀</span>
@@ -154,13 +138,11 @@ nextTick(() => {
               <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">{{ pet.status }}</span>
             </div>
             
-            <!-- Linia oddzielająca -->
             <div class="border-t border-gray-200 my-3"></div>
             
-            <!-- Tagi z emotkami w 2 kolumnach -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-2">
               <span 
-                v-for="tag in getPetTags(pet)" 
+                v-for="tag in getPetTagsForPet(pet)" 
                 :key="tag.name"
                 class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium justify-center truncate border"
                 :class="tag.color"
@@ -207,7 +189,6 @@ nextTick(() => {
   transform: scale(1.1);
 }
 
-/* Ukryj scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -217,7 +198,6 @@ nextTick(() => {
   scrollbar-width: none;
 }
 
-/* Animacja dla przycisku "Zobacz więcej" */
 .see-more-button {
   position: relative;
   overflow: hidden;

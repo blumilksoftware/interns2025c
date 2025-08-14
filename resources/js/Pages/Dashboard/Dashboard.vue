@@ -27,13 +27,11 @@ const handleHidePetList = () => {
 <template>
     <Head :title="title" />
     
-    <!-- Widok listy zwierzaków -->
     <Transition name="slide-fade" mode="out-in">
       <div v-if="showPetList" key="pet-list" class="fixed inset-0 bg-white z-50 overflow-y-auto">
         <PetGrid @showPetList="handleShowPetList" @hidePetList="handleHidePetList" />
       </div>
       
-      <!-- Oryginalny widok Dashboard -->
       <div v-else key="dashboard" class="min-h-screen">
         <Header />
         <MVPSection />
@@ -44,7 +42,6 @@ const handleHidePetList = () => {
 </template>
 
 <style scoped>
-/* Animacja przejścia */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
