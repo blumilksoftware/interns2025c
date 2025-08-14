@@ -51,10 +51,7 @@ class Pet extends Model
 
     protected $guarded = [];
     protected $casts = [
-        "species" => PetSpecies::class,
-        "sex" => PetSex::class,
         "age" => "string",
-        "health_status" => PetHealthStatus::class,
         "admission_date" => "date",
         "quarantine_end_date" => "date",
     ];

@@ -35,9 +35,19 @@ class PetController extends Controller
 
     public function store(PetRequest $request): RedirectResponse
     {
-        $this->authorize("store");
+        $this->authorize("store", Pet::class);
 
-        Pet::query()->create($request->validated());
+        $user = $request->user();
+        $shelter = $user->petShelters()->first();
+
+        if (!$shelter) {
+            return redirect()->back()->withErrors(["shelter" => "No shelter associated with this user."]);
+        }
+
+        $petData = $request->validated();
+        $petData["shelter_id"] = $shelter->id;
+
+        Pet::query()->create($petData);
 
         return redirect()->route("pets.index")->with("success", "Pet created successfully.");
     }

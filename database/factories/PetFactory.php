@@ -34,7 +34,7 @@ class PetFactory extends Factory
             "current_treatment" => $this->faker->optional()->sentence(3),
             "vaccinated" => $this->faker->optional()->boolean(),
             "has_chip" => $hasChip,
-            "chip_number" => $hasChip ? $this->faker->optional()->uuid() : null,
+            "chip_number" => $hasChip ? $this->faker->uuid() : null,
             "dewormed" => $this->faker->optional()->boolean(),
             "deflea_treated" => $this->faker->optional()->boolean(),
             "medical_tests" => $this->faker->optional()->sentence(3),
