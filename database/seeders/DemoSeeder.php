@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Tag;
 use App\Enums\Role;
+use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -16,11 +17,19 @@ class DemoSeeder extends Seeder
 {
     public const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public const NUMBER_OF_USERS_TO_CREATE = 100;
+    public const NUMBER_OF_TAGS_TO_CREATE = 20;
 
     public function run(): void
     {
-        Tag::factory()->count(10)->create();
-      
+        Tag::factory()
+            ->count(self::NUMBER_OF_TAGS_TO_CREATE)
+            ->make()
+            ->each(function ($tag): void {
+                Tag::firstOrCreate(
+                    ["name" => $tag->name],
+                );
+            });
+
         User::factory()->create([
             "email" => "user@example.com",
             "password" => Hash::make("password"),
@@ -42,6 +51,7 @@ class DemoSeeder extends Seeder
         User::factory()->count(self::NUMBER_OF_USERS_TO_CREATE)->create();
         $users = User::all();
 
+        $pets = Pet::factory()->count(10)->create();
         $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
 
         foreach ($users as $user) {
@@ -58,5 +68,17 @@ class DemoSeeder extends Seeder
                 }
             }
         }
+
+        $pets->each(function (Pet $pet) use ($petShelters): void {
+            $pet->shelter()->associate($petShelters->random());
+            $pet->save();
+        });
+    }
+
+    public function tagExistsInDatabase(string $tagName): bool
+    {
+        return Tag::query()
+            ->where("name", $tagName)
+            ->exists();
     }
 }

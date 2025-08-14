@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TagFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $traits = [
+            "happy", "playful", "curious", "affectionate", "lazy", "energetic",
+            "loyal", "protective", "gentle", "mischievous", "vocal", "independent",
+            "clingy", "timid", "friendly", "alert", "food-motivated", "sleepy",
+            "adventurous", "shy",
+        ];
+
         return [
-            "name" => $this->faker->word(),
+            "name" => $this->faker->randomElement($traits),
         ];
     }
 }
