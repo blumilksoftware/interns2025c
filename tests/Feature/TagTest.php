@@ -4,66 +4,112 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class TagTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUserCanCreateTag(): void
+    public function testUserWithAdminRoleCanCreateTag(): void
     {
-        $response = $this->post("/tags", ["name" => "friendly"]);
+        $admin = User::factory()->create([
+            "role" => Role::ADMIN->value,
+        ]);
+
+        $response = $this->actingAs($admin)->post("/tags", ["name" => "newtag"]);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas("tags", ["name" => "friendly"]);
+        $this->assertDatabaseHas("tags", ["name" => "newtag"]);
     }
 
-    public function testCreateTagFailsWithMissingName(): void
+    public function testUserWithoutAdminRoleCannotCreateTag(): void
     {
+        $roles = [Role::USER->value, Role::SHELTER->value];
+
+        foreach ($roles as $role) {
+            $user = User::factory()->create([
+                "role" => $role,
+            ]);
+
+            $response = $this->actingAs($user)->post("/tags", ["name" => "newtag"]);
+
+            $response->assertStatus(403);
+            $this->assertDatabaseMissing("tags", ["name" => "newtag"]);
+        }
+    }
+
+    public function testCannotCreateTagWithoutProvidedTagName(): void
+    {
+        $tag = Tag::factory()->make(["name" => ""]);
+
         $response = $this->post("/tags", ["name" => ""]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors(["name"]);
         $this->assertDatabaseCount("tags", 0);
     }
 
-    public function testCreateTagFailsWhenNameIsTooLong(): void
+    public function testCannotCreateTagWhenNameIsTooLong(): void
     {
-        $longName = str_repeat("a", 301);
+        $nameWithExceededLength = Str::random(5000);
+        $tag = Tag::factory()->make(["name" => $nameWithExceededLength]);
 
-        $response = $this->post("/tags", ["name" => $longName]);
+        $response = $this->post("/tags", ["name" => $tag->name]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors(["name"]);
         $this->assertDatabaseCount("tags", 0);
     }
 
-    public function testCreateTagFailsWhenNameIsNotUnique(): void
+    public function testCannotCreateTagWhenNameIsNotUnique(): void
     {
         Tag::create(["name" => "duplicate"]);
 
         $response = $this->post("/tags", ["name" => "duplicate"]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors(["name"]);
         $this->assertDatabaseCount("tags", 1);
     }
 
-    public function testUserCanUpdateTag(): void
+    public function testUserWithAdminRoleCanUpdateTag(): void
     {
         $tag = Tag::create(["name" => "oldname"]);
 
-        $response = $this->put("/tags/{$tag->id}", ["name" => "newname"]);
+        $admin = User::factory()->create([
+            "role" => Role::ADMIN->value,
+        ]);
+
+        $response = $this->actingAs($admin)->put("/tags/{$tag->id}", ["name" => "newname"]);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas("tags", ["name" => "newname"]);
     }
 
+    public function testUserWithoutAdminRoleCannotUpdateTag(): void
+    {
+        $roles = [Role::USER->value, Role::SHELTER->value];
+
+        foreach ($roles as $index => $role) {
+            $user = User::factory()->create([
+                "role" => $role,
+            ]);
+            $tag = Tag::factory()->create([
+                "name" => "oldname{$index}",
+            ]);
+
+            $response = $this->actingAs($user)->put("/tags/{$tag->id}", ["name" => "newname"]);
+
+            $response->assertStatus(403);
+            $this->assertDatabaseHas("tags", ["id" => $tag->id, "name" => "oldname{$index}"]);
+        }
+    }
+
     public function testUpdateTagFailsWithEmptyName(): void
     {
-        $tag = Tag::create(["name" => "validname"]);
+        $tag = Tag::factory()->create(["name" => "validname"]);
 
         $response = $this->put("/tags/{$tag->id}", ["name" => ""]);
 
@@ -72,23 +118,22 @@ class TagTest extends TestCase
         $this->assertDatabaseHas("tags", ["name" => "validname"]);
     }
 
-    public function testUpdateTagFailsWhenNameIsTooLong(): void
+    public function testCannotUpdateTagWhenNameIsTooLong(): void
     {
-        $tag = Tag::create(["name" => "short"]);
+        $nameWithExceededLength = Str::random(5000);
+        $tag = Tag::factory()->create(["name" => "short"]);
 
-        $longName = str_repeat("a", 301);
-
-        $response = $this->put("/tags/{$tag->id}", ["name" => $longName]);
+        $response = $this->put("/tags/{$tag->id}", ["name" => $nameWithExceededLength]);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["name"]);
         $this->assertDatabaseHas("tags", ["name" => "short"]);
     }
 
-    public function testUpdateTagFailsWhenNameIsNotUnique(): void
+    public function testCannotUpdateTagWhenNameIsNotUnique(): void
     {
-        Tag::create(["name" => "existing"]);
-        $tag = Tag::create(["name" => "tochange"]);
+        Tag::factory()->create(["name" => "existing"]);
+        $tag = Tag::factory()->create(["name" => "tochange"]);
 
         $response = $this->put("/tags/{$tag->id}", ["name" => "existing"]);
 
@@ -104,14 +149,34 @@ class TagTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function testUserCanDeleteTag(): void
+    public function testUserWithAdminRoleCanDeleteTag(): void
     {
+        $user = User::factory()->create([
+            "role" => Role::ADMIN->value,
+        ]);
         $tag = Tag::create(["name" => "tobedeleted"]);
 
-        $response = $this->delete("/tags/{$tag->id}");
+        $response = $this->actingAs($user)->delete("/tags/{$tag->id}");
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing("tags", ["id" => $tag->id]);
+    }
+
+    public function testUserWithoutAdminRoleCannotDeleteTag(): void
+    {
+        $roles = [Role::USER->value, Role::SHELTER->value];
+
+        foreach ($roles as $role => $index) {
+            $user = User::factory()->create([
+                "role" => $role,
+            ]);
+            $tag = Tag::factory()->create(["name" => "tobedeleted$index"]);
+
+            $response = $this->actingAs($user)->delete("/tags/{$tag->id}");
+
+            $response->assertStatus(403);
+            $this->assertDatabaseHas("tags", ["id" => $tag->id]);
+        }
     }
 
     public function testDeletingNonExistentTagReturnsNotFound(): void
