@@ -10,7 +10,7 @@ class TagFactory extends Factory
 {
     public function definition(): array
     {
-        $traits = [
+        $petBehavioralTraits = [
             "happy", "playful", "curious", "affectionate", "lazy", "energetic",
             "loyal", "protective", "gentle", "mischievous", "vocal", "independent",
             "clingy", "timid", "friendly", "alert", "food-motivated", "sleepy",
@@ -18,7 +18,7 @@ class TagFactory extends Factory
         ];
 
         return [
-            "name" => $this->faker->randomElement($traits),
+            "name" => $this->faker->randomElement($petBehavioralTraits),
         ];
     }
 }
