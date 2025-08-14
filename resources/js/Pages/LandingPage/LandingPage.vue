@@ -9,8 +9,8 @@ import { Head } from '@inertiajs/vue3'
 defineProps({
   title: {
     type: String,
-    default: 'Home - interns2025c'
-  }
+    default: 'Home - interns2025c',
+  },
 })
 
 </script>

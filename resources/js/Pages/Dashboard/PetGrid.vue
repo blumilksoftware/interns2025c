@@ -34,11 +34,11 @@ const handleHidePetList = () => {
         <div class="max-w-6xl mx-auto px-6 lg:px-8 py-4">
           <div class="flex items-center gap-4">
             <button 
+              class="back-button flex items-center justify-center size-10 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200"
               @click="handleHidePetList"
-              class="back-button flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200"
             >
-              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              <svg class="size-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <h1 class="title-animation text-2xl font-bold text-gray-900">{{ currentPetList.title }}</h1>
@@ -46,21 +46,21 @@ const handleHidePetList = () => {
         </div>
       </div>
       
-      <div class="max-w-6xl mx-auto px-6 lg:px-8 py-6">
+      <div class="max-w-6xl mx-auto p-6 lg:px-8">
         <TransitionGroup name="list" tag="div" class="space-y-4">
           <div 
             v-for="(pet, index) in currentPetList.pets" 
             :key="pet.id" 
             :style="{ animationDelay: `${index * 0.1}s` }"
-            class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden transform hover:scale-[1.02]"
+            class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden hover:scale-[1.02]"
           >
             <div class="flex">
-              <div class="w-32 h-32 flex-shrink-0">
+              <div class="size-32 shrink-0">
                 <img 
-                  class="w-full h-full object-cover" 
+                  class="size-full object-cover" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
-                />
+                >
               </div>
               
               <div class="flex-1 p-4">
@@ -105,20 +105,20 @@ const handleHidePetList = () => {
       <PetStrip 
         title="Reszta najlepszych dopasowań" 
         :pets="bestMatchesRest" 
-        @showPetList="handleShowPetList"
-        @hidePetList="handleHidePetList"
+        @show-pet-list="handleShowPetList"
+        @hide-pet-list="handleHidePetList"
       />
       <PetStrip 
         title="Psy" 
         :pets="dogs" 
-        @showPetList="handleShowPetList"
-        @hidePetList="handleHidePetList"
+        @show-pet-list="handleShowPetList"
+        @hide-pet-list="handleHidePetList"
       />
       <PetStrip 
         title="Koty" 
         :pets="cats" 
-        @showPetList="handleShowPetList"
-        @hidePetList="handleHidePetList"
+        @show-pet-list="handleShowPetList"
+        @hide-pet-list="handleHidePetList"
       />
     </div>
   </div>

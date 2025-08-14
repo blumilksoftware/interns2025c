@@ -11,7 +11,7 @@ Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
     "canRegister" => Route::has("register"),
     "laravelVersion" => Application::VERSION,
     "phpVersion" => PHP_VERSION,
-    "title" => __("titles.landingPage")
+    "title" => __("titles.landingPage"),
 ]));
 
 Route::middleware([
@@ -20,9 +20,9 @@ Route::middleware([
     "verified",
 ])->group(function (): void {
     Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
-        "title" => __("titles.dashboard")
+        "title" => __("titles.dashboard"),
     ]))->name("dashboard");
     Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
-        "title" => __("titles.adminPanel")
+        "title" => __("titles.adminPanel"),
     ]))->name("admin");
 });

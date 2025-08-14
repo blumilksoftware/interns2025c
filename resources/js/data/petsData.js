@@ -8,7 +8,7 @@ export const bestMatches = [
     gender: 'male',
     description: 'Energiczny kocur, uwielbia eksplorować i wspinaczki',
     imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['energetic', 'playful', 'smart']
+    tags: ['energetic', 'playful', 'smart'],
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ export const bestMatches = [
     gender: 'female',
     description: 'Łagodna kotka, uwielbia się przytulać i być czesana',
     imageUrl: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['gentle', 'calm', 'social']
+    tags: ['gentle', 'calm', 'social'],
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ export const bestMatches = [
     gender: 'male',
     description: 'Przyjazny pies, uwielbia aportowanie i pływanie',
     imageUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['friendly', 'loyal', 'playful', 'active']
+    tags: ['friendly', 'loyal', 'playful', 'active'],
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ export const bestMatches = [
     gender: 'female',
     description: 'Energiczna suczka, uwielbia biegać i zabawy na śniegu',
     imageUrl: 'https://images.unsplash.com/photo-1547407139-3c921a66005c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['energetic', 'active', 'social', 'playful']
+    tags: ['energetic', 'active', 'social', 'playful'],
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ export const bestMatches = [
     gender: 'female',
     description: 'Energiczna suczka, uwielbia biegać i zabawy na śniegu',
     imageUrl: 'https://images.unsplash.com/photo-1547407139-3c921a66005c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['energetic', 'active', 'social', 'playful']
+    tags: ['energetic', 'active', 'social', 'playful'],
   },
   
 ]
@@ -67,7 +67,7 @@ export const dogs = [
     gender: 'male',
     description: 'Ciekawski piesek, uwielbia tropić i zabawy w chowanego',
     imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['playful', 'smart', 'active', 'social']
+    tags: ['playful', 'smart', 'active', 'social'],
   },
   {
     id: 7,
@@ -78,7 +78,7 @@ export const dogs = [
     gender: 'male',
     description: 'Przyjazny labrador, uwielbia wodę i zabawy z piłką',
     imageUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['friendly', 'playful', 'active', 'loyal']
+    tags: ['friendly', 'playful', 'active', 'loyal'],
   },
   {
     id: 8,
@@ -89,7 +89,7 @@ export const dogs = [
     gender: 'male',
     description: 'Łagodny olbrzym, uwielbia dzieci i długie spacery',
     imageUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['gentle', 'calm', 'protective', 'social']
+    tags: ['gentle', 'calm', 'protective', 'social'],
   },
   {
     id: 9,
@@ -100,7 +100,7 @@ export const dogs = [
     gender: 'male',
     description: 'Inteligentny pies, uwielbia agility i zabawy z frisbee',
     imageUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['smart', 'energetic', 'active', 'loyal']
+    tags: ['smart', 'energetic', 'active', 'loyal'],
   },
 ]
 
@@ -114,7 +114,7 @@ export const cats = [
     gender: 'female',
     description: 'Dostojna kotka, uwielbia spokój i delikatne głaskanie',
     imageUrl: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['calm', 'gentle', 'social']
+    tags: ['calm', 'gentle', 'social'],
   },
   {
     id: 12,
@@ -125,7 +125,7 @@ export const cats = [
     gender: 'female',
     description: 'Inteligentna kotka, uwielbia wspinaczki i interaktywne zabawki',
     imageUrl: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['smart', 'energetic', 'playful']
+    tags: ['smart', 'energetic', 'playful'],
   },
   {
     id: 13,
@@ -136,7 +136,7 @@ export const cats = [
     gender: 'male',
     description: 'Spokojny kocur, uwielbia drzemki i delikatne głaskanie',
     imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['calm', 'gentle', 'social']
+    tags: ['calm', 'gentle', 'social'],
   },
   {
     id: 14,
@@ -147,7 +147,7 @@ export const cats = [
     gender: 'female',
     description: 'Duża kotka, uwielbia polowania i zabawy z piórkami',
     imageUrl: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
-    tags: ['playful', 'energetic', 'smart']
+    tags: ['playful', 'energetic', 'smart'],
   },
 
 ] 

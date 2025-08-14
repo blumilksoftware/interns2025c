@@ -11,12 +11,12 @@ const { t } = useI18n()
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   pets: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits(['showPetList', 'hidePetList'])
@@ -76,8 +76,8 @@ nextTick(() => {
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-2xl font-bold text-gray-900">{{ title }}</h2>
       <button 
-        @click="showPetListHandler"
         class="see-more-button text-sm text-purple-600 hover:text-purple-800 font-medium transition-all duration-300 hover:translate-x-1"
+        @click="showPetListHandler"
       >
         {{ t('landing.mvp.seeMore') }} →
       </button>
@@ -86,18 +86,18 @@ nextTick(() => {
     <div class="relative group">
       <button 
         v-show="canScrollLeft"
+        class="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
         @click="scrollLeft"
-        class="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
       >
-        <ChevronLeftIcon class="w-6 h-6 text-gray-700" />
+        <ChevronLeftIcon class="size-6 text-gray-700" />
       </button>
       
       <button 
         v-show="canScrollRight"
+        class="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
         @click="scrollRight"
-        class="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
       >
-        <ChevronRightIcon class="w-6 h-6 text-gray-700" />
+        <ChevronRightIcon class="size-6 text-gray-700" />
       </button>
       
       <div 
@@ -108,20 +108,20 @@ nextTick(() => {
         <div 
           v-for="pet in pets" 
           :key="pet.id" 
-          class="flex-shrink-0 w-72 sm:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
+          class="shrink-0 w-72 sm:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square">
-            <img class="w-full h-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" />
+            <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
 
             <button 
-              @click="toggleLike(pet.id)" 
-              class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95"
+              class="absolute top-3 right-3 size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
+              @click="toggleLike(pet.id)"
             >
-              <HeartIcon v-if="likedPets.has(pet.id)" class="w-5 h-5 text-purple-600 heart-icon heart-animation" />
-              <HeartOutlineIcon v-else class="w-5 h-5 text-purple-600 heart-icon" />
+              <HeartIcon v-if="likedPets.has(pet.id)" class="size-5 text-purple-600 heart-icon heart-animation" />
+              <HeartOutlineIcon v-else class="size-5 text-purple-600 heart-icon" />
             </button>
             
-            <div class="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center text-white text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
+            <div class="absolute bottom-3 right-3 size-8 flex items-center justify-center text-white text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
               <span v-if="pet.gender === 'male'" class="text-blue-400">♂</span>
               <span v-else class="text-pink-400">♀</span>
             </div>
@@ -138,7 +138,7 @@ nextTick(() => {
               <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">{{ pet.status }}</span>
             </div>
             
-            <div class="border-t border-gray-200 my-3"></div>
+            <div class="border-t border-gray-200 my-3" />
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-2">
               <span 
@@ -147,7 +147,7 @@ nextTick(() => {
                 class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium justify-center truncate border"
                 :class="tag.color"
               >
-                <span class="text-xs flex-shrink-0">{{ tag.emoji }}</span>
+                <span class="text-xs shrink-0">{{ tag.emoji }}</span>
                 <span class="truncate text-xs">{{ tag.name }}</span>
               </span>
             </div>

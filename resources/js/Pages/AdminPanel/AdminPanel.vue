@@ -14,8 +14,8 @@ const { t } = useI18n()
 defineProps({
   title: {
     type: String,
-    default: 'Admin Panel - interns2025c'
-  }
+    default: 'Admin Panel - interns2025c',
+  },
 })
 
 function formatDateForSearch(v) {

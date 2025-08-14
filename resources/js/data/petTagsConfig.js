@@ -13,6 +13,6 @@ export function getPetTags() {
     smart: { name: t('landing.petTags.smart'), emoji: '🧠', color: 'bg-white text-purple-600 border-purple-300' },
     protective: { name: t('landing.petTags.protective'), emoji: '🛡️', color: 'bg-white text-gray-600 border-gray-300' },
     social: { name: t('landing.petTags.social'), emoji: '👥', color: 'bg-white text-teal-600 border-teal-300' },
-    active: { name: t('landing.petTags.active'), emoji: '🏃', color: 'bg-white text-orange-600 border-orange-300' }
+    active: { name: t('landing.petTags.active'), emoji: '🏃', color: 'bg-white text-orange-600 border-orange-300' },
   }
 } 
