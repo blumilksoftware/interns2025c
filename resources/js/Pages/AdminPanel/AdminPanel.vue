@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Head } from '@inertiajs/vue3'
 import AdminSidebar from '../../Components/AdminSidebar.vue'
 import DynamicTable from '../../Components/DynamicTable.vue'
 import EditModal from '../../Components/EditModal.vue'
@@ -9,6 +10,13 @@ import { dataSets } from '../../data/adminData.js'
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
+
+defineProps({
+  title: {
+    type: String,
+    default: 'Admin Panel - interns2025c'
+  }
+})
 
 function formatDateForSearch(v) {
   const d = new Date(v)
@@ -116,7 +124,6 @@ function handleResize() {
 }
 
 onMounted(() => {
-  document.title = t('title.adminPanel')
   window.addEventListener('resize', handleResize)
 })
 
@@ -126,6 +133,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <Head :title="title" />
   <div class="flex flex-col xl:flex-row min-h-screen bg-gray-100">
     <button 
       class="xl:hidden fixed top-4 right-4 z-30 bg-gray-800/20 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400" 

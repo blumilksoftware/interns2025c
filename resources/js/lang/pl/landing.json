@@ -28,8 +28,20 @@
       "vaccinated": "Zaszczepiony i zdrowy",
       "temperament": "Temperament",
       "gentle": "Łagodny i cierpliwy",
-      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać."
+      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać.",
+      "seeMore": "Zobacz więcej"
     },
+    "petTags": {
+      "friendly": "Przyjazny",
+      "gentle": "Łagodny",
+      "energetic": "Energetyczny",
+      "playful": "Zabawowy",
+      "calm": "Spokojny",
+      "loyal": "Lojalny",
+      "smart": "Inteligentny",
+      "protective": "Opiekuńczy",
+      "social": "Towarzyski",
+      "active": "Aktywny"  },
     "navigation": {
       "home": "Strona główna",
       "about": "O nas",

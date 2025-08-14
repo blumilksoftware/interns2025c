@@ -40,7 +40,7 @@ const characteristics = computed(() => [
 <div class="overflow-hidden py-8 sm:py-12">
     <div class="relative isolate">
         <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
-         <div class="mx-auto flex max-w-4xl bg-gradient-to-br from-white to-yellow-50 flex-col sm:flex-row border-b-3 border-[#FFD700] sm:border-b-0 sm:ring-2 ring-[#FFD700] sm:shadow-[0_0_30px_rgba(255,215,0,0.3)]  sm:rounded-2xl lg:mx-0 lg:max-w-none xl:gap-x-16">
+         <div class="mx-auto flex max-w-4xl bg-gradient-to-br from-white to-yellow-50 flex-col sm:flex-row border-b-2 border-[#FFD700] sm:border-b-0 sm:ring-2 ring-[#FFD700] sm:shadow-[0_0_30px_rgba(255,215,0,0.3)]  sm:rounded-2xl lg:mx-0 lg:max-w-none xl:gap-x-16">
            <div class="flex items-center justify-center sm:relative overflow-hidden flex-shrink-0 w-full sm:w-72 md:w-80 lg:w-1/3 aspect-[4/3] md:aspect-auto min-h-[240px] md:min-h-[340px] lg:min-h-[420px] rounded-xl lg:rounded-l-xl md:rounded-r-none sm:ring-2 sm:ring-[#FFD700] sm:hadow-[0_0_20px_rgba(255,215,0,0.4)] md:ring-0 md:shadow-none">
              <img class="w-4/5 sm:w-full rounded-xl md:rounded-none h-full object-cover object-center" src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Rex the Golden Retriever" />
             </div>
@@ -48,8 +48,8 @@ const characteristics = computed(() => [
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-xl sm:text-2xl md:text-4xl font-bold tracking-tight text-pretty text-[#3B2F1A]">{{ t('landing.mvp.meetPet') }} {{ petData.name }}</h2>
                 <div class="flex items-center gap-2">
-                  <HeartIcon class="h-5 w-5 text-red-500" />
-                  <span class="text-sm font-bold text-red-600">{{ t('landing.mvp.featuredPet') }}</span>
+                <HeartIcon class="h-5 w-5 text-red-500" />
+                <span class="text-sm font-bold text-red-600">{{ t('landing.mvp.featuredPet') }}</span>
                 </div>
               </div>
               <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ t('landing.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
