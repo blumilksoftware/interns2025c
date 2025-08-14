@@ -107,6 +107,7 @@ class PetTest extends TestCase
             "species" => $pet->species,
             "sex" => $pet->sex,
             "description" => $pet->description,
+            "shelter_id" => $pet->shelter_id,
         ];
 
         $response = $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);

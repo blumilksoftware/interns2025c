@@ -37,17 +37,7 @@ class PetController extends Controller
     {
         $this->authorize("store", Pet::class);
 
-        $user = $request->user();
-        $shelter = $user->petShelters()->first();
-
-        if (!$shelter) {
-            return redirect()->back()->withErrors(["shelter" => "No shelter associated with this user."]);
-        }
-
-        $petData = $request->validated();
-        $petData["shelter_id"] = $shelter->id;
-
-        Pet::query()->create($petData);
+        Pet::query()->create($request->validated());
 
         return redirect()->route("pets.index")->with("success", "Pet created successfully.");
     }

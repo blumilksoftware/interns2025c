@@ -63,6 +63,11 @@ class PetRequest extends FormRequest
             "quarantine_end_date" => ["nullable", "date"],
             "found_location" => ["nullable", "string", "max:255"],
             "adoption_status" => ["nullable", "string", "max:255"],
+            "shelter_id" => [
+                "required",
+                "integer",
+                "exists:pet_shelters,id",
+            ],
         ];
     }
 }
