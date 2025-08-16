@@ -6,9 +6,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PetShelter extends Model
 {
@@ -19,12 +19,11 @@ class PetShelter extends Model
         "phone",
         "email",
         "description",
-        "address_id",
     ];
 
-    public function address(): BelongsTo
+    public function address(): HasOne
     {
-        return $this->belongsTo(PetShelterAddress::class);
+        return $this->hasOne(PetShelterAddress::class);
     }
 
     public function users(): BelongsToMany

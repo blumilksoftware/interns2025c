@@ -9,6 +9,7 @@
         "ext-pdo": "*",
         "guzzlehttp/guzzle": "^7.9.3",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/fortify": "^1.28",
         "laravel/framework": "^12.20.0",
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
