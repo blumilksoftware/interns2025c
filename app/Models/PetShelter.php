@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PetShelter extends Model
 {
@@ -20,7 +21,7 @@ class PetShelter extends Model
         "description",
     ];
 
-    public function address()
+    public function address(): HasOne
     {
         return $this->hasOne(PetShelterAddress::class);
     }

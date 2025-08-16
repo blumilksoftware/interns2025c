@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\PetShelter;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -15,6 +16,9 @@ class PetShelterTest extends TestCase
 
     public function testCreatePetShelterSuccessfully(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $response = $this->post("/pet-shelters", [
             "name" => "Happy Paws",
             "phone" => "+123 456 7890",
@@ -31,8 +35,26 @@ class PetShelterTest extends TestCase
         ]);
     }
 
+    public function testCreatePetShelterUnauthorized(): void
+    {
+        $user = User::factory()->create(["role" => "user"]);
+        $this->actingAs($user);
+
+        $response = $this->post("/pet-shelters", [
+            "name" => "Happy Paws",
+            "phone" => "+123 456 7890",
+            "email" => "contact@happypaws.org",
+            "description" => "A very nice place for pets.",
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function testCreatePetShelterValidationFails(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $response = $this->post("/pet-shelters", [
             "name" => "",
             "phone" => "invalid-phone-!!!",
@@ -45,6 +67,9 @@ class PetShelterTest extends TestCase
 
     public function testUpdatePetShelterSuccessfully(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
 
         $response = $this->put("/pet-shelters/{$shelter->id}", [
@@ -64,8 +89,28 @@ class PetShelterTest extends TestCase
         ]);
     }
 
+    public function testUpdatePetShelterUnauthorized(): void
+    {
+        $user = User::factory()->create(["role" => "user"]);
+        $this->actingAs($user);
+
+        $shelter = PetShelter::factory()->create();
+
+        $response = $this->put("/pet-shelters/{$shelter->id}", [
+            "name" => "New Name Shelter",
+            "phone" => "+987 654 3210",
+            "email" => "newemail@shelter.org",
+            "description" => "Updated description.",
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function testUpdatePetShelterValidationFails(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
 
         $response = $this->put("/pet-shelters/{$shelter->id}", [
@@ -80,6 +125,9 @@ class PetShelterTest extends TestCase
 
     public function testDeletePetShelter(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
 
         $response = $this->delete("/pet-shelters/{$shelter->id}");
@@ -88,8 +136,23 @@ class PetShelterTest extends TestCase
         $this->assertDatabaseMissing("pet_shelters", ["id" => $shelter->id]);
     }
 
+    public function testDeletePetShelterUnauthorized(): void
+    {
+        $user = User::factory()->create(["role" => "user"]);
+        $this->actingAs($user);
+
+        $shelter = PetShelter::factory()->create();
+
+        $response = $this->delete("/pet-shelters/{$shelter->id}");
+
+        $response->assertStatus(403);
+    }
+
     public function testUpdatePetShelterAddressSuccessfully(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
         $address = $shelter->address;
 
@@ -111,6 +174,9 @@ class PetShelterTest extends TestCase
 
     public function testUpdatePetShelterAddressValidationFails(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
         $address = $shelter->address;
 
@@ -125,6 +191,9 @@ class PetShelterTest extends TestCase
 
     public function testDeletingAddressNullifiesFields(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
         $address = $shelter->address;
 
@@ -142,6 +211,9 @@ class PetShelterTest extends TestCase
 
     public function testDeletingShelterCascadesOnAddress(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $shelter = PetShelter::factory()->create();
         $address = $shelter->address;
 
@@ -153,6 +225,9 @@ class PetShelterTest extends TestCase
 
     public function testThatNewShelterAutomaticallyCreatesAddress(): void
     {
+        $user = User::factory()->create(["role" => "admin"]);
+        $this->actingAs($user);
+
         $response = $this->post("/pet-shelters", [
             "name" => "Shelter with Address",
             "phone" => "+123 456 7890",

@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreatePetShelterAction;
 use App\Http\Requests\PetShelterRequest;
 use App\Http\Resources\PetShelterResource;
 use App\Models\PetShelter;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PetShelterController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): Response
     {
         $shelters = PetShelter::all();
@@ -24,17 +28,11 @@ class PetShelterController extends Controller
 
     public function store(PetShelterRequest $request): RedirectResponse
     {
+        $this->authorize("store", PetShelter::class);
+
         $data = $request->validated();
 
-        $addressData = collect($data)
-            ->only(["address", "city", "postal_code"])
-            ->toArray();
-
-        $shelter = PetShelter::query()->create($data);
-
-        if (!empty($addressData["address"])) {
-            $shelter->address()->create($addressData);
-        }
+        CreatePetShelterAction::execute($data);
 
         return redirect("/admin")
             ->with("success", "Pet shelter created successfully.");
@@ -42,6 +40,8 @@ class PetShelterController extends Controller
 
     public function update(PetShelterRequest $request, PetShelter $petShelter): RedirectResponse
     {
+        $this->authorize("update", $petShelter);
+
         $petShelter->update($request->validated());
 
         return redirect("/admin")
@@ -50,6 +50,8 @@ class PetShelterController extends Controller
 
     public function destroy(PetShelter $petShelter): RedirectResponse
     {
+        $this->authorize("delete", $petShelter);
+
         $petShelter->delete();
 
         return redirect("/admin")
