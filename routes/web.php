@@ -6,9 +6,8 @@ use App\Http\Controllers\PetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Inertia\Response;
 
-Route::get("/", fn() => Inertia::render("LandingPage", [
+Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
     "canLogin" => Route::has("login"),
     "canRegister" => Route::has("register"),
     "laravelVersion" => Application::VERSION,
