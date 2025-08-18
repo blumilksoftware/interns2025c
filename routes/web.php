@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\PetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response;
 
-Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
-    "canLogin" => Route::has("login"), 
+Route::get("/", fn() => Inertia::render("LandingPage", [
+    "canLogin" => Route::has("login"),
     "canRegister" => Route::has("register"),
     "laravelVersion" => Application::VERSION,
     "phpVersion" => PHP_VERSION,
-    "title" => __("titles.landingPage"),
 ]));
 
 Route::middleware([
@@ -26,3 +27,5 @@ Route::middleware([
         "title" => __("titles.adminPanel"),
     ]))->name("admin");
 });
+
+Route::resource("pets", PetController::class)->except(["create", "edit"]);
