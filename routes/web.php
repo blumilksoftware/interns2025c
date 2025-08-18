@@ -28,9 +28,15 @@ Route::middleware([
     Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
         "title" => __("titles.dashboard"),
     ]))->name("dashboard");
-    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
-        "title" => __("titles.adminPanel"),
-    ]))->name("admin");
+});
+
+Route::middleware([
+    "auth:sanctum",
+    config("jetstream.auth_session"),
+    "verified",
+    AdminMiddleware::class,
+])->group(function (): void {
+    Route::get("/admin", [AdminController::class, "index"])->name("admin");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
