@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -19,13 +18,12 @@ class PetShelter extends Model
         "phone",
         "email",
         "description",
-        "address_id",
+        "shelter_address",
+        "shelter_url",
     ];
-
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(PetShelterAddress::class);
-    }
+    protected $casts = [
+        "shelter_address" => "array",
+    ];
 
     public function users(): BelongsToMany
     {

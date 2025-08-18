@@ -12,10 +12,9 @@ return new class() extends Migration {
         Schema::create("pet_shelters", function (Blueprint $table): void {
             $table->id();
             $table->string("name");
-            $table->string("phone")->unique()->nullable();
-            $table->string("email")->unique()->nullable();
-            $table->longText("description");
-            $table->foreignId("address_id")->constrained("pet_shelter_addresses");
+            $table->string("phone")->nullable();
+            $table->string("email")->nullable();
+            $table->longText("description")->nullable();
             $table->timestamps();
         });
     }
