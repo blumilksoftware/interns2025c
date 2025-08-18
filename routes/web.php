@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PetController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Inertia\Response;
 
 Route::get("/", fn() => Inertia::render("LandingPage", [
     "canLogin" => Route::has("login"),
@@ -23,5 +24,9 @@ Route::middleware([
     Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
 });
 
-Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
+Route::middleware([
+    AdminMiddleware::class,
+])->group(function (): void {
+    Route::get("/admin", [AdminController::class, "index"]);
+});

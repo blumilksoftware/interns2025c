@@ -231,6 +231,12 @@ export const columnConfig = {
   },
 }
 
+const legacyColumnWidths = {
+  name: 'w-40 sm:w-56',
+  id: 'w-20 sm:w-28',
+  email: 'w-56 sm:w-72',
+}
+
 const autoFieldTypes = {
   text: ['name', 'breed', 'location', 'action', 'ip_address', 'description', 'notes', 'address', 'phone', 'website'],
   email: ['email', 'user_email', 'contact_email', 'admin_email'],
