@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 
 class CreatePetShelterAction
 {
-    public static function execute(array $data): PetShelter
+    public function execute(array $data): PetShelter
     {
         $shelter = PetShelter::query()->create($data);
         $addressData = Arr::only($data, ["address", "city", "postal_code"]);

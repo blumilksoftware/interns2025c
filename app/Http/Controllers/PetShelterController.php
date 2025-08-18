@@ -26,13 +26,13 @@ class PetShelterController extends Controller
         ]);
     }
 
-    public function store(PetShelterRequest $request): RedirectResponse
+    public function store(PetShelterRequest $request, CreatePetShelterAction $createPetShelterAction): RedirectResponse
     {
         $this->authorize("store", PetShelter::class);
 
         $data = $request->validated();
 
-        CreatePetShelterAction::execute($data);
+        $createPetShelterAction->execute($data);
 
         return redirect("/admin")
             ->with("success", "Pet shelter created successfully.");
