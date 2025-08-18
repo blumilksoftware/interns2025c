@@ -74,11 +74,4 @@ class DemoSeeder extends Seeder
             $pet->save();
         });
     }
-
-    public function tagExistsInDatabase(string $tagName): bool
-    {
-        return Tag::query()
-            ->where("name", $tagName)
-            ->exists();
-    }
 }
