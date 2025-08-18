@@ -16,6 +16,13 @@ class PetRequest extends FormRequest
     {
         return [
             "name" => ["required", "string", "max:255"],
+            "adoption_url" => [
+                "nullable",
+                "string",
+                "max:2048",
+                "url",
+                "prohibited_if:adoption_status,adopted",
+            ],
             "species" => [
                 "required",
                 "string",

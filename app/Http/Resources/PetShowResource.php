@@ -15,6 +15,7 @@ class PetShowResource extends JsonResource
         return [
             "id" => $pet->id,
             "name" => $pet->name,
+            "adoption_url" => $pet->adoption_url,
             "species" => $pet->species,
             "breed" => $pet->breed,
             "sex" => $pet->sex,

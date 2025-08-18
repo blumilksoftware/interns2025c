@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\PetShelterAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +18,6 @@ class PetShelterFactory extends Factory
             "phone" => $this->faker->phoneNumber(),
             "email" => $this->faker->email(),
             "description" => $this->faker->paragraph(),
-            "address_id" => PetShelterAddress::factory(),
         ];
     }
 }

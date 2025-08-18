@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string $name
+ * @property ?string $url
  * @property PetSpecies $species
  * @property ?string $breed
  * @property PetSex $sex
@@ -40,7 +41,6 @@ use Illuminate\Support\Carbon;
  * @property ?string $activity_level
  * @property ?string $behavioral_notes
  * @property ?Carbon $admission_date
- * @property ?Carbon $quarantine_end_date
  * @property ?string $found_location
  * @property ?string $adoption_status
  * @property int $shelter_id
@@ -53,7 +53,6 @@ class Pet extends Model
     protected $casts = [
         "age" => "string",
         "admission_date" => "date",
-        "quarantine_end_date" => "date",
     ];
 
     public function shelter(): BelongsTo
