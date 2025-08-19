@@ -40,8 +40,8 @@ const mobileMenuOpen = ref(false)
         <NavLink href="#">{{ t('landing.navigation.contact') }}</NavLink>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <NavLink v-if="$page.props.auth.user" :href="routes.profile.show()" class="text-sm/6 font-semibold text-gray-900">{{ t('navigation.profile') }}</NavLink>
-        <NavLink v-else :href="routes.login()" class="text-sm/6 font-semibold text-gray-900">{{ t('landing.navigation.login') }} <span aria-hidden="true">&rarr;</span></NavLink>
+        <NavLink v-if="$page.props.auth.user" href="/profile" class="text-sm/6 font-semibold text-gray-900">Profile</NavLink>
+        <NavLink v-else href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></NavLink>
       </div>
     </nav>
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">

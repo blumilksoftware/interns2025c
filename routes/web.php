@@ -24,15 +24,12 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
-    Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
-        "title" => __("titles.dashboard"),
-    ]))->name("dashboard");
-    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
-        "title" => __("titles.adminPanel"),
-    ]))->name("admin");
+    Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
+    Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
 Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
 Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
+Route::resource("users", UserController::class)->only(["destroy"]);

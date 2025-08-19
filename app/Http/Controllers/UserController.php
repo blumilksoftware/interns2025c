@@ -24,7 +24,6 @@ class UserController extends Controller
     {
         $this->authorize("delete", $user);
 
-        $user->petShelters()->detach();
         $user->delete();
 
         return redirect()->back()->with("success", "User deleted successfully.");
