@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 defineProps({
   sessions: {
@@ -30,7 +31,7 @@ const confirmLogout = () => {
 }
 
 const logoutOtherBrowserSessions = () => {
-  form.delete(route('other-browser-sessions.destroy'), {
+  form.delete(routes.profile.otherBrowserSessionsDestroy, {
     preserveScroll: true,
     onSuccess: () => closeModal(),
     onError: () => passwordInput.value.focus(),

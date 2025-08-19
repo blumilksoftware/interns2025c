@@ -6,6 +6,7 @@ import PrimaryButton from './PrimaryButton.vue'
 import SecondaryButton from './SecondaryButton.vue'
 import TextInput from './TextInput.vue'
 import axios from 'axios'
+import { routes } from '@/routes'
 
 const emit = defineEmits(['confirmed'])
 
@@ -35,7 +36,7 @@ const form = reactive({
 const passwordInput = ref(null)
 
 const startConfirmingPassword = () => {
-  axios.get(route('password.confirmation')).then(response => {
+  axios.get(routes.password.confirmationStatus).then(response => {
     if (response.data.confirmed) {
       emit('confirmed')
     } else {
@@ -53,7 +54,7 @@ const confirmPassword = async () => {
   form.processing = true
 
   try {
-    await axios.post(route('password.confirm'), {
+    await axios.post(routes.password.confirm, {
       password: form.password,
     })
     

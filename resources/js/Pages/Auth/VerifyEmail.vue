@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import AuthenticationCard from '@/Components/AuthenticationCard.vue'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 
@@ -18,7 +19,7 @@ const props = defineProps({
 const form = useForm({})
 
 const submit = () => {
-  form.post(route('verification.send'))
+  form.post(routes.verification.send)
 }
 
 const verificationLinkSent = computed(() => props.status === 'verification-link-sent')
@@ -48,7 +49,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
 
         <div class="flex items-center justify-around w-full">
           <Link
-            :href="route('profile.show')"
+            :href="routes.profile.show"
             class="cursor-pointer"
           >
             <PrimaryButton>
@@ -57,7 +58,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
           </Link>
 
           <Link
-            :href="route('logout')"
+            :href="routes.logout"
             method="post"
             class="cursor-pointer"
           >

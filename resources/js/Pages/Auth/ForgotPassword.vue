@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 defineProps({
   status: {
@@ -22,7 +23,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(route('password.email'))
+  form.post(routes.password.email)
 }
 </script>
 
