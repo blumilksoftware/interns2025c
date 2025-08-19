@@ -30,11 +30,11 @@ Route::middleware([
     ]))->name("admin");
 });
 
-Route::resource('pet-shelter-addresses', PetShelterAddressController::class)
-    ->only(['store', 'update', 'destroy']);
+Route::resource("pet-shelter-addresses", PetShelterAddressController::class)
+    ->only(["store", "update", "destroy"]);
 
-Route::resource('pet-shelters', PetShelterController::class)
-    ->only(['index', 'store', 'update', 'destroy']);
+Route::resource("pet-shelters", PetShelterController::class)
+    ->only(["index", "store", "update", "destroy"]);
 
-Route::resource('pets', PetController::class)
-    ->except(['create', 'edit']);
+Route::resource("pets", PetController::class)
+    ->except(["create", "edit"]);
