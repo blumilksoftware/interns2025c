@@ -8,15 +8,12 @@ use App\Http\Requests\PetRequest;
 use App\Http\Resources\PetIndexResource;
 use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PetController extends Controller
 {
-    use AuthorizesRequests;
-
     public function index(): Response
     {
         $pets = Pet::query()->latest()->paginate(15);
