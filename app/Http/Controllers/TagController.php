@@ -11,8 +11,6 @@ use Illuminate\Http\RedirectResponse;
 
 class TagController extends Controller
 {
-    use AuthorizesRequests;
-
     public function store(TagRequest $request): RedirectResponse
     {
         $this->authorize("store", Tag::class);
