@@ -15,7 +15,6 @@ return new class() extends Migration {
             $table->string("phone")->unique()->nullable();
             $table->string("email")->unique()->nullable();
             $table->longText("description");
-            $table->foreignId("address_id")->constrained("pet_shelter_addresses");
             $table->timestamps();
         });
     }
