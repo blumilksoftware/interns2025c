@@ -19,7 +19,7 @@ const props = defineProps({
 const form = useForm({})
 
 const submit = () => {
-  form.post(routes.verification.send)
+  form.post(routes.verification.send())
 }
 
 const verificationLinkSent = computed(() => props.status === 'verification-link-sent')
@@ -49,7 +49,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
 
         <div class="flex items-center justify-around w-full">
           <Link
-            :href="routes.profile.show"
+            :href="routes.profile.show()"
             class="cursor-pointer"
           >
             <PrimaryButton>
@@ -58,7 +58,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
           </Link>
 
           <Link
-            :href="routes.logout"
+            :href="routes.logout()"
             method="post"
             class="cursor-pointer"
           >

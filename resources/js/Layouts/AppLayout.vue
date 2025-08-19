@@ -20,7 +20,7 @@ const showingNavigationDropdown = ref(false)
 
 
 const logout = () => {
-  router.post(routes.logout)
+  router.post(routes.logout())
 }
 </script>
 
@@ -40,7 +40,7 @@ const logout = () => {
               </div>
 
               <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink :href="routes.dashboard" :active="$page.url.split('?')[0] === routes.dashboard">
+                <NavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
                   Dashboard
                 </NavLink>
               </div>
@@ -71,11 +71,11 @@ const logout = () => {
                         Manage Account
                       </div>
 
-                      <DropdownLink :href="routes.profile.show">
+                      <DropdownLink :href="routes.profile.show()">
                         Profile
                       </DropdownLink>
 
-                      <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index">
+                      <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()">
                         API Tokens
                       </DropdownLink>
 
@@ -121,7 +121,7 @@ const logout = () => {
 
           <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
-              <ResponsiveNavLink :href="routes.dashboard" :active="$page.url.split('?')[0] === routes.dashboard">
+              <ResponsiveNavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
                 Dashboard
               </ResponsiveNavLink>
             </div>
@@ -143,11 +143,11 @@ const logout = () => {
               </div>
 
               <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="routes.profile.show" :active="$page.url.split('?')[0] === routes.profile.show">
+                <ResponsiveNavLink :href="routes.profile.show()" :active="$page.url.split('?')[0] === routes.profile.show()">
                   Profile
                 </ResponsiveNavLink>
 
-                <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index" :active="$page.url.split('?')[0] === routes.apiTokens.index">
+                <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()" :active="$page.url.split('?')[0] === routes.apiTokens.index()">
                   API Tokens
                 </ResponsiveNavLink>
 

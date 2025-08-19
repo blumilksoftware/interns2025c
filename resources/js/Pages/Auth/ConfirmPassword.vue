@@ -19,7 +19,7 @@ const { t } = useI18n()
 const passwordInput = ref(null)
 
 const submit = () => {
-  form.post(routes.password.confirm, {
+  form.post(routes.password.confirm(), {
     onFinish: () => {
       form.reset()
 

@@ -23,7 +23,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(routes.password.email)
+  form.post(routes.password.email())
 }
 </script>
 

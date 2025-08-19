@@ -47,7 +47,7 @@ const managingPermissionsFor = ref(null)
 const apiTokenBeingDeleted = ref(null)
 
 const createApiToken = () => {
-  createApiTokenForm.post(routes.apiTokens.store, {
+  createApiTokenForm.post(routes.apiTokens.store(), {
     preserveScroll: true,
     onSuccess: () => {
       displayingToken.value = true

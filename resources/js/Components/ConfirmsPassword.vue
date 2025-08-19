@@ -36,7 +36,7 @@ const form = reactive({
 const passwordInput = ref(null)
 
 const startConfirmingPassword = () => {
-  axios.get(routes.password.confirmationStatus).then(response => {
+  axios.get(routes.password.confirmationStatus()).then(response => {
     if (response.data.confirmed) {
       emit('confirmed')
     } else {
@@ -54,7 +54,7 @@ const confirmPassword = async () => {
   form.processing = true
 
   try {
-    await axios.post(routes.password.confirm, {
+    await axios.post(routes.password.confirm(), {
       password: form.password,
     })
     
