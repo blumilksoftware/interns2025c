@@ -33,3 +33,4 @@ Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->on
 Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
 Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
+Route::resource("users", UserController::class)->only(["destroy"]);

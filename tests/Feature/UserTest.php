@@ -13,6 +13,35 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testUserWithAdminRoleCanDeleteUser(): void
+    {
+        $admin = User::factory()->create([
+            "role" => Role::ADMIN->value,
+        ]);
+
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($admin)->delete("/users/{$user->id}");
+
+        $response->assertStatus(302);
+        $this->assertDatabaseMissing("users", ["id" => $user->id]);
+    }
+
+    public function testUserWithoutAdminRoleCannotDeleteUser(): void
+    {
+        $roles = [Role::USER->value, Role::SHELTER->value];
+
+        foreach ($roles as $role) {
+            $user = User::factory()->create(["role" => $role]);
+            $target = User::factory()->create();
+
+            $response = $this->actingAs($user)->delete("/users/{$target->id}");
+
+            $response->assertStatus(403);
+            $this->assertDatabaseHas("users", ["id" => $target->id]);
+        }
+    }
+
     public function testAdminCanViewOwnProfile(): void
     {
         $admin = User::factory()->create([
