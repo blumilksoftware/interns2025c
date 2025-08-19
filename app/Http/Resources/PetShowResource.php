@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Pet;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PetShowResource extends JsonResource
 {
     public function toArray($request): array
     {
+        /** @var Pet $pet */
         $pet = $this->resource;
 
         return [
