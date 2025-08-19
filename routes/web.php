@@ -7,6 +7,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\PetShelterAddressController;
 use App\Http\Controllers\PetShelterController;
+use App\Http\Controllers\TagController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,3 +36,4 @@ Route::middleware([
 ])->group(function (): void {
     Route::get("/admin", [AdminController::class, "index"]);
 });
+Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
