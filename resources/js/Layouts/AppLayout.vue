@@ -70,7 +70,7 @@ const logout = () => {
                         Manage Account
                       </div>
 
-                      <DropdownLink :href="route('profile.show')">
+                      <DropdownLink :href="route('users.profile')">
                         Profile
                       </DropdownLink>
 
@@ -142,7 +142,7 @@ const logout = () => {
               </div>
 
               <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
+                <ResponsiveNavLink :href="route('users.profile')" :active="route().current('users.profile')">
                   Profile
                 </ResponsiveNavLink>
 

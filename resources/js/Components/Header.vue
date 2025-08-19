@@ -40,7 +40,7 @@ const goToAdmin = () => {
         <NavLink href="#">Contact Us</NavLink>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <NavLink v-if="$page.props.auth.user" href="/user/profile" class="text-sm/6 font-semibold text-gray-900">Profile</NavLink>
+        <NavLink v-if="$page.props.auth.user" href="/profile" class="text-sm/6 font-semibold text-gray-900">Profile</NavLink>
         <NavLink v-else href="/login" class="text-sm/6 font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></NavLink>
       </div>
     </nav>

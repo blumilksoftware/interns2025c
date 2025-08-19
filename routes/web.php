@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\PetShelterAddressController;
 use App\Http\Controllers\PetShelterController;
@@ -24,6 +25,7 @@ Route::middleware([
     "verified",
 ])->group(function (): void {
     Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
+    Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
 });
 
 Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
