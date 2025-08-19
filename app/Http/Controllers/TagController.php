@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TagRequest;
 use App\Models\Tag;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 
 class TagController extends Controller
