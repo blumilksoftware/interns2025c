@@ -10,11 +10,6 @@ use Illuminate\Validation\Rule;
 
 class PetShelterRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [

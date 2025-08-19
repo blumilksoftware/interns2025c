@@ -6,13 +6,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PetShelterAddressRequest;
 use App\Models\PetShelterAddress;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 
 class PetShelterAddressController extends Controller
 {
-    use AuthorizesRequests;
-
     public function update(PetShelterAddressRequest $request, PetShelterAddress $petShelterAddress): RedirectResponse
     {
         $this->authorize("update", $petShelterAddress);

@@ -8,21 +8,18 @@ use App\Actions\CreatePetShelterAction;
 use App\Http\Requests\PetShelterRequest;
 use App\Http\Resources\PetShelterResource;
 use App\Models\PetShelter;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PetShelterController extends Controller
 {
-    use AuthorizesRequests;
-
     public function index(): Response
     {
         $shelters = PetShelter::all();
 
         return Inertia::render("PetShelters/Index", [
-            "shelters" => PetShelterResource::collection($shelters)->resolve(),
+            "shelters" => PetShelterResource::collection($shelters),
         ]);
     }
 
