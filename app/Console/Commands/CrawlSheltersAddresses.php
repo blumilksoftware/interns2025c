@@ -35,26 +35,26 @@ class CrawlSheltersAddresses extends Command
         }
 
         foreach ($shelters as $shelter) {
-            $this->info("Checking: {$shelter->url}");
+            $this->info("Checking: $shelter->url");
 
             try {
                 $response = $client->get($shelter->url);
                 $html = (string)$response->getBody();
                 $crawler = new Crawler($html);
 
-                $this->info("Scrapping: {$shelter->url}");
+                $this->info("Scrapping: $shelter->url");
 
                 $onlyPetSheltersData = $crawler->filter("p")->each(fn(Crawler $node) => $node->text());
 
                 if (empty($onlyPetSheltersData)) {
-                    $this->warn("No Pet Shelter Data content to analyze {$shelter->url}.");
+                    $this->warn("No Pet Shelter Data content to analyze $shelter->url.");
 
                     continue;
                 }
 
                 // Split the data into batches to avoid hitting Gemini API limits
                 $batches = collect($onlyPetSheltersData)->chunk($batchSize);
-                $this->info("Splitting data into {$batches->count()} batches of size {$batchSize}");
+                $this->info("Splitting data into {$batches->count()} batches of size $batchSize");
 
                 $allResults = [];
 
@@ -65,7 +65,6 @@ class CrawlSheltersAddresses extends Command
 
                     $prompt = config("prompts.crawl_shelters_addresses");
 
-                    // Add additional batch context to the prompt
                     $batchPrompt = $prompt . "\n\nThis is batch " . ($index + 1) . " z {$batches->count()} 
                     Analyze the following data and return a JSON format";
 
@@ -96,7 +95,7 @@ class CrawlSheltersAddresses extends Command
                             }
                         }
 
-                        // Short delay between request to API
+                        // Short delay between request to API to avoid DDoS protection
                         sleep(1);
                     } catch (Exception $e) {
                         $this->error("Error during Gemini API call for batch " . ($index + 1) . ": " . $e->getMessage());
@@ -113,7 +112,7 @@ class CrawlSheltersAddresses extends Command
                 if (!empty($allResults)) {
                     $finalResult = $this->mergeResults($allResults);
 
-                    Log::info("Gemini analysis for {$shelter->url} (from {$batches->count()} batches)", $finalResult);
+                    Log::info("Gemini analysis for $shelter->url (from {$batches->count()} batches)", $finalResult);
 
                     $this->info("End result (from {$batches->count()} batches):");
                     $this->line(json_encode($finalResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -123,9 +122,9 @@ class CrawlSheltersAddresses extends Command
                     $this->warn("No valid results");
                 }
             } catch (Exception $e) {
-                $this->error("Failed before checking {$shelter->url} due to error: {$e->getMessage()}");
+                $this->error("Failed before checking $shelter->url due to error: {$e->getMessage()}");
             } catch (GuzzleException $e) {
-                Log::error("Cannot fetch URL {$shelter->url} due to Guzzle error {$e->getMessage()}");
+                Log::error("Cannot fetch URL $shelter->url due to Guzzle error {$e->getMessage()}");
             }
         }
 
@@ -174,30 +173,40 @@ class CrawlSheltersAddresses extends Command
                 "name" => $name,
                 "phone" => $phone,
             ]);
-
-            /**
-             * Shelter data structure:
-             * @ Name
-             * @ Phone
-             * @ Email
-             * @ Description
-             * @ Shelter Address
-             * @ Url
-             */
-            foreach ($shelterData as $key => $value) {
-                $shelter->{$key} = $value;
-            }
+            $shelter->email = $shelterData["email"] ?? $shelter->email;
+            $shelter->description = $shelterData["description"] ?? $shelter->description;
+            $shelter->url = $shelterData["url"] ?? $shelter->url;
 
             if ($shelter->exists) {
                 if ($shelter->isDirty()) {
                     $shelter->save();
-                    $this->line("Updated Pet Shelter: {$name}");
+                    $this->line("Updated Pet Shelter: $name");
                 } else {
-                    $this->line("Skipping: {$name}");
+                    $this->line("Skipping: $name");
                 }
             } else {
                 $shelter->save();
-                $this->line("Saving Pet Shelter to DB: {$name}");
+                $this->line("Saving Pet Shelter to DB: $name");
+            }
+
+            $addressPayload = [
+                "address" => null,
+                "city" => null,
+                "postal_code" => null,
+            ];
+
+            if (isset($shelterData["shelter_address"]) && is_array($shelterData["shelter_address"])) {
+                $addressPayload["address"] = $shelterData["shelter_address"]["street"] ?? null;
+                $addressPayload["city"] = $shelterData["shelter_address"]["city"] ?? null;
+                $addressPayload["postal_code"] = $shelterData["shelter_address"]["postal_code"] ?? null;
+            }
+
+            $addressPayload["address"] = $shelterData["address"] ?? $addressPayload["address"];
+            $addressPayload["city"] = $shelterData["city"] ?? $addressPayload["city"];
+            $addressPayload["postal_code"] = $shelterData["postal_code"] ?? $addressPayload["postal_code"];
+
+            if (array_filter($addressPayload, fn($v) => $v !== null && $v !== "")) {
+                $shelter->address()->update($addressPayload);
             }
         }
     }

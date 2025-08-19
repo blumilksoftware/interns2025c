@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PetShelter extends Model
 {
@@ -18,11 +19,7 @@ class PetShelter extends Model
         "phone",
         "email",
         "description",
-        "shelter_address",
-        "shelter_url",
-    ];
-    protected $casts = [
-        "shelter_address" => "array",
+        "url",
     ];
 
     public function users(): BelongsToMany
@@ -33,5 +30,20 @@ class PetShelter extends Model
     public function pets(): HasMany
     {
         return $this->hasMany(Pet::class);
+    }
+
+    public function address(): HasOne
+    {
+        return $this->hasOne(PetShelterAddress::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (PetShelter $shelter): void {
+            // Ensure a related address row always exists
+            if ($shelter->address()->doesntExist()) {
+                $shelter->address()->create();
+            }
+        });
     }
 }
