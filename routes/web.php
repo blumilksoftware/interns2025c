@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\PetShelterAddressController;
+use App\Http\Controllers\PetShelterController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,5 +27,7 @@ Route::middleware([
 });
 
 Route::get("/admin", fn(): Response => inertia("AdminPanel/AdminPanel"));
+Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
+Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
 Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
