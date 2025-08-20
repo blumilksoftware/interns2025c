@@ -19,12 +19,16 @@ class UserTest extends TestCase
             "role" => Role::ADMIN->value,
         ]);
 
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            "role" => Role::USER->value,
+        ]);
 
-        $response = $this->actingAs($admin)->delete("/users/{$user->id}");
+        $response = $this->actingAs($admin)->delete("/users/{$user->id}", [
+            "confirm_deletion" => true,
+        ]);
 
         $response->assertStatus(302);
-        $this->assertDatabaseMissing("users", ["id" => $user->id]);
+        $this->assertDatabaseMissing(User::class, ["id" => $user->id]);
     }
 
     public function testUserWithoutAdminRoleCannotDeleteUser(): void
@@ -33,13 +37,30 @@ class UserTest extends TestCase
 
         foreach ($roles as $role) {
             $user = User::factory()->create(["role" => $role]);
-            $target = User::factory()->create();
+            $target = User::factory()->create([
+                "role" => Role::USER->value,
+            ]);
 
             $response = $this->actingAs($user)->delete("/users/{$target->id}");
 
             $response->assertStatus(403);
-            $this->assertDatabaseHas("users", ["id" => $target->id]);
+            $this->assertDatabaseHas(User::class, ["id" => $target->id]);
         }
+    }
+
+    public function testNormalUserCannotDeleteAnotherUser(): void
+    {
+        $user = User::factory()->create(
+            ["role" => Role::USER->value],
+        );
+        $targetUser = User::factory()->create(
+            ["role" => Role::USER->value],
+        );
+
+        $response = $this->actingAs($user)->delete("/users/{$targetUser->id}");
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas(User::class, ["id" => $targetUser->id]);
     }
 
     public function testAdminCanViewOwnProfile(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -20,11 +21,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(DeleteUserRequest $request, User $user): RedirectResponse
     {
-        $this->authorize("delete", $user);
-
         $user->petShelters()->detach();
+
         $user->delete();
 
         return redirect()->back()->with("success", "User deleted successfully.");
