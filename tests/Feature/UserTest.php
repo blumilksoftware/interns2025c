@@ -87,6 +87,16 @@ class UserTest extends TestCase
         $response->assertSee($user->name);
     }
 
+    public function testUserCannotViewOtherUserProfile(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $response = $this->actingAs($user)->get("/users/{$otherUser->id}");
+
+        $response->assertStatus(405);
+    }
+
     public function testUnauthenticatedCannotAccessProfile(): void
     {
         $response = $this->get("/profile");
