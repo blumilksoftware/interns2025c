@@ -30,6 +30,7 @@ Route::middleware([
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+    Route::resource("preferences", PreferenceController::class)->only(["index", "store", "update", "destroy"]);
 });
 
 Route::middleware([
