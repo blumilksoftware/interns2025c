@@ -45,15 +45,20 @@ You are an expert in extracting detailed information about pets from a single sh
 
 Instructions:
 
-1. Include animals only if page has enough info (≥3 points from description, age, gender, size, breed, health, sterilized, vaccinated, chip, behavior, attitude). Else "contains_animals": false.
-2. For all boolean fields (sterilized, vaccinated, has_chip, dewormed, deflea_treated), check text, alt attributes, and any icon/visual symbol near the field. Set true if icon/text indicates presence, false if indicates absence, null if unknown or unclear.
-3. Text fields: use Polish, correct typos, consistent forms. Irrelevant info goes into description or behavioral_notes. Summarize description to max 200 characters.
-4. Behavioral notes: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated.
-5. Dates: convert to Laravel Carbon format ('d-m-Y') if present.
-6. Breed: use specific common breed name; if unknown, use "mieszaniec".
-7. Multiple animals: pick the most complete one.
-8. Do not infer missing data. Only extract what is explicitly present.
-9. Return fully structured JSON.
+- Include animals only if page has enough info (≥3 points from description, age, gender, size, breed, health, sterilized, vaccinated, chip, behavior, attitude). Else "contains_animals": false.
+- For all boolean fields (sterilized, vaccinated, has_chip, dewormed, deflea_treated), check text, alt attributes, and any icon/visual symbol near the field. Set true if icon/text indicates presence, false if indicates absence, null if unknown or unclear.
+- Text fields: use Polish, correct typos, consistent forms. Irrelevant info goes into description or behavioral_notes. Summarize description to max 300 characters.
+- Behavioral notes: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated.
+- Dates: convert to Laravel Carbon format ('d-m-Y') if present.
+- Breed: use specific common breed name; if unknown, use "mieszaniec".
+- Multiple animals: pick the most complete one.
+- Do not infer missing data. Only extract what is explicitly present.
+- Return fully structured JSON.
+- admission_date: take from text; year only → 01-01-YEAR.  
+- health_status: healthy / sick / recovering / critical / unknown.  
+- current_treatment: list surgeries or treatments (e.g. "tail amputation").
+- if field contains null, dont include it in the JSON.
+
 
 EOT,
 
