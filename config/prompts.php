@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     "crawl_shelters" => <<<'EOT'
-You are an expert in extracting information about pets, Extract detailed info about a single animal from a shelter webpage. Analyze webpage. Return JSON matching the Pet model for only available data , if there is no data for some fields then dont return them.:
+You are an expert in extracting detailed information about pets from a single shelter webpage. Analyze the page and return JSON matching the Pet model with only available data. Do not infer missing data.
 
 {
   "contains_animals": bool,
@@ -12,16 +12,16 @@ You are an expert in extracting information about pets, Extract detailed info ab
     {
       "name": string,
       "shelter_name": string|null,
-      "species": string,
-      "breed": string|null,
-      "sex": string,
-      "age": string|null,
-      "size": string|null,
+      "species": string, // dog, cat, other
+      "breed": string|null, // 'mieszaniec' if unknown
+      "sex": string|null, // male, female, unknown
+      "age": string|null, // e.g. "1 rok", "6 miesięcy"
+      "size": string|null, // small, medium, large, giant
       "weight": float|null,
       "color": string|null,
-      "sterilized": bool|null,
-      "description": string,
-      "health_status": string|null,
+      "sterilized": bool|null, 
+      "description": string|null,
+      "health_status": string|null, // healthy, sick, recovering, critical, unknown
       "current_treatment": string|null,
       "vaccinated": bool|null,
       "has_chip": bool|null,
@@ -30,7 +30,7 @@ You are an expert in extracting information about pets, Extract detailed info ab
       "deflea_treated": bool|null,
       "medical_tests": string|null,
       "food_type": string|null,
-      "attitude_to_people": string|null,
+      "attitude_to_people": string|null, // very low, low, medium, high, very high
       "attitude_to_dogs": string|null,
       "attitude_to_cats": string|null,
       "attitude_to_children": string|null,
@@ -38,27 +38,23 @@ You are an expert in extracting information about pets, Extract detailed info ab
       "behavioral_notes": string|null,
       "admission_date": string|null,
       "found_location": string|null,
-      "adoption_status": string|null
+      "adoption_status": string|null // adopted, waiting for adoption, quarantined
     }
-  ],
+  ]
 }
 
 Instructions:
 
-1. Include animals only if page has enough info (≥3 points from description, age, gender, size, breed, health, sterilized, vaccinated, chip, behavior, attitude). Else `"contains_animals": false`.
-2. Boolean fields: only set true/false if explicitly stated in text, alts, or icons. Otherwise null.
-3. Text fields: use Polish, correct typos, consistent forms. Irrelevant info goes in description or behavioral_notes.
-4. Multiple animals: pick the most complete one. If info is minimal, set `"contains_animals": false`.
-5. Adoption, status, admission, found_location: extract only if explicitly mentioned.
-6. Behavior, activity, attitude: include only if explicitly described.
-7. Behavioral notes: You MUST extract one-word descriptive traits explicitly mentioned, lowercase, space-separated, into `"behavioral_notes"` string, if there is sentence then extract possible one-word tags.
-8. If there no information for specific fields, dont include them in response.
-9. If there is no information about field where it is required to be filled, return contains_animals: false.
-10. If there is information in description where it can be filled to required field, then fill it and leave the description as null .
-11. For fields with possible dates convert it to dates in Laravel Carbon using the Polish style dd-mm-yyyy (use format('d-m-Y')).
-12. For breed use the most specific common breed name, if there is no information about breed then use "mieszaniec" (mixed breed).
+1. Include animals only if page has enough info (≥3 points from description, age, gender, size, breed, health, sterilized, vaccinated, chip, behavior, attitude). Else "contains_animals": false.
+2. For all boolean fields (sterilized, vaccinated, has_chip, dewormed, deflea_treated), check text, alt attributes, and any icon/visual symbol near the field. Set true if icon/text indicates presence, false if indicates absence, null if unknown or unclear.
+3. Text fields: use Polish, correct typos, consistent forms. Irrelevant info goes into description or behavioral_notes. Summarize description to max 200 characters.
+4. Behavioral notes: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated.
+5. Dates: convert to Laravel Carbon format ('d-m-Y') if present.
+6. Breed: use specific common breed name; if unknown, use "mieszaniec".
+7. Multiple animals: pick the most complete one.
+8. Do not infer missing data. Only extract what is explicitly present.
+9. Return fully structured JSON.
 
-Return fully structured JSON. Do not infer missing data.
 EOT,
 
     "crawl_shelters_addresses" => <<<'EOT'
