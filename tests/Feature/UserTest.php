@@ -50,21 +50,18 @@ class UserTest extends TestCase
         }
     }
 
-    public function testNormalUserCannotDeleteAnotherUser(): void
+    public function testAdminCannotDeleteTheirOwnAccount(): void
     {
-        $user = User::factory()->create(
-            ["role" => Role::USER->value],
-        );
-        $targetUser = User::factory()->create(
-            ["role" => Role::USER->value],
-        );
+        $admin = User::factory()->create([
+            "role" => Role::ADMIN->value,
+        ]);
 
-        $response = $this->actingAs($user)->delete("/users/{$targetUser->id}", [
+        $response = $this->actingAs($admin)->delete("/users/{$admin->id}", [
             "confirm_deletion" => true,
         ]);
 
         $response->assertStatus(403);
-        $this->assertDatabaseHas(User::class, ["id" => $targetUser->id]);
+        $this->assertDatabaseHas(User::class, ["id" => $admin->id]);
     }
 
     public function testAdminCanViewOwnProfile(): void
