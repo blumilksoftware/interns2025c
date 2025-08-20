@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Enums\Role;
 use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -73,5 +74,20 @@ class DemoSeeder extends Seeder
             $pet->shelter()->associate($petShelters->random());
             $pet->save();
         });
+
+        $tags = Tag::all();
+
+        foreach ($users as $user) {
+            $numberOfPreferences = random_int(1, 5);
+            Preference::factory()
+                ->count($numberOfPreferences)
+                ->for($user)
+                ->create()
+                ->each(function (Preference $preference) use ($tags): void {
+                    $preference->tags()->sync(
+                        $tags->random(random_int(1, min(5, $tags->count())))->pluck("id")->toArray(),
+                    );
+                });
+        }
     }
 }
