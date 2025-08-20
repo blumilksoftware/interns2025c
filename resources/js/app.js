@@ -26,6 +26,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     return createApp({ render: () => h(App, props) })
       .use(plugin)
+      // Ziggy removed
       .use(i18n)
       .mount(el)
   },

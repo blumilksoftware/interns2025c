@@ -16,7 +16,7 @@ export const routes = {
     send: () => '/email/verification-notification',
   },
   profile: {
-    show: () => '/profile',
+    show: () => '/user/profile',
     informationUpdate: () => '/user/profile-information',
     photoDestroy: () => '/user/profile-photo',
     passwordUpdate: () => '/user/password',

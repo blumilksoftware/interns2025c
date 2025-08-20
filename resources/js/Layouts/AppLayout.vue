@@ -10,8 +10,6 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import { routes } from '@/routes'
 
-const { t } = useI18n()
-
 defineProps({
   title: {
     type: String,
@@ -43,7 +41,7 @@ const logout = () => {
 
               <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
-                  {{ t('navigation.dashboard') }}
+                  Dashboard
                 </NavLink>
               </div>
             </div>
@@ -74,11 +72,11 @@ const logout = () => {
                       </div>
 
                       <DropdownLink :href="routes.profile.show()">
-                        {{ t('navigation.profile') }}
+                        Profile
                       </DropdownLink>
 
                       <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()">
-                        {{ t('navigation.apiTokens') }}
+                        API Tokens
                       </DropdownLink>
 
                       <div class="border-t border-gray-200 dark:border-gray-600" />
@@ -124,7 +122,7 @@ const logout = () => {
           <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
               <ResponsiveNavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
-                {{ t('navigation.dashboard') }}
+                Dashboard
               </ResponsiveNavLink>
             </div>
 
@@ -145,12 +143,12 @@ const logout = () => {
               </div>
 
               <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="routes.profile.show()">
-                  {{ t('navigation.profile') }}
+                <ResponsiveNavLink :href="routes.profile.show()" :active="$page.url.split('?')[0] === routes.profile.show()">
+                  Profile
                 </ResponsiveNavLink>
-                
+
                 <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()" :active="$page.url.split('?')[0] === routes.apiTokens.index()">
-                  {{ t('navigation.apiTokens') }}
+                  API Tokens
                 </ResponsiveNavLink>
                 
                 <form method="POST" @submit.prevent="logout">
