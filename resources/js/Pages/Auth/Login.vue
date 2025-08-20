@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 defineProps({
   canResetPassword: {
@@ -32,7 +33,7 @@ const submit = () => {
   form.transform(data => ({
     ...data,
     remember: form.remember ? 'on' : '',
-  })).post(route('login'), {
+  })).post(routes.login(), {
     onFinish: () => form.reset('password'),
   })
 }
@@ -86,10 +87,10 @@ const submit = () => {
       </div>
       <div class="flex items-center justify-between mt-4">
         <div class="flex flex-col justify-between gap-2 mt-4">
-          <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+          <Link v-if="canResetPassword" :href="routes.password.request()" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
             {{ t('auth.forgotPassword') }}
           </Link>
-          <Link v-if="canResetPassword" :href="route('register')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+          <Link v-if="canResetPassword" :href="routes.register()" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
             {{ t('auth.register') }}
           </Link>
         </div>
