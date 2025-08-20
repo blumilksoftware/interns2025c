@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PetController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\PetShelterAddressController;
 use App\Http\Controllers\PetShelterController;
 use App\Http\Controllers\TagController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
