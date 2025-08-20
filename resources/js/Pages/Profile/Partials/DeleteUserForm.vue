@@ -7,6 +7,7 @@ import DialogModal from '@/Components/DialogModal.vue'
 import InputError from '@/Components/InputError.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 const confirmingUserDeletion = ref(false)
 const passwordInput = ref(null)
@@ -22,7 +23,7 @@ const confirmUserDeletion = () => {
 }
 
 const deleteUser = () => {
-  form.delete(route('current-user.destroy'), {
+  form.delete(routes.profile.currentUserDestroy(), {
     preserveScroll: true,
     onSuccess: () => closeModal(),
     onError: () => passwordInput.value.focus(),
