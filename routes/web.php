@@ -26,10 +26,10 @@ Route::middleware([
 ])->group(function (): void {
     Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
+    Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
 Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
 Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
-Route::resource("users", UserController::class)->only(["destroy"]);

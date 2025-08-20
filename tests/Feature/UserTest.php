@@ -64,6 +64,21 @@ class UserTest extends TestCase
         $this->assertDatabaseHas(User::class, ["id" => $admin->id]);
     }
 
+    public function testNormalUserCannotDeleteAnotherUser(): void
+    {
+        $user = User::factory()->create(
+            ["role" => Role::USER->value],
+        );
+        $targetUser = User::factory()->create(
+            ["role" => Role::USER->value],
+        );
+
+        $response = $this->actingAs($user)->delete("/users/{$targetUser->id}");
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas(User::class, ["id" => $targetUser->id]);
+    }
+
     public function testAdminCanViewOwnProfile(): void
     {
         $admin = User::factory()->create([
