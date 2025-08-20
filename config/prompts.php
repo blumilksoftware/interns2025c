@@ -41,7 +41,6 @@ You are an expert in extracting information about pets, Extract detailed info ab
       "adoption_status": string|null
     }
   ],
-  "tags": []
 }
 
 Instructions:
@@ -52,10 +51,12 @@ Instructions:
 4. Multiple animals: pick the most complete one. If info is minimal, set `"contains_animals": false`.
 5. Adoption, status, admission, found_location: extract only if explicitly mentioned.
 6. Behavior, activity, attitude: include only if explicitly described.
-7. Tags: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated, into `"tags"` array.
+7. Behavioral notes: You MUST extract one-word descriptive traits explicitly mentioned, lowercase, space-separated, into `"behavioral_notes"` string, if there is sentence then extract possible one-word tags.
 8. If there no information for specific fields, dont include them in response.
 9. If there is no information about field where it is required to be filled, return contains_animals: false.
 10. If there is information in description where it can be filled to required field, then fill it and leave the description as null .
+11. For fields with possible dates convert it to dates in Laravel Carbon using the Polish style dd-mm-yyyy (use format('d-m-Y')).
+12. For breed use the most specific common breed name, if there is no information about breed then use "mieszaniec" (mixed breed).
 
 Return fully structured JSON. Do not infer missing data.
 EOT,
