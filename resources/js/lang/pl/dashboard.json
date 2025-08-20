@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "restBestMatches": "Reszta najlepszych dopasowań",
+    "dogs": "Psy",
+    "cats": "Koty",
+    "aboutPet": "O zwierzaku",
+    "pageTitle": "Panel główny - interns2025c",
+    "mvp": {
+      "featuredPet": "Polecany zwierzak",
+      "meetPet": "Poznaj",
+      "personalityTraits": "Cechy charakteru",
+      "characteristics": "Charakterystyka",
+      "adoptPet": "Adoptuj",
+      "friendly": "Przyjazny i otwarty",
+      "goodWithChildren": "Świetny z dziećmi",
+      "intelligent": "Wysoko inteligentny",
+      "lovesOutdoor": "Uwielbia aktywności na świeżym powietrzu",
+      "familyCompanion": "Świetny towarzysz rodziny",
+      "wellTrained": "Dobrze wyszkolony i posłuszny",
+      "age": "lat",
+      "yearsOld": "lat",
+      "breed": "Rasa",
+      "status": "Status",
+      "availableForAdoption": "Dostępny do adopcji",
+      "location": "Lokalizacja",
+      "health": "Zdrowie",
+      "vaccinated": "Zaszczepiony i zdrowy",
+      "gender": "Płeć",
+      "male": "Samiec",
+      "female": "Samica",
+      "temperament": "Temperament",
+      "gentle": "Łagodny i cierpliwy",
+      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać."
+    }
+  }
+}
+

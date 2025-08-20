@@ -16,12 +16,12 @@ const petPersonality = computed(() => {
 })
 
 const characteristics = computed(() => [
-  `${t('landing.mvp.age')}: ${petData.age}`,
-  `${t('landing.mvp.breed')}: ${petData.breed}`,
-  `${t('landing.mvp.status')}: ${petData.status}`,
-  `${t('landing.mvp.gender')}: ${petData.gender === 'male' ? t('landing.mvp.male') : t('landing.mvp.female')}`,
-  `${t('landing.mvp.health')}: ${t('landing.mvp.vaccinated')}`,
-  `${t('landing.mvp.temperament')}: ${t('landing.mvp.gentle')}`,
+  `${t('dashboard.mvp.age')}: ${petData.age}`,
+  `${t('dashboard.mvp.breed')}: ${petData.breed}`,
+  `${t('dashboard.mvp.status')}: ${petData.status}`,
+  `${t('dashboard.mvp.gender')}: ${petData.gender === 'male' ? t('dashboard.mvp.male') : t('dashboard.mvp.female')}`,
+  `${t('dashboard.mvp.health')}: ${t('dashboard.mvp.vaccinated')}`,
+  `${t('dashboard.mvp.temperament')}: ${t('dashboard.mvp.gentle')}`,
 ])
 
 
@@ -37,13 +37,13 @@ const characteristics = computed(() => [
           </div>
           <div class="w-full flex-auto p-4 sm:p-8">
             <div class="flex items-center justify-between mb-3">
-              <h2 class="text-xl sm:text-2xl md:text-4xl font-bold tracking-tight text-pretty text-[#3B2F1A]">{{ t('landing.mvp.meetPet') }} {{ petData.name }}</h2>
+              <h2 class="text-xl sm:text-2xl md:text-4xl font-bold tracking-tight text-pretty text-[#3B2F1A]">{{ t('dashboard.mvp.meetPet') }} {{ petData.name }}</h2>
               <div class="flex items-center gap-2">
                 <HeartIcon class="size-5 text-red-500" />
-                <span class="text-sm font-bold text-red-600">{{ t('landing.mvp.featuredPet') }}</span>
+                <span class="text-sm font-bold text-red-600">{{ t('dashboard.mvp.featuredPet') }}</span>
               </div>
             </div>
-            <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ t('landing.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
+            <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ t('dashboard.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
             
             <div class="mt-4 flex gap-4 text-sm font-medium">
               <div class="flex items-center gap-2">
@@ -57,7 +57,7 @@ const characteristics = computed(() => [
             </div>
 
             <div class="mt-4">
-              <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('landing.mvp.personalityTraits') }}</h3>
+              <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('dashboard.mvp.personalityTraits') }}</h3>
               <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-2 text-sm/5 font-medium text-gray-700 sm:grid-cols-2 lg:grid">
                 <li v-for="trait in petPersonality" :key="trait" class="flex gap-x-3">
                   <StarIcon class="size-5 flex-none text-yellow-500" aria-hidden="true" />
@@ -67,7 +67,7 @@ const characteristics = computed(() => [
             </div>
 
             <div class="mt-4">
-              <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('landing.mvp.characteristics') }}</h3>
+              <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('dashboard.mvp.characteristics') }}</h3>
               <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-2 text-sm/5 font-medium text-gray-700 sm:grid-cols-2 lg:grid">
                 <li v-for="characteristic in characteristics" :key="characteristic" class="flex gap-x-3">
                   <div class="size-2 rounded-full bg-blue-500 mt-2 flex-none" />
@@ -77,9 +77,12 @@ const characteristics = computed(() => [
             </div>
 
             <div class="mt-6 flex">
-              <a href="#" class="text-sm/6 font-bold text-indigo-600 hover:text-indigo-500">
-                {{ t('landing.mvp.adoptPet') }} {{ petData.name }}
-                <span aria-hidden="true">&rarr;</span>
+              <a href="#" class="group relative inline-flex items-center justify-center overflow-hidden rounded-md bg-indigo-600 px-6 py-3 text-sm/6 font-bold text-white transition hover:scale-110">
+                <span>{{ t('dashboard.mvp.adoptPet') }} {{ petData.name }}</span>
+                <span aria-hidden="true" class="ml-2">&rarr;</span>
+                <div class="absolute inset-0 flex size-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+                  <div class="relative h-full w-8 bg-white/20" />
+                </div>
               </a>
             </div>
           </div>

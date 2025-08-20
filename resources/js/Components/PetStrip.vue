@@ -76,7 +76,7 @@ nextTick(() => {
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-2xl font-bold text-gray-900">{{ title }}</h2>
       <button 
-        class="see-more-button text-sm text-purple-600 hover:text-purple-800 font-medium transition-all duration-300 hover:translate-x-1"
+        class="relative overflow-hidden text-sm text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
         @click="showPetListHandler"
       >
         {{ t('landing.mvp.seeMore') }} →
@@ -102,8 +102,7 @@ nextTick(() => {
       
       <div 
         ref="scrollContainer"
-        class="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
-        style="scrollbar-width: none; -ms-overflow-style: none;"
+        class="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         <div 
           v-for="pet in pets" 
@@ -117,8 +116,8 @@ nextTick(() => {
               class="absolute top-3 right-3 size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
               @click="toggleLike(pet.id)"
             >
-              <HeartIcon v-if="likedPets.has(pet.id)" class="size-5 text-purple-600 heart-icon heart-animation" />
-              <HeartOutlineIcon v-else class="size-5 text-purple-600 heart-icon" />
+              <HeartIcon v-if="likedPets.has(pet.id)" class="size-5 text-purple-600 animate-heartbeat [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)]" />
+              <HeartOutlineIcon v-else class="size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>
             
             <div class="absolute bottom-3 right-3 size-8 flex items-center justify-center text-white text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
@@ -159,66 +158,4 @@ nextTick(() => {
 </template>
 
 <style scoped>
-@keyframes heartBeat {
-  0% {
-    transform: scale(1);
-  }
-  25% {
-    transform: scale(1.15);
-  }
-  50% {
-    transform: scale(1);
-  }
-  75% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.heart-animation {
-  animation: heartBeat 0.8s ease-out;
-}
-
-.heart-icon {
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.heart-icon:hover {
-  transform: scale(1.1);
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.see-more-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.see-more-button::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #9333ea, #a855f7);
-  transition: width 0.3s ease;
-}
-
-.see-more-button:hover::after {
-  width: 100%;
-}
-
-.see-more-button:hover {
-  transform: translateX(4px);
-}
 </style> 

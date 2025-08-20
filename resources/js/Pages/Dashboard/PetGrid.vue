@@ -1,13 +1,26 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import PetStrip from '../../Components/PetStrip.vue'
 import { bestMatches, dogs, cats } from '../../data/petsData.js'
 import { getPetTags } from '../../data/petTagsConfig.js'
 
-const showPetList = ref(false)
-const currentPetList = ref(null)
+const props = defineProps({
+  showPetList: {
+    type: Boolean,
+    default: false,
+  },
+  currentPetList: {
+    type: Object,
+    default: null,
+  },
+})
+
+const emit = defineEmits(['showPetList', 'hidePetList'])
 
 const petTags = getPetTags()
+
+const { t } = useI18n()
 
 const getPetTagsForPet = (pet) => {
   if (!pet.tags || !Array.isArray(pet.tags)) return []
@@ -17,19 +30,17 @@ const getPetTagsForPet = (pet) => {
 const bestMatchesRest = computed(() => bestMatches.slice(1))
 
 const handleShowPetList = (data) => {
-  showPetList.value = true
-  currentPetList.value = data
+  emit('showPetList', data)
 }
 
 const handleHidePetList = () => {
-  showPetList.value = false
-  currentPetList.value = null
+  emit('hidePetList')
 }
 </script>
 
 <template>
   <div class="mx-auto max-w-6xl px-6 lg:px-8">
-    <div v-if="showPetList && currentPetList" class="fixed inset-0 bg-white z-50 overflow-y-auto">
+    <div v-if="props.showPetList && props.currentPetList" class="fixed inset-0 bg-white z-50 overflow-y-auto">
       <div class="sticky top-0 bg-white border-b border-gray-200 shadow-sm z-10">
         <div class="max-w-6xl mx-auto px-6 lg:px-8 py-4">
           <div class="flex items-center gap-4">
@@ -41,7 +52,7 @@ const handleHidePetList = () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <h1 class="title-animation text-2xl font-bold text-gray-900">{{ currentPetList.title }}</h1>
+            <h1 class="title-animation text-2xl font-bold text-gray-900">{{ props.currentPetList.title }}</h1>
           </div>
         </div>
       </div>
@@ -49,7 +60,7 @@ const handleHidePetList = () => {
       <div class="max-w-6xl mx-auto p-6 lg:px-8">
         <TransitionGroup name="list" tag="div" class="space-y-4">
           <div 
-            v-for="(pet, index) in currentPetList.pets" 
+            v-for="(pet, index) in props.currentPetList.pets" 
             :key="pet.id" 
             :style="{ animationDelay: `${index * 0.1}s` }"
             class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden hover:scale-[1.02]"
@@ -91,8 +102,8 @@ const handleHidePetList = () => {
                 </div>
               </div>
               
-              <div class="description-section w-80 p-4 border-l border-gray-200 bg-gray-50">
-                <h4 class="text-sm font-semibold text-gray-700 mb-2">O zwierzaku</h4>
+              <div class="w-80 p-4 border-l border-gray-200 bg-gray-50">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-sm text-gray-600 leading-relaxed">{{ pet.description }}</p>
               </div>
             </div>
@@ -103,19 +114,19 @@ const handleHidePetList = () => {
 
     <div v-else>
       <PetStrip 
-        title="Reszta najlepszych dopasowań" 
+        :title="t('dashboard.restBestMatches')" 
         :pets="bestMatchesRest" 
         @show-pet-list="handleShowPetList"
         @hide-pet-list="handleHidePetList"
       />
       <PetStrip 
-        title="Psy" 
+        :title="t('dashboard.dogs')" 
         :pets="dogs" 
         @show-pet-list="handleShowPetList"
         @hide-pet-list="handleHidePetList"
       />
       <PetStrip 
-        title="Koty" 
+        :title="t('dashboard.cats')" 
         :pets="cats" 
         @show-pet-list="handleShowPetList"
         @hide-pet-list="handleHidePetList"
@@ -125,82 +136,4 @@ const handleHidePetList = () => {
 </template>
 
 <style scoped>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.list-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.list-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-.list-move {
-  transition: transform 0.5s ease;
-}
-
-.back-button {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.back-button:hover {
-  transform: translateX(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.list-enter-active {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-.title-animation {
-  animation: slideInFromLeft 0.8s ease-out;
-}
-
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.description-section {
-  animation: fadeInRight 0.8s ease-out 0.3s both;
-  transition: all 0.3s ease;
-}
-
-.description-section:hover {
-  background-color: #f8fafc;
-  border-left-color: #cbd5e1;
-}
-
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
 </style>
