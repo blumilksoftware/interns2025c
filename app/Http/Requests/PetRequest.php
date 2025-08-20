@@ -46,7 +46,7 @@ class PetRequest extends FormRequest
                 Rule::in(array_column(PetHealthStatus::cases(), "value")),
                 "max:500",
             ],
-            "current_treatment" => ["nullable", "string", "max:500"],
+            "current_treatment" => ["nullable", "string", "max:1024"],
             "vaccinated" => ["nullable", "boolean"],
             "has_chip" => ["nullable", "boolean"],
             "chip_number" => [
@@ -65,7 +65,7 @@ class PetRequest extends FormRequest
             "attitude_to_cats" => ["nullable", "string", "max:255"],
             "attitude_to_children" => ["nullable", "string", "max:255"],
             "activity_level" => ["nullable", "string", "max:255"],
-            "behavioral_notes" => ["nullable", "string", "max:500"],
+            "behavioral_notes" => ["nullable", "string", "max:512"],
             "admission_date" => ["nullable", "date"],
             "quarantine_end_date" => ["nullable", "date"],
             "found_location" => ["nullable", "string", "max:255"],
