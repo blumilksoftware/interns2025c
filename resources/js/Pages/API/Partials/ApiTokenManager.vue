@@ -14,6 +14,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import SectionBorder from '@/Components/SectionBorder.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 const props = defineProps({
   tokens: {
@@ -46,7 +47,7 @@ const managingPermissionsFor = ref(null)
 const apiTokenBeingDeleted = ref(null)
 
 const createApiToken = () => {
-  createApiTokenForm.post(route('api-tokens.store'), {
+  createApiTokenForm.post(routes.apiTokens.store(), {
     preserveScroll: true,
     onSuccess: () => {
       displayingToken.value = true
@@ -61,7 +62,7 @@ const manageApiTokenPermissions = (token) => {
 }
 
 const updateApiToken = () => {
-  updateApiTokenForm.put(route('api-tokens.update', managingPermissionsFor.value), {
+  updateApiTokenForm.put(routes.apiTokens.update(managingPermissionsFor.value?.id ?? managingPermissionsFor.value), {
     preserveScroll: true,
     preserveState: true,
     onSuccess: () => (managingPermissionsFor.value = null),
@@ -73,7 +74,7 @@ const confirmApiTokenDeletion = (token) => {
 }
 
 const deleteApiToken = () => {
-  deleteApiTokenForm.delete(route('api-tokens.destroy', apiTokenBeingDeleted.value), {
+  deleteApiTokenForm.delete(routes.apiTokens.destroy(apiTokenBeingDeleted.value?.id ?? apiTokenBeingDeleted.value), {
     preserveScroll: true,
     preserveState: true,
     onSuccess: () => (apiTokenBeingDeleted.value = null),

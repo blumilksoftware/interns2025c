@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 const form = useForm({
   password: '',
@@ -18,7 +19,7 @@ const { t } = useI18n()
 const passwordInput = ref(null)
 
 const submit = () => {
-  form.post(route('password.confirm'), {
+  form.post(routes.password.confirm(), {
     onFinish: () => {
       form.reset()
 
