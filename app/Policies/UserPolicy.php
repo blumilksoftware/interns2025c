@@ -11,10 +11,6 @@ class UserPolicy
 {
     public function delete(User $authenticatedUser, User $targetUser): bool
     {
-        $isAdmin = $authenticatedUser->role === Role::ADMIN->value;
-
-        $targetIsNotAdmin = $targetUser->role !== Role::ADMIN->value;
-
-        return $isAdmin && $targetIsNotAdmin;
+        return $authenticatedUser->haveAdminRole() && !$targetUser->haveAdminRole();
     }
 }

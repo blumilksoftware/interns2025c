@@ -21,12 +21,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(DeleteUserRequest $request, User $user): RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
         $this->authorize("delete", $user);
 
         $user->petShelters()->detach();
-
         $user->delete();
 
         return redirect()->back()->with("success", "User deleted successfully.");

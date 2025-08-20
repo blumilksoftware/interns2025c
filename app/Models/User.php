@@ -17,7 +17,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
 
-    /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     use Notifiable;
