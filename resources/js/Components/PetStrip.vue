@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, nextTick, defineEmits } from 'vue'
+import { ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
@@ -74,9 +74,9 @@ nextTick(() => {
 <template>
   <div class="mb-12">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-gray-900">{{ title }}</h2>
+      <h2 class="text-3xl font-bold text-gray-900">{{ title }}</h2>
       <button 
-        class="relative overflow-hidden text-sm text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
+        class="relative overflow-hidden text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
         @click="showPetListHandler"
       >
         {{ t('landing.mvp.seeMore') }} →
@@ -107,7 +107,7 @@ nextTick(() => {
         <div 
           v-for="pet in pets" 
           :key="pet.id" 
-          class="shrink-0 w-72 sm:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
+          class="shrink-0 w-[90vw] sm:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square">
             <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
@@ -128,13 +128,13 @@ nextTick(() => {
           
           <div class="flex flex-1 flex-col p-4 text-center">
             <div class="flex flex-col items-center mb-2">
-              <h3 class="text-lg font-bold text-gray-900">{{ pet.name }}</h3>
-              <span class="text-sm text-gray-500">{{ pet.breed }}</span>
+              <h3 class="text-xl font-bold text-gray-900">{{ pet.name }}</h3>
+              <span class="text-base text-gray-600">{{ pet.breed }}</span>
             </div>
             
             <div class="flex items-center justify-center gap-2 mb-2">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">{{ pet.age }}</span>
-              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">{{ pet.status }}</span>
+              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
+              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
             </div>
             
             <div class="border-t border-gray-200 my-3" />
@@ -143,11 +143,11 @@ nextTick(() => {
               <span 
                 v-for="tag in getPetTagsForPet(pet)" 
                 :key="tag.name"
-                class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium justify-center truncate border"
+                class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate border"
                 :class="tag.color"
               >
-                <span class="text-xs shrink-0">{{ tag.emoji }}</span>
-                <span class="truncate text-xs">{{ tag.name }}</span>
+                <span class="text-sm shrink-0">{{ tag.emoji }}</span>
+                <span class="truncate text-sm">{{ tag.name }}</span>
               </span>
             </div>
           </div>

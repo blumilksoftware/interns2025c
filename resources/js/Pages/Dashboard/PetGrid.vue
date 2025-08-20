@@ -65,10 +65,10 @@ const handleHidePetList = () => {
             :style="{ animationDelay: `${index * 0.1}s` }"
             class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden hover:scale-[1.02]"
           >
-            <div class="flex">
-              <div class="size-32 shrink-0">
+            <div class="flex flex-col md:flex-row md:items-center">
+              <div class="w-full md:w-[40vw] lg:w-80 shrink-0">
                 <img 
-                  class="size-full object-cover" 
+                  class="w-full h-auto object-cover" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
                 >
@@ -77,34 +77,34 @@ const handleHidePetList = () => {
               <div class="flex-1 p-4">
                 <div class="flex items-start justify-between mb-2">
                   <div>
-                    <h3 class="text-lg font-bold text-gray-900">{{ pet.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ pet.breed }}</p>
+                    <h3 class="text-xl font-bold text-gray-900">{{ pet.name }}</h3>
+                    <p class="text-base text-gray-600">{{ pet.breed }}</p>
                   </div>
                 </div>
                 
                 <div class="flex items-center gap-2 mb-3">
-                  <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">{{ pet.age }}</span>
-                  <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">{{ pet.status }}</span>
-                  <span v-if="pet.gender === 'male'" class="text-blue-400 text-lg">♂</span>
-                  <span v-else class="text-pink-400 text-lg">♀</span>
+                  <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
+                  <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
+                  <span v-if="pet.gender === 'male'" class="text-blue-400 text-xl">♂</span>
+                  <span v-else class="text-pink-400 text-xl">♀</span>
                 </div>
                 
                 <div class="flex flex-wrap gap-1 mb-3">
                   <span 
                     v-for="tag in getPetTagsForPet(pet)" 
                     :key="tag.name"
-                    class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium border"
+                    class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium border"
                     :class="tag.color"
                   >
-                    <span class="text-xs">{{ tag.emoji }}</span>
-                    <span class="text-xs">{{ tag.name }}</span>
+                    <span class="text-sm">{{ tag.emoji }}</span>
+                    <span class="text-sm">{{ tag.name }}</span>
                   </span>
                 </div>
               </div>
               
-              <div class="w-80 p-4 border-l border-gray-200 bg-gray-50">
-                <h4 class="text-sm font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
-                <p class="text-sm text-gray-600 leading-relaxed">{{ pet.description }}</p>
+              <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
+                <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
+                <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
               </div>
             </div>
           </div>
