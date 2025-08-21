@@ -14,6 +14,7 @@
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "saloonphp/cache-plugin": "^3.0",
         "saloonphp/saloon": "^3.0",
         "spatie/crawler": "^8.4",
         "symfony/css-selector": "^7.3",
