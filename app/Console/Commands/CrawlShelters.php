@@ -14,13 +14,14 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\Exceptions\Request\RequestException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlShelters extends Command
 {
     protected $signature = "crawl:shelters {url?} {--depth=2} {--additional-urls=}";
-    protected $description = "Crawl shgbelter sites and analyze pages with AI";
+    protected $description = "Crawl shelter sites and analyze pages with AI";
 
     public function __construct(
         protected PetService $petService,
@@ -91,7 +92,7 @@ class CrawlShelters extends Command
                 continue;
             }
 
-            if ($this->checkIfLinkContainsAntiKeywords($adoptionUrl)) {
+            if ($this->checkIfUrlContainAntiKeywords($adoptionUrl)) {
                 $this->info("Contains anti-keywords: $adoptionUrl - Skipping");
                 $visited[$adoptionUrl] = true;
 
@@ -107,6 +108,10 @@ class CrawlShelters extends Command
                 $html = $response->body();
             } catch (RequestException $e) {
                 Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
+
+                continue;
+            } catch (FatalRequestException $e) {
+                Log::error("Critical error while requesting $adoptionUrl: " . $e->getMessage());
 
                 continue;
             }
@@ -183,7 +188,7 @@ class CrawlShelters extends Command
                     continue;
                 }
 
-                $linkHost = parse_url($absoluteUrl, PHP_URL_HOST);
+                $linkHost = UrlFormatHelper::getUrlHost($absoluteUrl);
 
                 if ($linkHost !== $baseHost) {
                     continue;
@@ -274,7 +279,7 @@ class CrawlShelters extends Command
         return $score >= $threshold;
     }
 
-    protected function checkIfLinkContainsAntiKeywords(string $url): bool
+    protected function checkIfUrlContainAntiKeywords(string $url): bool
     {
         $antiKeywords = config("crawl.anti_keywords");
 
