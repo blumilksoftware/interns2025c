@@ -1,0 +1,48 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Daj kochający dom futrzastemu przyjacielowi już dziś",
+      "subtitle": "Każde zwierzę zasługuje na drugą szansę. Znajdź swojego idealnego towarzysza i zmień jego życie.",
+      "adoptButton": "Adoptuj teraz",
+      "donateButton": "Wesprzyj nas"
+    },
+    "petTags": {
+      "friendly": "Przyjazny",
+      "gentle": "Łagodny",
+      "energetic": "Energetyczny",
+      "playful": "Zabawowy",
+      "calm": "Spokojny",
+      "loyal": "Lojalny",
+      "smart": "Inteligentny",
+      "protective": "Opiekuńczy",
+      "social": "Towarzyski",
+      "active": "Aktywny"  },
+    "navigation": {
+      "home": "Strona główna",
+      "about": "O nas",
+      "pets": "Zwierzęta",
+      "contact": "Kontakt",
+      "login": "Zaloguj się",
+      "register": "Zarejestruj się"
+    },
+    "footer": {
+      "copyright": "Wszystkie prawa zastrzeżone",
+      "privacy": "Polityka prywatności",
+      "terms": "Regulamin",
+      "contact": "Kontakt"
+    },
+    "imageSection": {
+      "title": "Nasi futrzani przyjaciele czekają na adopcję",
+      "subtitle": "Poznaj nasze wspaniałe zwierzęta szukające swojego domu na zawsze. Każde ma unikalną historię i osobowość.",
+      "pets": {
+        "max": {"description": "Max to 2-letni kocur. Jest bardzo energiczny i uwielbia eksplorować. Lubi wspinaczki i obserwowanie ptaków z okna."},
+        "sophie": {"description": "Sophie to 3-letnia kotka. Jest bardzo łagodna i uwielbia się przytulać. Ma piękne długie futro i lubi być czesana."},
+        "oliver": {"description": "Oliver to 1,5-letni kocur. Jest bardzo zabawowy i uwielbia interaktywne zabawki. Ma ciekawską osobowość i lubi wszystko badać."},
+        "buddy": {"description": "Buddy to 3-letni Golden Retriever. Jest bardzo przyjazny i uwielbia bawić się w aportowanie. Lubi pływać i chodzić na długie spacery."},
+        "luna": {"description": "Luna to 2-letnia Husky. Jest bardzo energiczna i uwielbia biegać. Ma piękne niebieskie oczy i lubi bawić się na śniegu."},
+        "rocky": {"description": "Rocky to 4-letni Owczarek Niemiecki. Jest bardzo lojalny i opiekuńczy. Uwielbia treningi i lubi być wśród swojej rodziny."}
+      }
+    }
+  }
+}
+

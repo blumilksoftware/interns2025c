@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { dataSets } from '../data/adminData.js'
 import { 
   getColumnType, 
@@ -8,6 +9,8 @@ import {
   getColumnLabel, 
   isColumnEditable, 
 } from '../data/columnConfig.js'
+
+const { t } = useI18n()
 
 const props = defineProps({
   isOpen: {
@@ -54,8 +57,6 @@ const editableFields = computed(() => {
   }))
 })
 
-
-
 const validateForm = () => {
   return true
 }
@@ -87,7 +88,7 @@ const handleKeydown = (event) => {
           <div class="sm:flex sm:items-start">
             <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
               <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-                Edit {{ dataSetType.charAt(0).toUpperCase() + dataSetType.slice(1) }}
+                {{ t('admin.modal.edit', { type: dataSetType.charAt(0).toUpperCase() + dataSetType.slice(1) }) }}
               </h3>
               
               <form class="space-y-4" @submit.prevent="saveChanges">
@@ -121,7 +122,7 @@ const handleKeydown = (event) => {
                     v-model="editData[field.key]"
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
-                    <option value="">Select {{ field.label.toLowerCase() }}</option>
+                    <option value="">{{ t('admin.modal.select', { field: field.label.toLowerCase() }) }}</option>
                     <option v-for="option in field.options" :key="option" :value="option">
                       {{ option }}
                     </option>
@@ -146,14 +147,14 @@ const handleKeydown = (event) => {
             class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
             @click="saveChanges"
           >
-            Save Changes
+            {{ t('admin.modal.saveChanges') }}
           </button>
           <button
             type="button"
             class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             @click="closeModal"
           >
-            Cancel
+            {{ t('admin.modal.cancel') }}
           </button>
         </div>
       </div>
