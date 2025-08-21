@@ -29,6 +29,12 @@ Route::middleware([
     Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
         "title" => __("titles.adminPanel"),
     ]))->name("admin");
+
+    Route::get("/pets/static/{id}", function (int $id) {
+        return Inertia::render("Pets/Show", [
+            "title" => __("titles.dashboard"),
+        ]);
+    })->name("pets.static.show");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");

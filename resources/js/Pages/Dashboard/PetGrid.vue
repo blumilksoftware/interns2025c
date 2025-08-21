@@ -71,6 +71,8 @@ const handleHidePetList = () => {
                   class="w-full h-auto object-cover" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
+                  @click="$inertia.visit(`/pets/static/${pet.id}`)"
+                  style="cursor: pointer;"
                 >
               </div>
               
@@ -105,6 +107,9 @@ const handleHidePetList = () => {
               <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
+                <div class="mt-3">
+                  <a :href="`/pets/static/${pet.id}`" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</a>
+                </div>
               </div>
             </div>
           </div>

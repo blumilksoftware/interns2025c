@@ -110,11 +110,13 @@ nextTick(() => {
           class="shrink-0 w-[90vw] sm:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square">
-            <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
+            <a :href="`/pets/static/${pet.id}`">
+              <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
+            </a>
 
             <button 
               class="absolute top-3 right-3 size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
-              @click="toggleLike(pet.id)"
+              @click.prevent.stop="toggleLike(pet.id)"
             >
               <HeartIcon v-if="likedPets.has(pet.id)" class="size-5 text-purple-600 animate-heartbeat [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)]" />
               <HeartOutlineIcon v-else class="size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
