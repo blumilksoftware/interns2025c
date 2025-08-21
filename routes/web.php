@@ -27,6 +27,12 @@ Route::middleware([
     Route::get("/dashboard", fn() => Inertia::render("LandingPage"))->name("dashboard");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
+    Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
+        "title" => __("titles.dashboard"),
+    ]))->name("dashboard");
+    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
+        "title" => __("titles.adminPanel"),
+    ]))->name("admin");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
