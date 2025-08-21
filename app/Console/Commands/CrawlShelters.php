@@ -105,6 +105,14 @@ class CrawlShelters extends Command
 
             try {
                 $response = $this->connector->send(new GetPageRequest($adoptionUrl));
+
+                if ($response->isCached() && $depth > 0) {
+                    $this->info("Respone is cached - Skipping HTTP request for $adoptionUrl");
+
+                    continue;
+                }  
+                Log::info("Fetched fresh response for $adoptionUrl");
+
                 $html = $response->body();
             } catch (RequestException $e) {
                 Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
