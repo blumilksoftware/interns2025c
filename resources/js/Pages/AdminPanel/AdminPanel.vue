@@ -5,30 +5,33 @@ import { Head } from '@inertiajs/vue3'
 import AdminSidebar from '../../Components/AdminSidebar.vue'
 import DynamicTable from '../../Components/DynamicTable.vue'
 import EditModal from '../../Components/EditModal.vue'
-import { dataSets } from '../../data/adminData.js'
-
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
-    default: 'Admin Panel - interns2025c',
+    default: 'Admin Panel',
+  },
+  pets: {
+    type: Object,
+    default: () => ({}),
+  },
+  shelters: {
+    type: Object,
+    default: () => ({}),
+  },
+  users: {
+    type: Object,
+    default: () => ({}),
   },
 })
 
 function formatDateForSearch(v) {
   const d = new Date(v)
-  if (isNaN(d.getTime())) {
-    return String(v ?? '')
-  }
-  
-  const day = String(d.getDate()).padStart(2, '0')
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const year = d.getFullYear()
-  
-  return `${day}-${month}-${year}`
+  if (isNaN(d.getTime())) return String(v ?? '')
+  return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
 }
 
 const currentDataSet = ref('pets')
@@ -36,35 +39,29 @@ const currentPage = ref(1)
 const itemsPerPage = 10
 const searchQuery = ref('')
 
+const dataSets = computed(() => ({
+  pets: props.pets?.data ?? [],
+  shelters: props.shelters?.data ?? [],
+  users: props.users?.data ?? [],
+}))
+
 const filteredData = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return dataSets[currentDataSet.value]
-  }
-  
+  if (!searchQuery.value.trim()) return dataSets.value[currentDataSet.value]
   const query = searchQuery.value.toLowerCase()
-  return dataSets[currentDataSet.value].filter(item => {
-    return Object.keys(item).some(key => {
+  return dataSets.value[currentDataSet.value].filter(item =>
+    Object.keys(item).some(key => {
       const value = item[key]
-      if (value === null || value === undefined) return false
-      
+      if (value == null) return false
       const isDateField = /(date|created_at|updated_at|timestamp|last_login)/i.test(key)
-      
-      let searchValue
-      if (isDateField) {
-        const originalValue = String(value).toLowerCase()
-        const formattedValue = formatDateForSearch(value).toLowerCase()
-        searchValue = `${originalValue} ${formattedValue}`
-      } else {
-        searchValue = String(value).toLowerCase()
-      }
-      
-      return searchValue.includes(query)
-    })
-  })
+      const original = String(value).toLowerCase()
+      const formatted = isDateField ? formatDateForSearch(value).toLowerCase() : ''
+      return `${original} ${formatted}`.includes(query)
+    }),
+  )
 })
 
 const tableData = computed(() => filteredData.value)
-  
+
 const isModalOpen = ref(false)
 const editingItem = ref({})
 
@@ -74,9 +71,7 @@ const handleDataSetChange = (dataSetKey) => {
   searchQuery.value = ''
 }
 
-const handlePageChange = (page) => {
-  currentPage.value = page
-}
+const handlePageChange = (page) => { currentPage.value = page }
 
 const handleEditItem = (item) => {
   editingItem.value = item
@@ -92,35 +87,23 @@ const saveChanges = (updatedItem) => {
   const index = tableData.value.findIndex(item => item.id === updatedItem.id)
   if (index !== -1) {
     tableData.value[index] = { ...updatedItem }
-    
-    const dataSetKey = currentDataSet.value
-    const dataSetIndex = dataSets[dataSetKey].findIndex(item => item.id === updatedItem.id)
-    if (dataSetIndex !== -1) {
-      dataSets[dataSetKey][dataSetIndex] = { ...updatedItem }
+    const key = currentDataSet.value
+    const dsIndex = dataSets.value[key].findIndex(item => item.id === updatedItem.id)
+    if (dsIndex !== -1) {
+      dataSets.value[key][dsIndex] = { ...updatedItem }
     }
   }
-  
   closeModal()
 }
 
-const clearSearch = () => {
-  searchQuery.value = ''
-}
+const clearSearch = () => { searchQuery.value = '' }
 
 const isSidebarOpen = ref(false)
-
-const openSidebar = () => {
-  isSidebarOpen.value = true
-}
-
-const closeSidebar = () => {
-  isSidebarOpen.value = false
-}
+const openSidebar = () => { isSidebarOpen.value = true }
+const closeSidebar = () => { isSidebarOpen.value = false }
 
 function handleResize() {
-  if (window.innerWidth >= 1280) {
-    isSidebarOpen.value = false
-  }
+  if (window.innerWidth >= 1280) isSidebarOpen.value = false
 }
 
 onMounted(() => {
