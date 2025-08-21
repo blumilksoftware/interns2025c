@@ -16,8 +16,9 @@ class UserController extends Controller
 {
     public function profile(Request $request): Response
     {
+        $user = $request->user();
         return Inertia::render("Profile/Show", [
-            "user" => new UserResource($request->user()),
+            "user" => new UserResource( $user),
         ]);
     }
 
@@ -28,6 +29,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->back()->with("success", "User deleted successfully.");
+        return back()->with("success", "User deleted successfully.");
     }
 }

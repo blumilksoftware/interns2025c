@@ -13,10 +13,5 @@ class DeleteUserRequest extends FormRequest
         return $this->user()->can("delete", $this->route("user"));
     }
 
-    public function rules(): array
-    {
-        return [
-            "confirm_deletion" => ["required", "boolean", "accepted"],
-        ];
-    }
+
 }
