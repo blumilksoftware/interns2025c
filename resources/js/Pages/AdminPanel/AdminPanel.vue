@@ -8,12 +8,9 @@ import EditModal from '../../Components/EditModal.vue'
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
+const title = t('title.adminPanel')
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: 'Admin Panel',
-  },
   pets: {
     type: Object,
     default: () => ({}),

@@ -1,5 +1,4 @@
 {
-
 "auth": {
     "name": "Imię",
     "email": "E-mail",
@@ -55,9 +54,10 @@
     "login": "Logowanie",
     "resetPassword": "Zresetuj hasło",
     "emailVerification": "Potwierdź swój e-mail",
-    "landingPage": "Strona główna - interns2025c",
-    "adminPanel": "Panel administracyjny - interns2025c",
-    "dashboard": "Panel główny - interns2025c"
+    "landingPage": "Po prostu",
+    "adminPanel": "Panel administracyjny",
+    "dashboard": "Panel główny",
+    "userProfile": "Profil"
   },
   "navigation": {
     "dashboard": "Panel główny",
@@ -111,7 +111,6 @@
       "noDataAvailable": "brak dostępnych danych"
     },
     "profile": {
-      "title": "Profil użytkownika",
       "administrator": "Administrator",
       "changePicture": "Zmień zdjęcie",
       "changePassword": "Zmień hasło",
