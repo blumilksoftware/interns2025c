@@ -79,7 +79,7 @@ nextTick(() => {
         class="relative overflow-hidden text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
         @click="showPetListHandler"
       >
-        {{ t('landing.mvp.seeMore') }} →
+        {{ t('dashboard.mvp.seeMore') }} →
       </button>
     </div>
     
