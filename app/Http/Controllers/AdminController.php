@@ -15,9 +15,9 @@ class AdminController extends Controller
     public function index(): Response
     {
         return Inertia::render("AdminPanel/AdminPanel", [
-            "pets" => Pet::latest()->paginate(15),
-            "shelters" => PetShelter::latest()->paginate(15),
-            "users" => User::latest()->paginate(15),
+            "pets" => Pet::query()->latest()->paginate(15),
+            "shelters" => PetShelter::query()->latest()->paginate(15),
+            "users" => User::query()->latest()->paginate(15),
         ]);
     }
 }

@@ -12,6 +12,15 @@ class AdminPanelTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testAdminCanAccessAdminPanel(): void
+    {
+        $admin = User::factory()->create(["role" => "admin"]);
+
+        $response = $this->actingAs($admin)->get("/admin");
+
+        $response->assertStatus(200);
+    }
+
     public function testGuestCannotAccessAdminPanel(): void
     {
         $response = $this->get("/admin");
@@ -26,14 +35,5 @@ class AdminPanelTest extends TestCase
         $response = $this->actingAs($user)->get("/admin");
 
         $response->assertStatus(403);
-    }
-
-    public function testAdminCanAccessAdminPanel(): void
-    {
-        $admin = User::factory()->create(["role" => "admin"]);
-
-        $response = $this->actingAs($admin)->get("/admin");
-
-        $response->assertStatus(200);
     }
 }
