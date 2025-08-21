@@ -17,8 +17,9 @@ class UserController extends Controller
     public function profile(Request $request): Response
     {
         $user = $request->user();
+
         return Inertia::render("Profile/Show", [
-            "user" => new UserResource( $user),
+            "user" => new UserResource($user),
         ]);
     }
 

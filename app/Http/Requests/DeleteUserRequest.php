@@ -12,6 +12,4 @@ class DeleteUserRequest extends FormRequest
     {
         return $this->user()->can("delete", $this->route("user"));
     }
-
-
 }

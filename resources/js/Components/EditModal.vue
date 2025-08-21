@@ -1,8 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { dataSets } from '../data/adminData.js'
-import { 
+import {
   getColumnType, 
   getColumnOptions, 
   getColumnAttributes, 
@@ -41,10 +40,8 @@ const editableFields = computed(() => {
   if (!props.item || Object.keys(props.item).length === 0) return []
   
   const fields = Object.keys(props.item).filter(key => {
-    // Wyklucz pola, które nie powinny być edytowalne
     if (key === 'id') return false
     
-    // Sprawdź czy pole jest edytowalne według konfiguracji
     return isColumnEditable(props.dataSetType, key)
   })
   
