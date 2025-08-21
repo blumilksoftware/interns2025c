@@ -1,8 +1,11 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
 import { getColumnWidth, getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '../data/columnConfig.js'
+
+const { t } = useI18n()
 
 function formatDateForFilter(v) {
   const d = new Date(v)
@@ -242,15 +245,15 @@ const handleNativeDateChange = (columnKey, date) => {
     <div class="p-4 sm:px-6 border-b border-gray-200">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h3 class="text-base lg:text-lg font-medium text-gray-900">Dynamic Data Table</h3>
-          <p class="text-xs lg:text-sm text-gray-500">Automatycznie dostosowuje się do danych z bazy</p>
+          <h3 class="text-base lg:text-lg font-medium text-gray-900">{{ t('admin.table.title') }}</h3>
+          <p class="text-xs lg:text-sm text-gray-500">{{ t('admin.table.subtitle') }}</p>
         </div>
         <div class="flex flex-col lg:flex-row gap-2 w-full lg:w-auto">
           <button class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="showFilters = !showFilters">
             <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" /></svg>
-            Filters
+            {{ t('admin.table.filters') }}
           </button>
-          <button class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="clearFilters">Clear All</button>
+          <button class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="clearFilters">{{ t('admin.table.clearAll') }}</button>
         </div>
       </div>
 
@@ -290,7 +293,7 @@ const handleNativeDateChange = (columnKey, date) => {
             class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500"
             @change="handleFilter(column.key, $event.target.value)"
           >
-            <option value="">All {{ column.label.toLowerCase() }}</option>
+            <option value="">{{ t('admin.table.all') }} {{ column.label.toLowerCase() }}</option>
             <option v-for="option in getColumnOptions(props.dataSetType, column.key)" :key="option" :value="option">
               {{ option }}
             </option>
@@ -302,7 +305,7 @@ const handleNativeDateChange = (columnKey, date) => {
             v-model="filters[column.key]" 
             type="text" 
             class="block w-full border-gray-300 rounded-md shadow-sm text-xs focus:ring-indigo-500 focus:border-indigo-500" 
-            :placeholder="`Filter ${column.label.toLowerCase()}...`" 
+            :placeholder="t('admin.table.filterPlaceholder', { field: column.label.toLowerCase() })" 
             @input="handleFilter(column.key, $event.target.value)"
           >
         </div>
@@ -323,7 +326,7 @@ const handleNativeDateChange = (columnKey, date) => {
                 </div>
               </div>
             </th>
-            <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('admin.table.actions') }}</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -332,7 +335,7 @@ const handleNativeDateChange = (columnKey, date) => {
               <CellContent :column-key="column.key" :value="row[column.key]" />
             </td>
             <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
-              <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">Edit</button>
+              <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">{{ t('admin.table.edit') }}</button>
             </td>
           </tr>
         </tbody>
