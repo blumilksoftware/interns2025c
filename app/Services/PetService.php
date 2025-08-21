@@ -14,37 +14,28 @@ use Illuminate\Support\Str;
 
 class PetService
 {
-    public function savePetToDB(array $petData, string $shelterUrl, string $adoptionUrl): void
+    public function store(array $petData, string $shelterUrl, string $extractedPetAdoptionUrl): void
     {
-        $shelterBaseUrl = UrlFormatHelper::getBaseUrl($shelterUrl);
-        $domain = parse_url($shelterBaseUrl, PHP_URL_HOST);
-
-        $shelter = PetShelter::where("url", "like", "%" . $domain . "%")->first();
-
-        if (!$shelter) {
-            Log::warning("No shelter found for $shelterBaseUrl");
+        if (empty($petData)) {
+            Log::warning("Pet data is empty or invalid for pet at URL: $extractedPetAdoptionUrl");
 
             return;
         }
 
-        $tags = Str::of($petData["animals"][0]["behavioral_notes"] ?? "")
-            ->explode(" ")
-            ->map(fn($tag) => trim($tag))
-            ->filter()
-            ->unique()
-            ->toArray();
+        if (empty($shelterUrl) && empty($extractedPetAdoptionUrl)) {
+            Log::error("Both shelter URL and extracted pet adoption URL are empty for pet at URL $extractedPetAdoptionUrl");
 
-        foreach ($tags as $tag) {
-            Tag::query()->firstOrCreate(["name" => $tag]);
-            Log::info("Tag created: $tag");
+            return;
         }
+
+        $shelterId = $this->findShelterByItsUrlHost($shelterUrl)?->id;
 
         foreach ($petData["animals"] ?? [] as $animal) {
             $identifyingAttributes = [
                 "name" => $animal["name"],
                 "species" => $animal["species"],
                 "behavioral_notes" => $animal["behavioral_notes"] ?? null,
-                "shelter_id" => $shelter->id,
+                "shelter_id" => $shelterId,
                 "sex" => $animal["sex"],
                 "breed" => $animal["breed"] ?? null,
                 "weight" => $animal["weight"] ?? null,
@@ -73,10 +64,52 @@ class PetService
                 "adoption_status" => $animal["adoption_status"] ?? null,
                 "admission_date" => isset($animal["admission_date"]) ? Carbon::parse($animal["admission_date"]) : null,
                 "has_chip" => $animal["has_chip"] ?? null,
-                "adoption_url" => $adoptionUrl,
+                "adoption_url" => $extractedPetAdoptionUrl,
             ];
 
             Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
         }
+
+        $tags = $this->extractTagsFromText(
+            $petData["tags"] ?? "",
+        );
+
+        foreach ($tags as $tag) {
+            Tag::query()->firstOrCreate(["name" => $tag]);
+        }
+    }
+
+    private function findShelterByItsUrlHost(string $shelterUrl): PetShelter|null
+    {
+        if (!$shelterUrl) {
+            Log::error("Shelter URL is empty or invalid.");
+
+            return null;
+        }
+
+        $host = UrlFormatHelper::getUrlHost($shelterUrl);
+
+        $shelter = PetShelter::where("url", "like", "%" . $host . "%")->first();
+
+        if ($shelter) {
+            return $shelter;
+        }  
+        Log::warning("No shelter found for URL: $shelterUrl");
+
+        return null;
+    }
+
+    private function extractTagsFromText(string $text, string $delimiter = " "): array
+    {
+        if (empty($text)) {
+            return [];
+        }
+
+        return Str::of($text)
+            ->explode($delimiter)
+            ->map(fn($tag) => trim($tag))
+            ->filter()
+            ->unique()
+            ->toArray();
     }
 }

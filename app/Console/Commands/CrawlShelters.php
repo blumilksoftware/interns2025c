@@ -24,13 +24,13 @@ class CrawlShelters extends Command
 
     public function __construct(
         protected PetService $petService,
+        protected GeminiService $gemini,
     ) {
         parent::__construct();
     }
 
     public function handle(): void
     {
-        $gemini = new GeminiService();
         $petSheltersWithExistingUrl = PetShelter::whereNotNull("url")->get();
 
         if ($argumentUrl = $this->argument("url")) {
@@ -64,7 +64,7 @@ class CrawlShelters extends Command
 
             $this->info("Processing shelter " . ($index + 1) . " of " . count($petShelterUrls) . ": $urlString");
 
-            $this->crawlSite($client, $urlString, $gemini, $maxDepth);
+            $this->crawlSite($client, $urlString, $maxDepth);
 
             $this->info("Completed crawling: $urlString");
             $this->line("---");
@@ -75,7 +75,7 @@ class CrawlShelters extends Command
         }
     }
 
-    protected function crawlSite(Client $client, string $startUrl, GeminiService $gemini, int $maxDepth = 2): void
+    protected function crawlSite(Client $client, string $startUrl, int $maxDepth = 2): void
     {
         $queue = [[$startUrl, 0]]; // url + depth
         $visited = [];
@@ -151,7 +151,7 @@ class CrawlShelters extends Command
             ];
 
             try {
-                $result = $gemini->generateContent($payload);
+                $result = $this->gemini->generateContent($payload);
                 $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
 
                 if ($raw) {
@@ -162,7 +162,7 @@ class CrawlShelters extends Command
 
                     if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
                         $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
-                        $this->petService->savePetToDB($petData, $baseUrl, $adoptionUrl);
+                        $this->petService->store($petData, $baseUrl, $adoptionUrl);
                     } else {
                         $this->warn("Invalid JSON from Gemini for $adoptionUrl");
                     }
