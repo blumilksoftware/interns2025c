@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Http\Integrations\Connectors\CrawlerConnector;
+use App\Http\Integrations\Requests\GetPageRequest;
 use App\Models\PetShelter;
 use App\Services\GeminiService;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Log;
 use Symfony\Component\DomCrawler\Crawler;
@@ -18,14 +18,15 @@ class CrawlSheltersAddresses extends Command
     protected $signature = "shelter:crawl {url?} {--batch-size=25 : Number of items per batch}";
     protected $description = "Crawl specific website and analyze content with Gemini AI to save shelters info into DB";
 
+    public function __construct(
+        protected CrawlerConnector $connector,
+        protected GeminiService $gemini,
+    ) {
+        parent::__construct();
+    }
+
     public function handle(): void
     {
-        $client = new Client([
-            "timeout" => 120,
-            "verify" => false,
-        ]);
-
-        $gemini = new GeminiService();
         $batchSize = (int)$this->option("batch-size");
 
         if ($url = $this->argument("url")) {
@@ -38,8 +39,8 @@ class CrawlSheltersAddresses extends Command
             $this->info("Checking: $shelter->url");
 
             try {
-                $response = $client->get($shelter->url);
-                $html = (string)$response->getBody();
+                $response = $this->connector->send(new GetPageRequest($shelter->url));
+                $html = $response->body();
                 $crawler = new Crawler($html);
 
                 $this->info("Scrapping: $shelter->url");
@@ -79,7 +80,7 @@ class CrawlSheltersAddresses extends Command
                     ];
 
                     try {
-                        $result = $gemini->generateContent($payload);
+                        $result = $this->gemini->generateContent($payload);
                         $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
 
                         if ($raw) {
@@ -123,8 +124,6 @@ class CrawlSheltersAddresses extends Command
                 }
             } catch (Exception $e) {
                 $this->error("Failed before checking $shelter->url due to error: {$e->getMessage()}");
-            } catch (GuzzleException $e) {
-                Log::error("Cannot fetch URL $shelter->url due to Guzzle error {$e->getMessage()}");
             }
         }
 

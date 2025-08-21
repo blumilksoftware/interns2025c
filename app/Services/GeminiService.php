@@ -4,44 +4,38 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
+use App\Http\Integrations\Connectors\GeminiConnector;
+use App\Http\Integrations\Requests\PostGeminiRequest;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 use RuntimeException;
+use Saloon\Exceptions\Request\FatalRequestException;
+use Saloon\Exceptions\Request\RequestException;
 
 class GeminiService
 {
-    protected $key;
-    protected $model;
-    protected $base;
-
-    public function __construct()
+    /**
+     * @throws JsonException
+     */
+    public function generateContent(array $payload): array
     {
-        $this->key = config("services.gemini.key");
-        $this->model = config("services.gemini.model");
-        $this->base = rtrim(config("services.gemini.endpoint"), "/");
-    }
+        $connector = new GeminiConnector();
+        $request = new PostGeminiRequest($payload);
+        $response = null;
 
-    public function generateContent(array $payload, $attempts = 3)
-    {
-        $url = "{$this->base}/{$this->model}:generateContent";
-
-        $response = Http::retry($attempts, 100, fn($exception, $request) => $exception instanceof ConnectionException
-            || ($exception->getCode() >= 500 && $exception->getCode() < 600))
-            ->withHeaders([
-                "x-goog-api-key" => $this->key,
-                "Content-Type" => "application/json",
-            ])
-            ->timeout(120)
-            ->post($url, $payload);
-
-        if ($response->failed()) {
-            Log::channel("single")->error("Gemini API failed", [
-                "status" => $response->status(),
-                "body" => $response->body(),
+        try {
+            $response = $connector->send($request);
+        } catch (RequestException $e) {
+            throw new RuntimeException(
+                "Gemini API error: " . $e->getMessage(),
+                $e->getCode(),
+                $e,
+            );
+        } catch (FatalRequestException $e) {
+            Log::error("Gemini API fatal error: " . $e->getMessage(), [
+                "payload" => $payload,
+                "exception" => $e,
             ]);
-
-            throw new RuntimeException("Gemini API error: " . $response->body());
         }
 
         return $response->json();

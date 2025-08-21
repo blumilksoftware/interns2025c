@@ -4,27 +4,29 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Http\Integrations\Connectors\CrawlerConnector;
+use App\Http\Integrations\Requests\GetPageRequest;
 use App\Models\PetShelter;
 use App\Services\GeminiService;
 use App\Services\PetService;
 use App\Utils\UrlFormatHelper;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Saloon\Exceptions\Request\RequestException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlShelters extends Command
 {
     protected $signature = "crawl:shelters {url?} {--depth=2} {--additional-urls=}";
-    protected $description = "Crawl shelter sites and analyze pages with AI";
+    protected $description = "Crawl shgbelter sites and analyze pages with AI";
 
     public function __construct(
         protected PetService $petService,
         protected GeminiService $gemini,
+        protected CrawlerConnector $connector,
     ) {
         parent::__construct();
     }
@@ -105,17 +107,15 @@ class CrawlShelters extends Command
             $visited[$adoptionUrl] = true;
             $this->info("Crawling (depth $depth): $adoptionUrl");
             Log::info("Crawling page: $adoptionUrl");
-            $html = Cache::remember("crawl_page:" . md5($adoptionUrl), now()->addHours(24), function () use ($client, $adoptionUrl) {
-                try {
-                    $response = $client->request("GET", $adoptionUrl);
 
-                    return (string)$response->getBody();
-                } catch (GuzzleException $e) {
-                    Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
+            try {
+                $response = $this->connector->send(new GetPageRequest($adoptionUrl));
+                $html = $response->body();
+            } catch (RequestException $e) {
+                Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
 
-                    return;
-                }
-            });
+                continue;
+            }
 
             if (!$html) {
                 $this->warn("Skipping $adoptionUrl due to failed HTTP request or cache.");
