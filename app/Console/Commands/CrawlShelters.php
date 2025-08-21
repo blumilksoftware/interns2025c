@@ -12,11 +12,14 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlShelters extends Command
 {
-    protected $signature = "crawl:shelters {url?} {--depth=2}";
+    protected $signature = "crawl:shelters {url?} {--depth=2} {--additional-urls=}";
     protected $description = "Crawl shelter sites and analyze pages with AI";
 
     public function __construct(
@@ -33,7 +36,20 @@ class CrawlShelters extends Command
         if ($argumentUrl = $this->argument("url")) {
             $petShelterUrls = collect([(object)["url" => $argumentUrl, "id" => null]]);
         } else {
-            $petShelterUrls = $petSheltersWithExistingUrl->toArray();
+            $petShelterUrls = collect($petSheltersWithExistingUrl->toArray());
+        }
+
+        if ($additionalUrls = $this->option("additional-urls")) {
+            $additionalUrlsArray = array_map("trim", explode(",", $additionalUrls));
+            $additionalObjects = array_map(fn($u) => (object)["url" => $u, "id" => null], $additionalUrlsArray);
+
+            $existingUrls = $petShelterUrls->pluck("url")->all();
+
+            foreach ($additionalObjects as $obj) {
+                if (!in_array($obj->url, $existingUrls, true)) {
+                    $petShelterUrls->push($obj);
+                }
+            }
         }
 
         $client = new Client([
@@ -43,9 +59,19 @@ class CrawlShelters extends Command
 
         $maxDepth = (int)$this->option("depth");
 
-        foreach ($petShelterUrls as $url) {
+        foreach ($petShelterUrls as $index => $url) {
             $urlString = is_object($url) ? $url->url : $url["url"];
+
+            $this->info("Processing shelter " . ($index + 1) . " of " . count($petShelterUrls) . ": $urlString");
+
             $this->crawlSite($client, $urlString, $gemini, $maxDepth);
+
+            $this->info("Completed crawling: $urlString");
+            $this->line("---");
+
+            if ($index < count($petShelterUrls) - 1) {
+                sleep(2);
+            }
         }
     }
 
@@ -54,8 +80,7 @@ class CrawlShelters extends Command
         $queue = [[$startUrl, 0]]; // url + depth
         $visited = [];
 
-        $parsedBase = parse_url($startUrl);
-        $baseHost = $parsedBase["host"] ?? null;
+        $baseHost = UrlFormatHelper::getUrlHost($startUrl);
 
         if (!$baseHost) {
             $this->error("Invalid start URL: $startUrl");
@@ -70,82 +95,103 @@ class CrawlShelters extends Command
                 continue;
             }
 
+            if ($this->checkIfLinkContainsAntiKeywords($adoptionUrl)) {
+                $this->info("Contains anti-keywords: $adoptionUrl - Skipping");
+                $visited[$adoptionUrl] = true;
+
+                continue;
+            }
+
             $visited[$adoptionUrl] = true;
             $this->info("Crawling (depth $depth): $adoptionUrl");
+            Log::info("Crawling page: $adoptionUrl");
+            $html = Cache::remember("crawl_page:" . md5($adoptionUrl), now()->addHours(24), function () use ($client, $adoptionUrl) {
+                try {
+                    $response = $client->request("GET", $adoptionUrl);
 
-            try {
-                $response = $client->request("GET", $adoptionUrl);
-                $html = (string)$response->getBody();
-                $crawler = new Crawler($html);
+                    return (string)$response->getBody();
+                } catch (GuzzleException $e) {
+                    Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
 
-                // --- process page ---
-                $getWebpageClearBodyText = $this->clearHtmlUnnecessaryTags($crawler);
-                $altAndIcons = $this->getAltAndIconTags($crawler);
+                    return;
+                }
+            });
 
-                $fullPayload = $getWebpageClearBodyText .
-                    "\n\nImage Alts: " . implode(", ", $altAndIcons["images"]) .
-                    "\nIcon Titles: " . implode(", ", $altAndIcons["icons"]) .
-                    "\nSVG Labels: " . implode(", ", $altAndIcons["svgs"]);
+            if (!$html) {
+                $this->warn("Skipping $adoptionUrl due to failed HTTP request or cache.");
 
-                $prompt = config("prompts.crawl_shelters");
-                $payload = [
-                    "contents" => [
-                        [
-                            "parts" => [
-                                ["text" => "Prompt: $prompt , Page content: $fullPayload"],
-                            ],
+                continue;
+            }
+
+            $crawler = new Crawler($html);
+
+            $getWebpageClearBodyText = $this->clearHtmlUnnecessaryTags($crawler);
+
+            if (!$this->isLikelyAPetPage($getWebpageClearBodyText, 6) && $depth > 0) {
+                $this->info("Page does not appear to be specific pet page: $adoptionUrl - Skipping");
+
+                continue;
+            }
+            $altAndIcons = $this->getAltAndIconTags($crawler);
+
+            $fullPayload = $getWebpageClearBodyText .
+                "\n\nImage Alts: " . implode(", ", $altAndIcons["images"]) .
+                "\nIcon Titles: " . implode(", ", $altAndIcons["icons"]) .
+                "\nSVG Labels: " . implode(", ", $altAndIcons["svgs"]);
+
+            $prompt = config("prompts.crawl_shelters");
+            $payload = [
+                "contents" => [
+                    [
+                        "parts" => [
+                            ["text" => "Prompt: $prompt , Page content: $fullPayload"],
                         ],
                     ],
-                ];
+                ],
+            ];
 
-                try {
-                    $result = $gemini->generateContent($payload);
-                    $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
+            try {
+                $result = $gemini->generateContent($payload);
+                $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
 
-                    if ($raw) {
-                        $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
-                        $this->line($jsonClean);
+                if ($raw) {
+                    $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
+                    $this->line($jsonClean);
 
-                        $petData = json_decode($jsonClean, true);
+                    $petData = json_decode($jsonClean, true);
 
-                        if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
-                            $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
-                            $this->petService->savePetToDB($petData, $baseUrl, $adoptionUrl);
-                        } else {
-                            $this->warn("Invalid JSON from Gemini for $adoptionUrl");
-                        }
-                    }
-
-                    sleep(1);
-                } catch (Exception $e) {
-                    $this->warn("Gemini failed: " . $e->getMessage());
-                }
-
-                $links = $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href"));
-
-                foreach ($links as $link) {
-                    if (!$link) {
-                        continue;
-                    }
-
-                    $absoluteUrl = UrlFormatHelper::normalizeUrl($link, $adoptionUrl);
-
-                    if (!$absoluteUrl) {
-                        continue;
-                    }
-
-                    $linkHost = parse_url($absoluteUrl, PHP_URL_HOST);
-
-                    if ($linkHost !== $baseHost) {
-                        continue;
-                    }
-
-                    if ($this->checkIfLinkContainsRequiredUrlSlugs($absoluteUrl)) {
-                        $queue[] = [$absoluteUrl, $depth + 1];
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
+                        $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
+                        $this->petService->savePetToDB($petData, $baseUrl, $adoptionUrl);
+                    } else {
+                        $this->warn("Invalid JSON from Gemini for $adoptionUrl");
                     }
                 }
-            } catch (Exception|GuzzleException $e) {
-                $this->error("Failed to crawl $adoptionUrl: " . $e->getMessage());
+                sleep(1);
+            } catch (Exception $e) {
+                $this->warn("Gemini failed: " . $e->getMessage());
+            }
+
+            $links = $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href"));
+
+            foreach ($links as $link) {
+                if (!$link) {
+                    continue;
+                }
+
+                $absoluteUrl = UrlFormatHelper::normalizeUrl($link, $adoptionUrl);
+
+                if (!$absoluteUrl) {
+                    continue;
+                }
+
+                $linkHost = parse_url($absoluteUrl, PHP_URL_HOST);
+
+                if ($linkHost !== $baseHost) {
+                    continue;
+                }
+
+                $queue[] = [$absoluteUrl, $depth + 1];
             }
         }
     }
@@ -176,15 +222,47 @@ class CrawlShelters extends Command
         ];
     }
 
-    protected function checkIfLinkContainsRequiredUrlSlugs(string $url): bool
+    protected function isLikelyAPetPage(string $body, ?int $threshold = null): bool
     {
-        $requiredUrlSlugKeywords = [
-            "do-adopcji", "zwierzak", "psy", "pies", "koty", "kot", "adopcja", "adoptuj",
-            "schronisko", "filter", "zwierze", "adopcje", "zwierzeta", "szczegoly", "catalog",
-            "psy-do-adopcji", "koty-do-adopcji", "adoptuj-zwierzaka", "adoptuj-psa", "adoptuj-kota",
-            "kacik-adopcyjny",
-        ];
+        $body = html_entity_decode($body, ENT_QUOTES | ENT_HTML5);
+        $bodyLower = mb_strtolower($body);
+        $bodyAscii = Str::ascii($bodyLower);
 
-        return array_any($requiredUrlSlugKeywords, fn($keyword) => stripos($url, $keyword) !== false);
+        $petKeywords = array_values(array_filter(array_unique(config("crawl_keywords.pet_keywords", []))));
+        $requiredKeywords = array_values(array_filter(array_unique(config("crawl_keywords.required_keywords", []))));
+
+        $allKeywords = array_merge($petKeywords, $requiredKeywords);
+
+        $allKeywordsLower = array_map(fn($k) => mb_strtolower($k), $allKeywords);
+        $allKeywordsAscii = array_map(fn($k) => Str::ascii(mb_strtolower($k)), $allKeywordsLower);
+
+        if ($threshold === null) {
+            $threshold = min(5, count($allKeywords));
+        }
+
+        $score = 0;
+        $matchedKeywords = [];
+
+        foreach ($allKeywordsLower as $i => $kwLower) {
+            if ($kwLower === "") {
+                continue;
+            }
+
+            if ((stripos($bodyLower, $kwLower) !== false || stripos($bodyAscii, $allKeywordsAscii[$i]) !== false)
+                && !in_array($kwLower, $matchedKeywords, true)
+            ) {
+                $score++;
+                $matchedKeywords[] = $kwLower;
+            }
+        }
+
+        return $score >= $threshold;
+    }
+
+    protected function checkIfLinkContainsAntiKeywords(string $url): bool
+    {
+        $antiKeywords = config("crawl.anti_keywords");
+
+        return collect($antiKeywords)->contains(fn($keyword) => stripos($url, $keyword) !== false);
     }
 }

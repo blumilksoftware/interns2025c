@@ -19,19 +19,23 @@ class UrlFormatHelper
         return "{$scheme}://{$host}{$port}/";
     }
 
+    public static function getUrlHost(string $url): ?string
+    {
+        $parts = parse_url($url);
+
+        return $parts["host"] ?? null;
+    }
+
     public static function normalizeUrl(string $url, string $baseUrl): ?string
     {
-        // Skip anchors, mailto, javascript
         if (Str::startsWith($url, ["#", "javascript:", "mailto:"])) {
             return null;
         }
 
-        // Absolute URL
         if (Str::startsWith($url, ["http://", "https://"])) {
             return $url;
         }
 
-        // Build absolute from relative
         $baseParts = parse_url($baseUrl);
         $scheme = $baseParts["scheme"] ?? "https";
         $host = $baseParts["host"] ?? "";

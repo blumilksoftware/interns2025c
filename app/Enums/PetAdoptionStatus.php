@@ -9,4 +9,5 @@ enum PetAdoptionStatus: String
     case ADOPTED = "adopted";
     case WAITING_FOR_ADOPTION = "waiting for adoption";
     case QUARANTINED = "quarantined";
+    case TEMPORARY_HOME = "in temporary home";
 }

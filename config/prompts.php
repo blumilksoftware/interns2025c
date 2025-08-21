@@ -38,7 +38,7 @@ You are an expert in extracting detailed information about pets from a single sh
       "behavioral_notes": string|null,
       "admission_date": string|null,
       "found_location": string|null,
-      "adoption_status": string|null // adopted, waiting for adoption, quarantined
+      "adoption_status": string|null // adopted, waiting for adoption, quarantined, in temporary home
     }
   ]
 }
