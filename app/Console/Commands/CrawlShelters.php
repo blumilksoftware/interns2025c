@@ -128,10 +128,14 @@ class CrawlShelters extends Command
             }
             $altAndIcons = $this->getAltAndIconTags($crawler);
 
+            $imageAlts = array_map(fn($img) => $img["alt"], $altAndIcons["images"]);
+            $iconTitles = array_map(fn($icon) => $icon["title"], $altAndIcons["icons"]);
+            $svgLabels = array_map(fn($svg) => $svg["aria"], $altAndIcons["svgs"]);
+
             $fullPayload = $getWebpageClearBodyText .
-                "\n\nImage Alts: " . implode(", ", $altAndIcons["images"]) .
-                "\nIcon Titles: " . implode(", ", $altAndIcons["icons"]) .
-                "\nSVG Labels: " . implode(", ", $altAndIcons["svgs"]);
+                "\n\nImage Alts: " . implode(", ", $imageAlts) .
+                "\nIcon Titles: " . implode(", ", $iconTitles) .
+                "\nSVG Labels: " . implode(", ", $svgLabels);
 
             $prompt = config("prompts.crawl_shelters");
             $payload = [
@@ -207,12 +211,29 @@ class CrawlShelters extends Command
             fn(Crawler $node) => $node->getNode(0)->parentNode->removeChild($node->getNode(0)),
         );
 
+        $icons = $bodyCrawler->filter('i[class*="icon-"], span[class*="icon-"], span.check, i.check')
+            ->each(fn(Crawler $node) => [
+                "class" => trim($node->attr("class") ?? ""),
+                "title" => trim($node->attr("title") ?? ""),
+                "aria" => trim($node->attr("aria-label") ?? ""),
+                "data" => trim($node->attr("data-field") ?? ""),
+            ]);
+
+        $images = $bodyCrawler->filter("img[alt]")->each(fn(Crawler $node) => [
+            "alt" => trim($node->attr("alt")),
+            "class" => trim($node->attr("class") ?? ""),
+            "title" => trim($node->attr("title") ?? ""),
+        ]);
+
+        $svgs = $bodyCrawler->filter("svg[aria-label]")->each(fn(Crawler $node) => [
+            "aria" => trim($node->attr("aria-label")),
+            "class" => trim($node->attr("class") ?? ""),
+        ]);
+
         return [
-            "images" => $bodyCrawler->filter("img[alt]")->each(fn(Crawler $node) => trim($node->attr("alt"))),
-            "icons" => array_filter($bodyCrawler->filter('i[class*="icon-"], span[class*="icon-"]')
-                ->each(fn(Crawler $node) => trim($node->attr("title") ?? ""))),
-            "svgs" => $bodyCrawler->filter("svg[aria-label]")
-                ->each(fn(Crawler $node) => trim($node->attr("aria-label"))),
+            "images" => $images,
+            "icons" => $icons,
+            "svgs" => $svgs,
         ];
     }
 
