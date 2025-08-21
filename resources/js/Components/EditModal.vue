@@ -1,7 +1,8 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
+import { dataSets } from '../data/adminData.js'
+import { 
   getColumnType, 
   getColumnOptions, 
   getColumnAttributes, 
