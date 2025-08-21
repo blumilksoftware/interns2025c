@@ -2,9 +2,9 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Head } from '@inertiajs/vue3'
-import AdminSidebar from '@/Components/AdminSidebar.vue'
-import DynamicTable from '@/Components/DynamicTable.vue'
-import EditModal from '@/Components/EditModal.vue'
+import AdminSidebar from '../../Components/AdminSidebar.vue'
+import DynamicTable from '../../Components/DynamicTable.vue'
+import EditModal from '../../Components/EditModal.vue'
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
@@ -106,8 +106,13 @@ function handleResize() {
   if (window.innerWidth >= 1280) isSidebarOpen.value = false
 }
 
-onMounted(() => window.addEventListener('resize', handleResize))
-onBeforeUnmount(() => window.removeEventListener('resize', handleResize))
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
 <template>

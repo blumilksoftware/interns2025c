@@ -39,12 +39,14 @@ Route::middleware([
     Route::get("/admin", [AdminController::class, "index"])->name("admin");
 });
 
-Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
-Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
-Route::resource("pets", PetController::class)->except(["create", "edit"]);
-Route::middleware([
-    AdminMiddleware::class,
-])->group(function (): void {
-    Route::get("/admin", [AdminController::class, "index"]);
-});
-Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);
+Route::resource("pet-shelter-addresses", PetShelterAddressController::class)
+    ->only("store", "update", "destroy");
+
+Route::resource("pet-shelters", PetShelterController::class)
+    ->only("index", "store", "update", "destroy");
+
+Route::resource("pets", PetController::class)
+    ->except(["create", "edit"]);
+
+Route::resource("tags", TagController::class)
+    ->only(["store", "update", "destroy"]);
