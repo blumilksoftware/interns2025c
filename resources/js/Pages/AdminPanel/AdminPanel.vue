@@ -130,8 +130,8 @@ onBeforeUnmount(() => {
       @data-set-change="handleDataSetChange" 
       @close="closeSidebar"
     />
-    <div class="flex-1">
-      <div class="w-full px-2 sm:px-4 md:px-6 py-4">
+    <div class="flex-1 min-w-0">
+      <div class="px-2 sm:px-4 md:px-6 py-4 ">
         <div class="mb-2 sm:mb-4">
           <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
             {{ t('admin.currentlyViewing') }} <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
@@ -171,16 +171,14 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-        <div class="overflow-x-auto">
-          <DynamicTable 
-            :data="tableData"
-            :data-set-type="currentDataSet"
-            :current-page="currentPage"
-            :items-per-page="itemsPerPage"
-            @page-change="handlePageChange"
-            @edit-item="handleEditItem"
-          />
-        </div>
+        <DynamicTable 
+          :data="tableData"
+          :data-set-type="currentDataSet"
+          :current-page="currentPage"
+          :items-per-page="itemsPerPage"
+          @page-change="handlePageChange"
+          @edit-item="handleEditItem"
+        />
       </div>
       <EditModal
         :is-open="isModalOpen"

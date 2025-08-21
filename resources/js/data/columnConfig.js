@@ -231,11 +231,6 @@ export const columnConfig = {
   },
 }
 
-const legacyColumnWidths = {
-  name: 'w-40 sm:w-56',
-  id: 'w-20 sm:w-28',
-  email: 'w-56 sm:w-72',
-}
 
 const autoFieldTypes = {
   text: ['name', 'breed', 'location', 'action', 'ip_address', 'description', 'notes', 'address', 'phone', 'website'],
@@ -247,19 +242,6 @@ const autoFieldTypes = {
 
 export function getColumnConfig(dataSetType, fieldName) {
   return columnConfig[dataSetType]?.[fieldName] || null
-}
-
-export function getColumnWidth(dataSetType, fieldName) {
-  const config = getColumnConfig(dataSetType, fieldName)
-  if (config) return config.width
-  
-  const keyLower = fieldName.toLowerCase()
-  for (const [pattern, width] of Object.entries(legacyColumnWidths)) {
-    if (keyLower.includes(pattern)) {
-      return width
-    }
-  }
-  return 'w-24 sm:w-32'
 }
 
 export function getColumnType(dataSetType, fieldName) {
