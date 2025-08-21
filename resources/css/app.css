@@ -9,3 +9,34 @@
     --color-gradient-primary: oklch(0.95 0.05 85); /* Warm beige */
     --color-gradient-secondary: oklch(0.92 0.08 120); /* Soft green */
 }
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1.14);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    60% {
+        transform: scale(1.16);
+        opacity: 1;
+    }
+    75% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+@layer utilities {
+    .animate-heartbeat {
+        animation: heartbeat 0.8s ease-out infinite;
+    }   
+}
