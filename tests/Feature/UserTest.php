@@ -23,9 +23,7 @@ class UserTest extends TestCase
             "role" => Role::USER->value,
         ]);
 
-        $response = $this->actingAs($admin)->delete("/users/{$user->id}", [
-            "confirm_deletion" => true,
-        ]);
+        $response = $this->actingAs($admin)->delete("/users/{$user->id}");
 
         $response->assertStatus(302);
         $this->assertDatabaseMissing(User::class, ["id" => $user->id]);
@@ -41,9 +39,7 @@ class UserTest extends TestCase
                 "role" => Role::USER->value,
             ]);
 
-            $response = $this->actingAs($user)->delete("/users/{$target->id}", [
-                "confirm_deletion" => true,
-            ]);
+            $response = $this->actingAs($user)->delete("/users/{$target->id}");
 
             $response->assertStatus(403);
             $this->assertDatabaseHas(User::class, ["id" => $target->id]);
@@ -56,9 +52,7 @@ class UserTest extends TestCase
             "role" => Role::ADMIN->value,
         ]);
 
-        $response = $this->actingAs($admin)->delete("/users/{$admin->id}", [
-            "confirm_deletion" => true,
-        ]);
+        $response = $this->actingAs($admin)->delete("/users/{$admin->id}");
 
         $response->assertStatus(403);
         $this->assertDatabaseHas(User::class, ["id" => $admin->id]);

@@ -27,9 +27,7 @@ Route::middleware([
 ])->group(function (): void {
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
-    Route::get("/dashboard", fn() => Inertia::render("Dashboard/Dashboard", [
-        "title" => __("titles.dashboard"),
-    ]))->name("dashboard");
+    Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
 });
 
 Route::middleware([
