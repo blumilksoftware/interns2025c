@@ -11,7 +11,6 @@ use App\Services\GeminiService;
 use App\Services\PetService;
 use App\Utils\UrlFormatHelper;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -54,11 +53,6 @@ class CrawlShelters extends Command
             }
         }
 
-        $client = new Client([
-            "timeout" => 120,
-            "verify" => false,
-        ]);
-
         $maxDepth = (int)$this->option("depth");
 
         foreach ($petShelterUrls as $index => $url) {
@@ -66,7 +60,7 @@ class CrawlShelters extends Command
 
             $this->info("Processing shelter " . ($index + 1) . " of " . count($petShelterUrls) . ": $urlString");
 
-            $this->crawlSite($client, $urlString, $maxDepth);
+            $this->crawlSite($urlString, $maxDepth);
 
             $this->info("Completed crawling: $urlString");
             $this->line("---");
@@ -77,7 +71,7 @@ class CrawlShelters extends Command
         }
     }
 
-    protected function crawlSite(Client $client, string $startUrl, int $maxDepth = 2): void
+    protected function crawlSite(string $startUrl, int $maxDepth = 2): void
     {
         $queue = [[$startUrl, 0]]; // url + depth
         $visited = [];
