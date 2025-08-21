@@ -1,11 +1,22 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import AdminSidebar from '@/Components/AdminSidebar.vue'
-import DynamicTable from '@/Components/DynamicTable.vue'
-import EditModal from '@/Components/EditModal.vue'
-import { dataSets } from '@/data/adminData.js'
+import { useI18n } from 'vue-i18n'
+import { Head } from '@inertiajs/vue3'
+import AdminSidebar from '../../Components/AdminSidebar.vue'
+import DynamicTable from '../../Components/DynamicTable.vue'
+import EditModal from '../../Components/EditModal.vue'
+import { dataSets } from '../../data/adminData.js'
 
 import { Bars3Icon } from '@heroicons/vue/20/solid'
+
+const { t } = useI18n()
+
+defineProps({
+  title: {
+    type: String,
+    default: 'Admin Panel - interns2025c',
+  },
+})
 
 function formatDateForSearch(v) {
   const d = new Date(v)
@@ -113,7 +124,6 @@ function handleResize() {
 }
 
 onMounted(() => {
-  document.title = 'Admin Panel - interns2025c'
   window.addEventListener('resize', handleResize)
 })
 
@@ -123,6 +133,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <Head :title="title" />
   <div class="flex flex-col xl:flex-row min-h-screen bg-gray-100">
     <button 
       class="xl:hidden fixed top-4 right-4 z-30 bg-gray-800/20 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400" 
@@ -140,14 +151,14 @@ onBeforeUnmount(() => {
       <div class="w-full px-2 sm:px-4 md:px-6 py-4">
         <div class="mb-2 sm:mb-4">
           <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
-            Currently viewing: <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
-            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData.length }} records)</span>
+            {{ t('admin.currentlyViewing') }} <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
+            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData.length }} {{ t('admin.records') }})</span>
           </h2>
         </div>
         <div class="mb-2 sm:mb-4">
           <div class="w-full max-w-md">
             <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">
-              Search in all fields
+              {{ t('admin.searchInAllFields') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -159,7 +170,7 @@ onBeforeUnmount(() => {
                 id="search-input"
                 v-model="searchQuery"
                 type="text"
-                placeholder="Search in all fields..."
+                :placeholder="t('admin.searchPlaceholder')"
                 class="block w-full px-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder:text-gray-500 focus:outline-none focus:placeholder:text-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               >
               <div class="absolute inset-y-0 right-0 pr-3 flex items-center">

@@ -1,0 +1,53 @@
+{
+  "admin": {
+    "currentlyViewing": "Aktualnie przeglądasz:",
+    "records": "rekordów",
+    "searchInAllFields": "Szukaj we wszystkich polach",
+    "searchPlaceholder": "Szukaj we wszystkich polach...",
+    "sidebar": {
+      "cruds": "CRUDy",
+      "pets": "Zwierzęta",
+      "users": "Użytkownicy",
+      "shelters": "Schroniska",
+      "logs": "Logi",
+      "goToProfile": "Przejdź do swojego profilu"
+    },
+    "table": {
+      "title": "Dynamiczna tabela danych",
+      "subtitle": "Automatycznie dostosowuje się do danych z bazy",
+      "filters": "Filtry",
+      "clearAll": "Wyczyść wszystko",
+      "actions": "Akcje",
+      "edit": "Edytuj",
+      "all": "Wszystkie",
+      "filterPlaceholder": "Filtruj {field}...",
+      "noResults": "Brak wyników pasujących do filtrów"
+    },
+    "modal": {
+      "edit": "Edytuj {type}",
+      "saveChanges": "Zapisz zmiany",
+      "cancel": "Anuluj",
+      "select": "Wybierz {field}"
+    },
+    "pagination": {
+      "previous": "Poprzednia",
+      "next": "Następna",
+      "first": "Pierwsza",
+      "last": "Ostatnia",
+      "showing": "Pokazuję",
+      "to": "do",
+      "of": "z",
+      "results": "wyników",
+      "emptyTable": "Pusta tabela",
+      "noDataAvailable": "brak dostępnych danych"
+    },
+    "profile": {
+      "title": "Profil użytkownika",
+      "administrator": "Administrator",
+      "changePicture": "Zmień zdjęcie",
+      "changePassword": "Zmień hasło",
+      "logout": "Wyloguj się"
+    }
+  }
+}
+
