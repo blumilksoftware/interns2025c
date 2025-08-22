@@ -71,8 +71,8 @@ const handleHidePetList = () => {
                   class="w-full h-auto object-cover" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
-                  @click="$inertia.visit(`/pets/static/${pet.id}`)"
                   style="cursor: pointer;"
+                  @click="$inertia.visit(`/pets/static/${pet.id}`)"
                 >
               </div>
               

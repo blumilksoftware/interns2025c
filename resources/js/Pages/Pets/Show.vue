@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Header from '../../Components/Header.vue'
 import Footer from '../../Components/Footer.vue'
@@ -38,6 +38,12 @@ const personalityTraits = computed(() => {
   return p.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
 })
 
+const petTagObjects = computed(() => {
+  const p = effectivePet.value
+  if (!p?.tags || !Array.isArray(p.tags)) return []
+  return p.tags.map(tagId => petTags[tagId]).filter(Boolean)
+})
+
 const imageUrls = computed(() => {
   const p = effectivePet.value
   if (!p) return []
@@ -63,228 +69,114 @@ const characteristics = computed(() => {
 const pageTitle = computed(() => effectivePet.value?.name ? `${t('dashboard.mvp.meetPet')} ${effectivePet.value.name}` : 'Pet')
 
 const currentImageIndex = ref(0)
-const autoPlayInterval = ref(null)
-const isTransitioning = ref(false)
-const isAutoPlayActive = ref(true)
 
-const startAutoPlay = () => {
-  if (
-    imageUrls.value.length > 1 &&
-    isAutoPlayActive.value &&
-    currentImageIndex.value < imageUrls.value.length - 1
-  ) {
-    autoPlayInterval.value = setInterval(() => {
-      nextImage()
-    }, 4000)
-  }
-}
+const carouselTransform = computed(() => {
+  return `translateX(calc(-${currentImageIndex.value} * 50vw + 25vw))`
+})
 
-const stopAutoPlay = () => {
-  if (autoPlayInterval.value) {
-    clearInterval(autoPlayInterval.value)
-    autoPlayInterval.value = null
-  }
-}
-
-const toggleAutoPlay = () => {
-  isAutoPlayActive.value = !isAutoPlayActive.value
-  if (isAutoPlayActive.value) {
-    startAutoPlay()
-  } else {
-    stopAutoPlay()
-  }
-}
-
-const resetAutoPlay = () => {
-  stopAutoPlay()
-  // Only restart if auto-play is enabled and we are not at the last image
-  if (isAutoPlayActive.value && currentImageIndex.value < imageUrls.value.length - 1) {
-    setTimeout(() => {
-      startAutoPlay()
-    }, 5000)
+const prevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--
   }
 }
 
 const nextImage = () => {
-  if (isTransitioning.value || imageUrls.value.length <= 1) return
-  // prevent looping beyond last image
-  if (currentImageIndex.value >= imageUrls.value.length - 1) return
-  isTransitioning.value = true
-  currentImageIndex.value = currentImageIndex.value + 1
-  setTimeout(() => {
-    isTransitioning.value = false
-  }, 600) // Increased to match CSS transition
-  resetAutoPlay() // Reset auto-play after manual navigation
+  if (currentImageIndex.value < imageUrls.value.length - 1) {
+    currentImageIndex.value++
+  }
 }
 
-const prevImage = () => {
-  if (isTransitioning.value || imageUrls.value.length <= 1) return
-  // prevent looping before first image
-  if (currentImageIndex.value <= 0) return
-  isTransitioning.value = true
-  currentImageIndex.value = currentImageIndex.value - 1
-  setTimeout(() => {
-    isTransitioning.value = false
-  }, 600) // Increased to match CSS transition
-  resetAutoPlay() // Reset auto-play after manual navigation
-}
+const isFullscreen = ref(false)
 
-const goToImage = (index) => {
-  if (isTransitioning.value || index === currentImageIndex.value) return
-  isTransitioning.value = true
+const openFullscreen = (index) => {
   currentImageIndex.value = index
-  setTimeout(() => {
-    isTransitioning.value = false
-  }, 600) // Increased to match CSS transition
-  resetAutoPlay() // Reset auto-play after manual navigation
+  isFullscreen.value = true
 }
 
-let touchStartX = 0
-let touchEndX = 0
-
-const handleTouchStart = (e) => {
-  touchStartX = e.touches[0].clientX
+const closeFullscreen = () => {
+  isFullscreen.value = false
 }
 
-const handleTouchEnd = (e) => {
-  touchEndX = e.changedTouches[0].clientX
-  handleSwipe()
-}
-
-const handleSwipe = () => {
-  const swipeThreshold = 100 // Increased from 50 to reduce accidental swipes
-  const swipeDistance = touchStartX - touchEndX
-
-  if (Math.abs(swipeDistance) > swipeThreshold) {
-    if (swipeDistance > 0) {
-      nextImage()
-    } else {
-      prevImage()
-    }
+const handleKeydown = (e) => {
+  if (!isFullscreen.value) return
+  if (e.key === 'Escape') {
+    isFullscreen.value = false
+  } else if (e.key === 'ArrowRight') {
+    nextImage()
+  } else if (e.key === 'ArrowLeft') {
+    prevImage()
   }
 }
 
 onMounted(() => {
-  startAutoPlay()
+  window.addEventListener('keydown', handleKeydown)
 })
 
-onUnmounted(() => {
-  stopAutoPlay()
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
+
 </script>
 
 <template>
   <div class="min-h-screen bg-white">
-    <Head :title="pageTitle" />
+    <Head :title="pageTitle" />     
     <Header />
-
-    <div class="w-full ">
-      <div v-if="imageUrls.length > 1" class="flex justify-between items-center p-4">
-        <div class="text-sm text-gray-600 flex items-center gap-2">
-          {{ currentImageIndex + 1 }} z {{ imageUrls.length }} zdjęć
-          <div v-if="isAutoPlayActive" class="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Automatyczne przesuwanie aktywne"></div>
-          <div v-else class="w-2 h-2 bg-gray-400 rounded-full" title="Automatyczne przesuwanie wstrzymane"></div>
-        </div>
-        <div class="flex items-center gap-4">
-          <!-- Auto-play Toggle Switch -->
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-600">Auto</span>
-            <button
-              @click="toggleAutoPlay"
-              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              :class="isAutoPlayActive ? 'bg-blue-600' : 'bg-gray-200'"
-            >
-              <span
-                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-                :class="isAutoPlayActive ? 'translate-x-6' : 'translate-x-1'"
-              />
-            </button>
-          </div>
- 
-      </div>
-    </div>
-
-    <div
-  class="relative overflow-hidden"
-  style="height: min(70vh, 600px)"
-  @mouseenter="isAutoPlayActive && stopAutoPlay()"
-  @mouseleave="isAutoPlayActive && startAutoPlay()"
-  @touchstart="handleTouchStart"
-  @touchend="handleTouchEnd"
->
-  <div
-    class="flex transition-transform duration-500 ease-in-out items-center"
-    :style="{ transform: `translateX(-${currentImageIndex * 80}%)` }"
-  >
-    <div
-      v-for="(src, idx) in imageUrls"
-      :key="idx"
-      class="flex-shrink-0 w-[80%] sm:w-[60%] h-full px-2 relative transition-all duration-500"
-      :class="idx === currentImageIndex ? 'scale-100 opacity-100 z-10' : 'scale-90 opacity-60 z-0'"
-    >
-      <img
-        :src="src"
-        :alt="`${effectivePet?.name || 'Pet'} - ${idx + 1}`"
-        class="w-full h-full object-contain rounded-xl shadow-lg"
-      />
-    </div>
-  </div>
-
-  <!-- Navigation Arrows -->
-  <button
-    v-if="imageUrls.length > 1"
-    @click="prevImage"
-    :disabled="isTransitioning || currentImageIndex === 0"
-    class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
-  >
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
-
-  <button
-    v-if="imageUrls.length > 1"
-    @click="nextImage"
-    :disabled="isTransitioning || currentImageIndex === imageUrls.length - 1"
-    class="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-40 disabled:cursor-not-allowed"
-  >
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-  </button>
-</div>
-
-      <div v-if="imageUrls.length > 1" class="bg-gray-400/20 mx-auto my-4 max-w-2xl w-fit rounded-lg">
-        <div class="overflow-x-auto scrollbar-hide">
-          <div class="flex space-x-2 p-4 min-w-max mx-auto justify-center">
-            <div
-              v-for="(src, idx) in imageUrls"
-              :key="idx"
-              @click="goToImage(idx)"
-              class="flex-shrink-0 w-20 h-20 cursor-pointe mx-4 rounded-lg overflow-hidden transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              :class="[
-                idx === currentImageIndex
-                  ? 'ring-2 ring-blue-500 shadow-lg scale-105'
-                  : 'hover:shadow-md'
-              ]"
-            >
+    <div class="relative w-full overflow-hidden bg-gray-300/60 px-20 py-4 rounded-lg dark:bg-neutral-900">
+      <div class="relative flex h-96 justify-center">
+        <div 
+          class="flex transition-transform duration-700 h-96 ml-[50vw]" 
+          :style="{ transform: carouselTransform }"
+        >
+          <div 
+            v-for="(url, index) in imageUrls" 
+            :key="index"
+            class="w-[50vw] shrink-0 px-[5vw]"
+          >
+            <div class="flex justify-center h-full bg-gray-100 dark:bg-neutral-900">
               <img
-                :src="src"
-                :alt="`${effectivePet?.name || 'Pet'} miniature ${idx + 1}`"
-                class="w-full h-full object-cover"
-              />
+                :src="url"
+                :alt="`${effectivePet?.name || 'Pet'} - ${index + 1}`"
+                class="size-full object-cover hover:scale-105 transition-transform duration-300 rounded-lg cursor-zoom-in"
+                @click="openFullscreen(index)"
+              >
             </div>
           </div>
         </div>
       </div>
-    </div>
 
+      <button 
+        type="button" 
+        :disabled="currentImageIndex === 0"
+        class="absolute inset-y-0 start-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="prevImage"
+      >
+        <span class="text-2xl" aria-hidden="true">
+          <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </span>
+        <span class="sr-only">Previous</span>
+      </button>
+      <button 
+        type="button" 
+        :disabled="currentImageIndex >= imageUrls.length - 1"
+        class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="nextImage"
+      >
+        <span class="sr-only">Next</span>
+        <span class="text-2xl" aria-hidden="true">
+          <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </span>
+      </button>
+    </div>
     <div class="mx-auto max-w-6xl px-6 lg:px-8 py-8">
       <div class="mb-6">
         <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">{{ effectivePet?.name }}</h1>
         <p v-if="effectivePet?.breed" class="mt-1 text-lg text-gray-600">{{ effectivePet.breed }}</p>
       </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
           <div>
@@ -296,7 +188,6 @@ onUnmounted(() => {
               </li>
             </ul>
           </div>
-
           <div v-if="personalityTraits.length">
             <h2 class="text-xl font-semibold text-gray-900 mb-3">{{ t('dashboard.mvp.personalityTraits') }}</h2>
             <div class="flex flex-wrap gap-2">
@@ -310,84 +201,85 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-
         <div class="lg:col-span-1">
           <h2 class="text-xl font-semibold text-gray-900 mb-3">{{ t('dashboard.aboutPet') }}</h2>
           <p class="text-base text-gray-700 leading-relaxed">{{ effectivePet?.description }}</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span v-if="effectivePet?.age" class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ effectivePet.age }}</span>
+            <span v-if="effectivePet?.status" class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ effectivePet.status }}</span>
+          </div>
+          <div v-if="petTagObjects.length" class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1">
+            <span 
+              v-for="tag in petTagObjects" 
+              :key="tag.name"
+              class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate border"
+              :class="tag.color"
+            >
+              <span class="text-sm shrink-0">{{ tag.emoji }}</span>
+              <span class="truncate text-sm">{{ tag.name }}</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
+
     <Footer />
+
+    <!-- Fullscreen Image Viewer -->
+    <div
+      v-if="isFullscreen"
+      class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+      @click.self="closeFullscreen"
+    >
+      <button
+        type="button"
+        class="absolute top-4 right-4 text-white/80 hover:text-white"
+        aria-label="Close"
+        @click="closeFullscreen"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+
+      <button
+        v-if="currentImageIndex > 0"
+        type="button"
+        class="absolute left-4 md:left-8 text-white/80 hover:text-white p-2"
+        aria-label="Previous"
+        @click.stop="prevImage"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+
+      <img
+        :src="imageUrls[currentImageIndex]"
+        :alt="`${effectivePet?.name || 'Pet'} - ${currentImageIndex + 1}`"
+        class="max-w-[90vw] max-h-[90vh] object-contain rounded"
+      >
+
+      <button
+        v-if="currentImageIndex < imageUrls.length - 1"
+        type="button"
+        class="absolute right-4 md:right-8 text-white/80 hover:text-white p-2"
+        aria-label="Next"
+        @click.stop="nextImage"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+    <!-- /Fullscreen Image Viewer -->
   </div>
-  
 </template>
 
 <style scoped>
-::-webkit-scrollbar { display: none; }
-* { -ms-overflow-style: none; scrollbar-width: none; }
-
-.gallery-container {
-  touch-action: pan-y;
-}
-
-.image-container {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.image-transition {
-  transition: opacity 0.3s ease-in-out;
-}
-
-.image-transition.fade-enter-active,
-.image-transition.fade-leave-active {
-  transition: opacity 0.3s ease-in-out;
-}
-
-.image-transition.fade-enter-from,
-.image-transition.fade-leave-to {
-  opacity: 0;
-}
-
-.nav-button {
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.nav-button:focus-visible {
-  outline: 2px solid theme('colors.blue.500');
-  outline-offset: 2px;
-}
-
-.indicator-button:focus-visible {
-  outline: 2px solid theme('colors.blue.500');
-  outline-offset: 2px;
-}
-
-/* Animation for auto-play indicator */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.auto-play-indicator {
-  animation: pulse 2s infinite;
-}
-
-@media (max-width: 640px) {
-  .gallery-container {
-    height: 50vh;
-  }
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
 </style>
 
 
+  
