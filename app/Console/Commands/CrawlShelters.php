@@ -20,11 +20,6 @@ class CrawlShelters extends Command
     protected CrawlerConnector $connector;
     protected GeminiService $gemini;
 
-    public function __construct(
-    ) {
-        parent::__construct();
-    }
-
     public function handle(
         CrawlerConnector $connector,
         GeminiService $gemini,

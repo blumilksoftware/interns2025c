@@ -30,11 +30,6 @@ class CrawlPets extends Command
     protected CrawlerConnector $connector;
     protected PetPageAnalyzer $petPageAnalyzer;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(
         PetService $petService,
         GeminiService $gemini,
