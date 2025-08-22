@@ -78,19 +78,11 @@ class CrawlShelters extends Command
                     $batchPrompt = $prompt . "\n\nThis is batch " . ($index + 1) . " z {$batches->count()} 
                     Analyze the following data and return a JSON format";
 
-                    $payload = [
-                        "contents" => [
-                            [
-                                "parts" => [
-                                    ["text" => "$batchPrompt \n\n Page content: \n $batchOfPetShelterData]"],
-                                ],
-                            ],
-                        ],
-                    ];
+                    $payload = $this->gemini->createGeminiPayload($batchPrompt, $batchOfPetShelterData);
 
                     try {
                         $result = $this->gemini->generateContent($payload);
-                        $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
+                        $raw = $this->gemini->getGeminiResult($result);
 
                         if ($raw) {
                             $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));

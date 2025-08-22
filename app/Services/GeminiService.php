@@ -40,4 +40,26 @@ class GeminiService
 
         return $response->json();
     }
+
+    public function createGeminiPayload(string $prompt, string $payload): array
+    {
+        return [
+            "contents" => [
+                [
+                    "parts" => [
+                        ["text" => "Prompt: $prompt , Page content: $payload"],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    public function getGeminiResult(array $response): string
+    {
+        if (isset($response["candidates"][0]["content"]["parts"][0]["text"])) {
+            return $response["candidates"][0]["content"]["parts"][0]["text"];
+        }
+
+        throw new RuntimeException("Invalid Gemini response structure");
+    }
 }

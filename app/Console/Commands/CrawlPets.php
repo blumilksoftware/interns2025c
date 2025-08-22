@@ -8,12 +8,15 @@ use App\Http\Integrations\Connectors\CrawlerConnector;
 use App\Http\Integrations\Requests\GetPageRequest;
 use App\Models\PetShelter;
 use App\Services\GeminiService;
+use App\Services\PetPageAnalyzer;
 use App\Services\PetService;
+use App\Services\WebpagePayloadBuilder;
+use App\Utils\DomAttributeCleaner;
+use App\Utils\DomAttributeExtractor;
 use App\Utils\UrlFormatHelper;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\Exceptions\Request\RequestException;
 use Symfony\Component\DomCrawler\Crawler;
@@ -25,6 +28,7 @@ class CrawlPets extends Command
     protected PetService $petService;
     protected GeminiService $gemini;
     protected CrawlerConnector $connector;
+    protected PetPageAnalyzer $petPageAnalyzer;
 
     public function __construct()
     {
@@ -35,10 +39,12 @@ class CrawlPets extends Command
         PetService $petService,
         GeminiService $gemini,
         CrawlerConnector $connector,
+        PetPageAnalyzer $petPageAnalyzer,
     ): void {
         $this->petService = $petService;
         $this->gemini = $gemini;
         $this->connector = $connector;
+        $this->petPageAnalyzer = $petPageAnalyzer;
 
         $petSheltersWithExistingUrl = PetShelter::whereNotNull("url")->get();
 
@@ -49,7 +55,11 @@ class CrawlPets extends Command
         }
 
         if ($additionalUrls = $this->option("additional-urls")) {
-            $additionalUrlsArray = array_map("trim", explode(",", $additionalUrls));
+            $additionalUrlsArray = collect(explode(",", $additionalUrls))
+                ->map(fn($u) => trim($u))
+                ->filter(fn($u) => !empty($u))
+                ->unique()
+                ->all();
             $additionalObjects = array_map(fn($u) => (object)["url" => $u, "id" => null], $additionalUrlsArray);
 
             $existingUrls = $petShelterUrls->pluck("url")->all();
@@ -139,43 +149,48 @@ class CrawlPets extends Command
 
             $crawler = new Crawler($html);
 
-            $getWebpageClearBodyText = $this->clearHtmlUnnecessaryTags($crawler);
+            $getWebpageClearBodyText = DomAttributeCleaner::clearHtmlUnnecessaryTags($crawler);
 
-            if (!$this->isLikelyAPetPage($getWebpageClearBodyText, 6) && $depth > 0) {
+            if ((!$this->petPageAnalyzer->isLikelyAPetPage($getWebpageClearBodyText, 7)) && $depth > 0) {
                 $this->info("Page does not appear to be specific pet page: $adoptionUrl - Skipping");
 
                 continue;
             }
 
-            $this->removeUnnecessaryNodes($crawler);
+            DomAttributeCleaner::removeUnnecessaryNodes($crawler);
 
-            $imageAltsArr = $this->getImageAltsFromWebpage($crawler);
-            $iconsArr = $this->getIconsFromWebpage($crawler);
-            $svgsArr = $this->getSvgLabelsFromWebpage($crawler);
+            $imageAltsArr = DomAttributeExtractor::getImageAltsFromWebpage($crawler);
+            $iconsArr = DomAttributeExtractor::getIconsFromWebpage($crawler);
+            $svgsArr = DomAttributeExtractor::getSvgLabelsFromWebpage($crawler);
 
-            $imageAlts = array_filter(array_map(fn($img) => $img["alt"] ?? "", $imageAltsArr));
-            $iconTitles = array_filter(array_map(fn($icon) => $icon["title"] ?? "", $iconsArr));
-            $svgLabels = array_filter(array_map(fn($svg) => $svg["aria"] ?? "", $svgsArr));
+            $imageAlts = array_filter(array_map(
+                fn(array $img): string => $img["alt"],
+                $imageAltsArr,
+            ));
 
-            $fullPayload = $getWebpageClearBodyText .
-                "\n\nImage Alts: " . implode(", ", $imageAlts) .
-                "\nIcon Titles: " . implode(", ", $iconTitles) .
-                "\nSVG Labels: " . implode(", ", $svgLabels);
+            $iconTitles = array_filter(array_map(
+                fn(array $icon): string => $icon["title"],
+                $iconsArr,
+            ));
+
+            $svgLabels = array_filter(array_map(
+                fn(array $svg): string => $svg["aria"],
+                $svgsArr,
+            ));
+
+            $fullPayload = WebpagePayloadBuilder::build(
+                $getWebpageClearBodyText,
+                $imageAlts,
+                $iconTitles,
+                $svgLabels,
+            );
 
             $prompt = config("prompts.crawl_shelters");
-            $payload = [
-                "contents" => [
-                    [
-                        "parts" => [
-                            ["text" => "Prompt: $prompt , Page content: $fullPayload"],
-                        ],
-                    ],
-                ],
-            ];
+            $payload = $this->gemini->createGeminiPayload($prompt, $fullPayload);
 
             try {
                 $result = $this->gemini->generateContent($payload);
-                $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
+                $raw = $this->gemini->getGeminiResult($result);
 
                 if ($raw) {
                     $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
@@ -186,8 +201,6 @@ class CrawlPets extends Command
                     if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
                         $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
                         $this->petService->store($petData, $baseUrl, $adoptionUrl);
-                    } else {
-                        $this->warn("Invalid JSON from Gemini for $adoptionUrl");
                     }
                 }
                 sleep(1);
@@ -195,7 +208,7 @@ class CrawlPets extends Command
                 $this->warn("Gemini failed: " . $e->getMessage());
             }
 
-            $links = $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href"));
+            $links = DomAttributeExtractor::getLinksFromWebpage($crawler);
 
             foreach ($links as $link) {
                 if (!$link) {
@@ -217,91 +230,6 @@ class CrawlPets extends Command
                 $queue[] = [$absoluteUrl, $depth + 1];
             }
         }
-    }
-
-    protected function removeUnnecessaryNodes(Crawler $crawler): void
-    {
-        $crawler->filter("script, style, .ads, .sidebar")->each(function (Crawler $node): void {
-            $n = $node->getNode(0);
-
-            if ($n && $n->parentNode) {
-                $n->parentNode->removeChild($n);
-            }
-        });
-    }
-
-    protected function clearHtmlUnnecessaryTags(Crawler $crawler): string
-    {
-        $this->removeUnnecessaryNodes($crawler);
-
-        $bodyCrawler = $crawler->filter("body");
-
-        return trim($bodyCrawler->text());
-    }
-
-    protected function getSvgLabelsFromWebpage(Crawler $crawler): array
-    {
-        return $crawler->filter("svg[aria-label]")->each(fn(Crawler $node) => [
-            "aria" => trim((string)$node->attr("aria-label")),
-            "class" => trim($node->attr("class") ?? ""),
-        ]);
-    }
-
-    protected function getImageAltsFromWebpage(Crawler $crawler): array
-    {
-        return $crawler->filter("img[alt]")->each(fn(Crawler $node) => [
-            "alt" => trim((string)$node->attr("alt")),
-            "class" => trim($node->attr("class") ?? ""),
-            "title" => trim($node->attr("title") ?? ""),
-        ]);
-    }
-
-    protected function getIconsFromWebpage(Crawler $crawler): array
-    {
-        return $crawler->filter('i[class*="icon-"], span[class*="icon-"], span.check, i.check')
-            ->each(fn(Crawler $node) => [
-                "class" => trim($node->attr("class") ?? ""),
-                "title" => trim($node->attr("title") ?? ""),
-                "aria" => trim($node->attr("aria-label") ?? ""),
-                "data" => trim($node->attr("data-field") ?? ""),
-            ]);
-    }
-
-    protected function isLikelyAPetPage(string $body, ?int $threshold = null): bool
-    {
-        $body = html_entity_decode($body, ENT_QUOTES | ENT_HTML5);
-        $bodyLower = mb_strtolower($body);
-        $bodyAscii = Str::ascii($bodyLower);
-
-        $petKeywords = array_values(array_filter(array_unique(config("crawl_keywords.pet_keywords", []))));
-        $requiredKeywords = array_values(array_filter(array_unique(config("crawl_keywords.required_keywords", []))));
-
-        $allKeywords = array_merge($petKeywords, $requiredKeywords);
-
-        $allKeywordsLower = array_map(fn($k) => mb_strtolower($k), $allKeywords);
-        $allKeywordsAscii = array_map(fn($k) => Str::ascii(mb_strtolower($k)), $allKeywordsLower);
-
-        if ($threshold === null) {
-            $threshold = min(5, count($allKeywords));
-        }
-
-        $score = 0;
-        $matchedKeywords = [];
-
-        foreach ($allKeywordsLower as $i => $kwLower) {
-            if ($kwLower === "") {
-                continue;
-            }
-
-            if ((stripos($bodyLower, $kwLower) !== false || stripos($bodyAscii, $allKeywordsAscii[$i]) !== false)
-                && !in_array($kwLower, $matchedKeywords, true)
-            ) {
-                $score++;
-                $matchedKeywords[] = $kwLower;
-            }
-        }
-
-        return $score >= $threshold;
     }
 
     protected function checkIfUrlContainAntiKeywords(string $url): bool
