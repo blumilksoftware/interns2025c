@@ -18,7 +18,7 @@ class TagTest extends TestCase
     public function testUserWithAdminRoleCanCreateTag(): void
     {
         $admin = User::factory()->create([
-            "role" => Role::ADMIN->value,
+            "role" => Role::Admin->value,
         ]);
 
         $response = $this->actingAs($admin)->post("/tags", ["name" => "newtag"]);
@@ -29,7 +29,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotCreateTag(): void
     {
-        $roles = [Role::USER->value, Role::SHELTER->value];
+        $roles = [Role::User->value, Role::Shelter->value];
 
         foreach ($roles as $role) {
             $user = User::factory()->create([
@@ -79,7 +79,7 @@ class TagTest extends TestCase
         $tag = Tag::create(["name" => "oldname"]);
 
         $admin = User::factory()->create([
-            "role" => Role::ADMIN->value,
+            "role" => Role::Admin->value,
         ]);
 
         $response = $this->actingAs($admin)->put("/tags/{$tag->id}", ["name" => "newname"]);
@@ -90,7 +90,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotUpdateTag(): void
     {
-        $roles = [Role::USER->value, Role::SHELTER->value];
+        $roles = [Role::User->value, Role::Shelter->value];
 
         foreach ($roles as $index => $role) {
             $user = User::factory()->create([
@@ -152,7 +152,7 @@ class TagTest extends TestCase
     public function testUserWithAdminRoleCanDeleteTag(): void
     {
         $user = User::factory()->create([
-            "role" => Role::ADMIN->value,
+            "role" => Role::Admin->value,
         ]);
         $tag = Tag::create(["name" => "tobedeleted"]);
 
@@ -164,7 +164,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotDeleteTag(): void
     {
-        $roles = [Role::USER->value, Role::SHELTER->value];
+        $roles = [Role::User->value, Role::Shelter->value];
 
         foreach ($roles as $role => $index) {
             $user = User::factory()->create([

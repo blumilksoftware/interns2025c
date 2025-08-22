@@ -19,7 +19,7 @@ class PetTest extends TestCase
     public function testUserWithProperRoleCanCreatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::SHELTER->value,
+            "role" => Role::Shelter->value,
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
@@ -36,7 +36,7 @@ class PetTest extends TestCase
     public function testUserWithoutProperRoleCannotCreatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::USER->value,
+            "role" => Role::User->value,
         ]);
 
         $pet = Pet::factory()->make([
@@ -93,7 +93,7 @@ class PetTest extends TestCase
     public function testUserWithProperRoleCanUpdatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::SHELTER->value,
+            "role" => Role::Shelter->value,
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
@@ -120,7 +120,7 @@ class PetTest extends TestCase
     public function testUserWithoutProperRoleCannotUpdatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::USER->value,
+            "role" => Role::User->value,
         ]);
 
         $pet = Pet::factory()->create([
@@ -156,7 +156,7 @@ class PetTest extends TestCase
 
     public function testUserWithShelterOrAdminRoleCanDeletePet(): void
     {
-        $roles = [Role::SHELTER->value, Role::ADMIN->value];
+        $roles = [Role::Shelter->value, Role::Admin->value];
 
         foreach ($roles as $role) {
             $pet = Pet::factory()->create();
@@ -173,7 +173,7 @@ class PetTest extends TestCase
     {
         $pet = Pet::factory()->create();
         $user = User::factory()->create([
-            "role" => Role::USER->value,
+            "role" => Role::User->value,
         ]);
 
         $response = $this->actingAs($user)->delete("/pets/{$pet->id}");

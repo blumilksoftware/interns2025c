@@ -31,7 +31,7 @@ class UserFactory extends Factory
 
     public function chooseRandomRole(): string
     {
-        return $this->faker->randomElement([Role::ADMIN, Role::USER])->value;
+        return $this->faker->randomElement([Role::Admin, Role::User])->value;
     }
 
     public function unverified(): static

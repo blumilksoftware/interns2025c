@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum PetAdoptionStatus: String
+enum PetAdoptionStatus: string
 {
-    case ADOPTED = "adopted";
-    case WAITING_FOR_ADOPTION = "waiting for adoption";
-    case QUARANTINED = "quarantined";
-    case TEMPORARY_HOME = "in temporary home";
+    case Adopted = "adopted";
+    case WaitingForAdoption = "waiting for adoption";
+    case Quarantined = "quarantined";
+    case TemporaryHome = "in temporary home";
 }
