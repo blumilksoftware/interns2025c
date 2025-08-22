@@ -22,17 +22,24 @@ class CrawlPets extends Command
 {
     protected $signature = "crawl:pets {url?} {--depth=2} {--additional-urls=}";
     protected $description = "Crawl saved url of shelter sites and analyze pages with AI to extract pet info";
+    protected PetService $petService;
+    protected GeminiService $gemini;
+    protected CrawlerConnector $connector;
 
-    public function __construct(
-        protected PetService $petService,
-        protected GeminiService $gemini,
-        protected CrawlerConnector $connector,
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(
+        PetService $petService,
+        GeminiService $gemini,
+        CrawlerConnector $connector,
+    ): void {
+        $this->petService = $petService;
+        $this->gemini = $gemini;
+        $this->connector = $connector;
+
         $petSheltersWithExistingUrl = PetShelter::whereNotNull("url")->get();
 
         if ($argumentUrl = $this->argument("url")) {

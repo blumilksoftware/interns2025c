@@ -17,16 +17,21 @@ class CrawlShelters extends Command
 {
     protected $signature = "crawl:shelters {url?} {--batch-size=100 : Number of items per batch}";
     protected $description = "Crawl specific website and analyze content with Gemini AI to save shelters info into DB";
+    protected CrawlerConnector $connector;
+    protected GeminiService $gemini;
 
     public function __construct(
-        protected CrawlerConnector $connector,
-        protected GeminiService $gemini,
     ) {
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(
+        CrawlerConnector $connector,
+        GeminiService $gemini,
+    ): void {
+        $this->connector = $connector;
+        $this->gemini = $gemini;
+
         $batchSize = (int)$this->option("batch-size");
 
         if ($url = $this->argument("url")) {
