@@ -68,12 +68,12 @@ EOT,
 Return results in JSON format containing an array of shelters. For each shelter, extract the following information:
 
 - name: full name of the shelter
-- phone: phone number (remove all spaces and dashes, keep only digits and + sign)
-- email: email address (if available)
-- description: brief description of the shelter (maximum 200 characters)
+- phone: phone number (remove all spaces and dashes, keep only digits )
+- email address (if available)
+- description: brief description of the shelter (maximum 300 characters)
 - address: street with number (e.g. "ul. Zdzieszulicka 12")
-- city: city name (e.g. "Bełchatów")
-- postal_code: postal/zip code (e.g. "97-400")
+- city name (e.g. "Bełchatów")
+- postal/zip code (e.g. "97-400")
 - url: shelter website URL (if available)
 
 Expected format example:
@@ -103,8 +103,8 @@ Important instructions:
 - If no shelters are found, return: {"shelters": []}
 - Clean phone numbers by removing spaces, dashes, dots, and brackets
 - Extract only concrete shelter information, don't create fictional data
+- If there are more than one similar shelters, leave one with the most complete data
 - Keep all data in **Polish** with correct characters.
-- Correct typos and inconsistent forms (e.g., "średnie" → "średni").
 - Ensure all fields are meaningful. Do not include irrelevant or inferred info.
 
 EOT

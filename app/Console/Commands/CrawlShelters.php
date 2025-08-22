@@ -8,289 +8,208 @@ use App\Http\Integrations\Connectors\CrawlerConnector;
 use App\Http\Integrations\Requests\GetPageRequest;
 use App\Models\PetShelter;
 use App\Services\GeminiService;
-use App\Services\PetService;
-use App\Utils\UrlFormatHelper;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Saloon\Exceptions\Request\FatalRequestException;
-use Saloon\Exceptions\Request\RequestException;
+use Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlShelters extends Command
 {
-    protected $signature = "crawl:shelters {url?} {--depth=2} {--additional-urls=}";
-    protected $description = "Crawl shelter sites and analyze pages with AI";
+    protected $signature = "crawl:shelters {url?} {--batch-size=100 : Number of items per batch}";
+    protected $description = "Crawl specific website and analyze content with Gemini AI to save shelters info into DB";
 
     public function __construct(
-        protected PetService $petService,
-        protected GeminiService $gemini,
         protected CrawlerConnector $connector,
+        protected GeminiService $gemini,
     ) {
         parent::__construct();
     }
 
     public function handle(): void
     {
-        $petSheltersWithExistingUrl = PetShelter::whereNotNull("url")->get();
+        $batchSize = (int)$this->option("batch-size");
 
-        if ($argumentUrl = $this->argument("url")) {
-            $petShelterUrls = collect([(object)["url" => $argumentUrl, "id" => null]]);
+        if ($url = $this->argument("url")) {
+            $shelters = collect([(object)["url" => $url, "id" => null]]);
         } else {
-            $petShelterUrls = collect($petSheltersWithExistingUrl->toArray());
+            $shelters = PetShelter::all();
         }
 
-        if ($additionalUrls = $this->option("additional-urls")) {
-            $additionalUrlsArray = array_map("trim", explode(",", $additionalUrls));
-            $additionalObjects = array_map(fn($u) => (object)["url" => $u, "id" => null], $additionalUrlsArray);
+        foreach ($shelters as $shelter) {
+            $this->info("Checking: $shelter->url");
 
-            $existingUrls = $petShelterUrls->pluck("url")->all();
+            try {
+                $response = $this->connector->send(new GetPageRequest($shelter->url));
+                $html = $response->body();
+                $crawler = new Crawler($html);
 
-            foreach ($additionalObjects as $obj) {
-                if (!in_array($obj->url, $existingUrls, true)) {
-                    $petShelterUrls->push($obj);
+                $this->info("Scrapping: $shelter->url");
+
+                $onlyPetSheltersData = $crawler
+                    ->filter("main div, main p")
+                    ->each(fn(Crawler $node) => trim($node->text()));
+
+                $onlyPetSheltersData = array_values(array_filter($onlyPetSheltersData)); // usuń puste
+
+                if (empty($onlyPetSheltersData)) {
+                    $this->warn("No Pet Shelter Data content to analyze $shelter->url.");
+
+                    continue;
                 }
+
+                // Split the data into batches to avoid hitting API limits
+                $batches = collect($onlyPetSheltersData)->chunk($batchSize);
+                $this->info("Splitting data into {$batches->count()} batches of size $batchSize");
+
+                $allResults = [];
+
+                foreach ($batches as $index => $batch) {
+                    $this->info("Proccessing batch " . ($index + 1) . " of {$batches->count()}");
+
+                    $batchOfPetShelterData = $batch->implode("\n");
+
+                    $prompt = config("prompts.crawl_shelters_addresses");
+
+                    $batchPrompt = $prompt . "\n\nThis is batch " . ($index + 1) . " z {$batches->count()} 
+                    Analyze the following data and return a JSON format";
+
+                    $payload = [
+                        "contents" => [
+                            [
+                                "parts" => [
+                                    ["text" => "$batchPrompt \n\n Page content: \n $batchOfPetShelterData]"],
+                                ],
+                            ],
+                        ],
+                    ];
+
+                    try {
+                        $result = $this->gemini->generateContent($payload);
+                        $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
+
+                        if ($raw) {
+                            $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
+                            $analysis = json_decode($jsonClean, true);
+
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                if (is_array($analysis)) {
+                                    $allResults[] = $analysis;
+                                }
+                            } else {
+                                $this->line($raw);
+                            }
+                        }
+
+                        // Short delay between request to API to avoid DDoS protection
+                        sleep(1);
+                    } catch (Exception $e) {
+                        $this->error("Error during Gemini API call for batch " . ($index + 1) . ": " . $e->getMessage());
+                        Log::error("Gemini API batch " . ($index + 1) . " failed", [
+                            "exception" => $e,
+                            "payload" => $payload,
+                        ]);
+
+                        continue;
+                    }
+                }
+
+                if (!empty($allResults)) {
+                    $finalResult = $this->mergeResults($allResults);
+
+                    Log::info("Gemini analysis for $shelter->url (from {$batches->count()} batches)", $finalResult);
+
+                    $this->info("End result (from {$batches->count()} batches):");
+                    $this->line(json_encode($finalResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+                    $this->store($finalResult);
+                } else {
+                    $this->warn("No valid results");
+                }
+            } catch (Exception $e) {
+                $this->error("Failed before checking $shelter->url due to error: {$e->getMessage()}");
             }
         }
 
-        $maxDepth = (int)$this->option("depth");
-
-        foreach ($petShelterUrls as $index => $url) {
-            $urlString = is_object($url) ? $url->url : $url["url"];
-
-            $this->info("Processing shelter " . ($index + 1) . " of " . count($petShelterUrls) . ": $urlString");
-
-            $this->crawlSite($urlString, $maxDepth);
-
-            $this->info("Completed crawling: $urlString");
-            $this->line("---");
-
-            if ($index < count($petShelterUrls) - 1) {
-                sleep(2);
-            }
-        }
+        $this->info("Crawling and analysis completed.");
     }
 
-    protected function crawlSite(string $startUrl, int $maxDepth = 2): void
+    private function mergeResults(array $results): array
     {
-        $queue = [[$startUrl, 0]]; // url + depth
-        $visited = [];
+        $merged = [
+            "shelters" => [],
+            "total_processed_batches" => count($results),
+            "processing_info" => [
+                "batched" => true,
+                "batch_count" => count($results),
+            ],
+        ];
 
-        $baseHost = UrlFormatHelper::getUrlHost($startUrl);
+        foreach ($results as $result) {
+            if (isset($result["shelters"]) && is_array($result["shelters"])) {
+                $merged["shelters"] = array_merge($merged["shelters"], $result["shelters"]);
+            }
+        }
 
-        if (!$baseHost) {
-            $this->error("Invalid start URL: $startUrl");
+        $merged["total_shelters_found"] = count($merged["shelters"]);
 
+        return $merged;
+    }
+
+    private function store(array $results): void
+    {
+        if (!isset($results["shelters"])) {
             return;
         }
 
-        while ($queue) {
-            [$adoptionUrl, $depth] = array_shift($queue);
+        foreach ($results["shelters"] as $shelterData) {
+            $name = $shelterData["name"] ?? null;
+            $phone = $shelterData["phone"] ?? null;
 
-            if (isset($visited[$adoptionUrl]) || $depth > $maxDepth) {
-                continue;
-            }
-
-            if ($this->checkIfUrlContainAntiKeywords($adoptionUrl)) {
-                $this->info("Contains anti-keywords: $adoptionUrl - Skipping");
-                $visited[$adoptionUrl] = true;
+            if (!$name) {
+                $this->warn("No name found in Pet Shelter data, skipping");
 
                 continue;
             }
 
-            $visited[$adoptionUrl] = true;
-            $this->info("Crawling (depth $depth): $adoptionUrl");
-            Log::info("Crawling page: $adoptionUrl");
+            $shelter = PetShelter::firstOrNew([
+                "name" => $name,
+                "phone" => $phone,
+            ]);
+            $shelter->email = $shelterData["email"] ?? $shelter->email;
+            $shelter->description = $shelterData["description"] ?? $shelter->description;
+            $shelter->url = $shelterData["url"] ?? $shelter->url;
 
-            try {
-                $response = $this->connector->send(new GetPageRequest($adoptionUrl));
-
-                if ($response->isCached() && $depth > 0) {
-                    $this->info("Respone is cached - Skipping HTTP request for $adoptionUrl");
-
-                    continue;
-                }  
-                Log::info("Fetched fresh response for $adoptionUrl");
-
-                $html = $response->body();
-            } catch (RequestException $e) {
-                Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
-
-                continue;
-            } catch (FatalRequestException $e) {
-                Log::error("Critical error while requesting $adoptionUrl: " . $e->getMessage());
-
-                continue;
+            if ($shelter->exists) {
+                if ($shelter->isDirty()) {
+                    $shelter->save();
+                    $this->line("Updated Pet Shelter: $name");
+                } else {
+                    $this->line("Skipping: $name");
+                }
+            } else {
+                $shelter->save();
+                $this->line("Saving Pet Shelter to DB: $name");
             }
 
-            if (!$html) {
-                $this->warn("Skipping $adoptionUrl due to failed HTTP request or cache.");
-
-                continue;
-            }
-
-            $crawler = new Crawler($html);
-
-            $getWebpageClearBodyText = $this->clearHtmlUnnecessaryTags($crawler);
-
-            if (!$this->isLikelyAPetPage($getWebpageClearBodyText, 6) && $depth > 0) {
-                $this->info("Page does not appear to be specific pet page: $adoptionUrl - Skipping");
-
-                continue;
-            }
-            $altAndIcons = $this->getAltAndIconTags($crawler);
-
-            $imageAlts = array_map(fn($img) => $img["alt"], $altAndIcons["images"]);
-            $iconTitles = array_map(fn($icon) => $icon["title"], $altAndIcons["icons"]);
-            $svgLabels = array_map(fn($svg) => $svg["aria"], $altAndIcons["svgs"]);
-
-            $fullPayload = $getWebpageClearBodyText .
-                "\n\nImage Alts: " . implode(", ", $imageAlts) .
-                "\nIcon Titles: " . implode(", ", $iconTitles) .
-                "\nSVG Labels: " . implode(", ", $svgLabels);
-
-            $prompt = config("prompts.crawl_shelters");
-            $payload = [
-                "contents" => [
-                    [
-                        "parts" => [
-                            ["text" => "Prompt: $prompt , Page content: $fullPayload"],
-                        ],
-                    ],
-                ],
+            $addressPayload = [
+                "address" => null,
+                "city" => null,
+                "postal_code" => null,
             ];
 
-            try {
-                $result = $this->gemini->generateContent($payload);
-                $raw = $result["candidates"][0]["content"]["parts"][0]["text"] ?? null;
-
-                if ($raw) {
-                    $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
-                    $this->line($jsonClean);
-
-                    $petData = json_decode($jsonClean, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
-                        $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
-                        $this->petService->store($petData, $baseUrl, $adoptionUrl);
-                    } else {
-                        $this->warn("Invalid JSON from Gemini for $adoptionUrl");
-                    }
-                }
-                sleep(1);
-            } catch (Exception $e) {
-                $this->warn("Gemini failed: " . $e->getMessage());
+            if (isset($shelterData["shelter_address"]) && is_array($shelterData["shelter_address"])) {
+                $addressPayload["address"] = $shelterData["shelter_address"]["street"] ?? null;
+                $addressPayload["city"] = $shelterData["shelter_address"]["city"] ?? null;
+                $addressPayload["postal_code"] = $shelterData["shelter_address"]["postal_code"] ?? null;
             }
 
-            $links = $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href"));
+            $addressPayload["address"] = $shelterData["address"] ?? $addressPayload["address"];
+            $addressPayload["city"] = $shelterData["city"] ?? $addressPayload["city"];
+            $addressPayload["postal_code"] = $shelterData["postal_code"] ?? $addressPayload["postal_code"];
 
-            foreach ($links as $link) {
-                if (!$link) {
-                    continue;
-                }
-
-                $absoluteUrl = UrlFormatHelper::normalizeUrl($link, $adoptionUrl);
-
-                if (!$absoluteUrl) {
-                    continue;
-                }
-
-                $linkHost = UrlFormatHelper::getUrlHost($absoluteUrl);
-
-                if ($linkHost !== $baseHost) {
-                    continue;
-                }
-
-                $queue[] = [$absoluteUrl, $depth + 1];
+            if (array_filter($addressPayload, fn($v) => $v !== null && $v !== "")) {
+                $shelter->address()->update($addressPayload);
             }
         }
-    }
-
-    protected function clearHtmlUnnecessaryTags(Crawler $crawler): string
-    {
-        $bodyCrawler = $crawler->filter("body");
-        $bodyCrawler->filter("script, style, .ads, .sidebar")->each(
-            fn(Crawler $node) => $node->getNode(0)->parentNode->removeChild($node->getNode(0)),
-        );
-
-        return trim($bodyCrawler->text());
-    }
-
-    protected function getAltAndIconTags(Crawler $crawler): array
-    {
-        $bodyCrawler = $crawler->filter("body");
-        $bodyCrawler->filter("script, style, .ads, .sidebar")->each(
-            fn(Crawler $node) => $node->getNode(0)->parentNode->removeChild($node->getNode(0)),
-        );
-
-        $icons = $bodyCrawler->filter('i[class*="icon-"], span[class*="icon-"], span.check, i.check')
-            ->each(fn(Crawler $node) => [
-                "class" => trim($node->attr("class") ?? ""),
-                "title" => trim($node->attr("title") ?? ""),
-                "aria" => trim($node->attr("aria-label") ?? ""),
-                "data" => trim($node->attr("data-field") ?? ""),
-            ]);
-
-        $images = $bodyCrawler->filter("img[alt]")->each(fn(Crawler $node) => [
-            "alt" => trim($node->attr("alt")),
-            "class" => trim($node->attr("class") ?? ""),
-            "title" => trim($node->attr("title") ?? ""),
-        ]);
-
-        $svgs = $bodyCrawler->filter("svg[aria-label]")->each(fn(Crawler $node) => [
-            "aria" => trim($node->attr("aria-label")),
-            "class" => trim($node->attr("class") ?? ""),
-        ]);
-
-        return [
-            "images" => $images,
-            "icons" => $icons,
-            "svgs" => $svgs,
-        ];
-    }
-
-    protected function isLikelyAPetPage(string $body, ?int $threshold = null): bool
-    {
-        $body = html_entity_decode($body, ENT_QUOTES | ENT_HTML5);
-        $bodyLower = mb_strtolower($body);
-        $bodyAscii = Str::ascii($bodyLower);
-
-        $petKeywords = array_values(array_filter(array_unique(config("crawl_keywords.pet_keywords", []))));
-        $requiredKeywords = array_values(array_filter(array_unique(config("crawl_keywords.required_keywords", []))));
-
-        $allKeywords = array_merge($petKeywords, $requiredKeywords);
-
-        $allKeywordsLower = array_map(fn($k) => mb_strtolower($k), $allKeywords);
-        $allKeywordsAscii = array_map(fn($k) => Str::ascii(mb_strtolower($k)), $allKeywordsLower);
-
-        if ($threshold === null) {
-            $threshold = min(5, count($allKeywords));
-        }
-
-        $score = 0;
-        $matchedKeywords = [];
-
-        foreach ($allKeywordsLower as $i => $kwLower) {
-            if ($kwLower === "") {
-                continue;
-            }
-
-            if ((stripos($bodyLower, $kwLower) !== false || stripos($bodyAscii, $allKeywordsAscii[$i]) !== false)
-                && !in_array($kwLower, $matchedKeywords, true)
-            ) {
-                $score++;
-                $matchedKeywords[] = $kwLower;
-            }
-        }
-
-        return $score >= $threshold;
-    }
-
-    protected function checkIfUrlContainAntiKeywords(string $url): bool
-    {
-        $antiKeywords = config("crawl.anti_keywords");
-
-        return collect($antiKeywords)->contains(fn($keyword) => stripos($url, $keyword) !== false);
     }
 }
