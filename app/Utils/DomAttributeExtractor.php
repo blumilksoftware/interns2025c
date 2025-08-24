@@ -45,8 +45,16 @@ class DomAttributeExtractor
             ]);
     }
 
-    public static function getLinksFromWebpage(Crawler $crawler): array
+    public static function getLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
-        return $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href"));
+        return collect(
+            $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href")),
+        )
+            ->filter()
+            ->map(fn(string $href) => UrlFormatHelper::normalizeUrl($href, $baseUrl))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 }

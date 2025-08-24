@@ -106,6 +106,7 @@ Important instructions:
 - If there are more than one similar shelters, leave one with the most complete data
 - Keep all data in **Polish** with correct characters.
 - Ensure all fields are meaningful. Do not include irrelevant or inferred info.
+- MUST: Always return a valid JSON object 
 
 EOT
 ];

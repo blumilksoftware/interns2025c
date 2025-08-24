@@ -1,0 +1,102 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Jobs;
+
+use App\Services\GeminiService;
+use App\Services\PetShelterService;
+use App\Utils\PayloadBuilder;
+use Exception;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+
+class ExtractPetSheltersInfo implements ShouldQueue
+{
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    public int $tries = 3;
+    public ?int $backoff = 60;
+
+    public function __construct(
+        protected string $batchData,
+        protected string $url,
+        protected string $baseUrl,
+        protected int $batchIndex = 1,
+        protected int $totalBatches = 1,
+    ) {}
+
+    public function handle(GeminiService $gemini, PetShelterService $petShelterService): void
+    {
+        $promptKey = config("prompts.crawl_shelters_addresses");
+        $suffix = "\n\nThis is batch {$this->batchIndex} of {$this->totalBatches}. Analyze the following data and return a JSON format";
+        $promptPayload = PayloadBuilder::promptPayload($promptKey, $suffix);
+        $fullPayload = $gemini->createGeminiPayload($promptPayload, $this->batchData);
+
+        try {
+            $result = $gemini->generateContent($fullPayload);
+            $raw = $gemini->getGeminiResult($result);
+
+            if (!$raw) {
+                Log::warning("Gemini empty response", [
+                    "url" => $this->url,
+                    "batchIndex" => $this->batchIndex,
+                ]);
+
+                return;
+            }
+
+            $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
+            $analysis = json_decode($jsonClean, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::warning("JSON decode failed", [
+                    "error" => json_last_error_msg(),
+                    "url" => $this->url,
+                    "batchIndex" => $this->batchIndex,
+                ]);
+
+                return;
+            }
+
+            if (!is_array($analysis)) {
+                Log::warning("Gemini returned non-array", [
+                    "url" => $this->url,
+                    "batchIndex" => $this->batchIndex,
+                ]);
+
+                return;
+            }
+
+            $petShelterService->store($analysis);
+
+            sleep(1);
+
+            return;
+        } catch (Exception $e) {
+            Log::error("Gemini API call failed in job", [
+                "exception" => $e,
+                "url" => $this->url,
+                "batchIndex" => $this->batchIndex,
+            ]);
+
+            throw $e;
+        }
+    }
+
+    public function failed(Exception $exception): void
+    {
+        Log::error("ExtractPetSheltersInfo job failed", [
+            "exception" => $exception,
+            "url" => $this->url,
+            "batchIndex" => $this->batchIndex,
+        ]);
+    }
+}

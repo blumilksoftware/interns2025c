@@ -6,15 +6,14 @@ namespace App\Console\Commands;
 
 use App\Http\Integrations\Connectors\CrawlerConnector;
 use App\Http\Integrations\Requests\GetPageRequest;
+use App\Jobs\AnalyzePetPage;
 use App\Models\PetShelter;
 use App\Services\GeminiService;
 use App\Services\PetPageAnalyzer;
-use App\Services\PetService;
-use App\Services\WebpagePayloadBuilder;
-use App\Utils\DomAttributeCleaner;
+use App\Services\PetShelterService;
 use App\Utils\DomAttributeExtractor;
 use App\Utils\UrlFormatHelper;
-use Exception;
+use App\Utils\UrlValidator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\FatalRequestException;
@@ -25,62 +24,51 @@ class CrawlPets extends Command
 {
     protected $signature = "crawl:pets {url?} {--depth=2} {--additional-urls=}";
     protected $description = "Crawl saved url of shelter sites and analyze pages with AI to extract pet info";
-    protected PetService $petService;
+    protected PetShelterService $petShelterService;
     protected GeminiService $gemini;
     protected CrawlerConnector $connector;
     protected PetPageAnalyzer $petPageAnalyzer;
 
     public function handle(
-        PetService $petService,
         GeminiService $gemini,
         CrawlerConnector $connector,
         PetPageAnalyzer $petPageAnalyzer,
     ): void {
-        $this->petService = $petService;
         $this->gemini = $gemini;
         $this->connector = $connector;
         $this->petPageAnalyzer = $petPageAnalyzer;
 
-        $petSheltersWithExistingUrl = PetShelter::whereNotNull("url")->get();
+        $petSheltersWithExistingUrl = PetShelter::getAllPetShelterUrls();
 
         if ($argumentUrl = $this->argument("url")) {
-            $petShelterUrls = collect([(object)["url" => $argumentUrl, "id" => null]]);
+            $petShelterUrls = collect([$argumentUrl]);
         } else {
-            $petShelterUrls = collect($petSheltersWithExistingUrl->toArray());
+            $petShelterUrls = collect($petSheltersWithExistingUrl);
         }
 
         if ($additionalUrls = $this->option("additional-urls")) {
             $additionalUrlsArray = collect(explode(",", $additionalUrls))
                 ->map(fn($u) => trim($u))
-                ->filter(fn($u) => !empty($u))
+                ->filter()
                 ->unique()
-                ->all();
-            $additionalObjects = array_map(fn($u) => (object)["url" => $u, "id" => null], $additionalUrlsArray);
+                ->diff($petShelterUrls);
 
-            $existingUrls = $petShelterUrls->pluck("url")->all();
-
-            foreach ($additionalObjects as $obj) {
-                if (!in_array($obj->url, $existingUrls, true)) {
-                    $petShelterUrls->push($obj);
-                }
-            }
+            $petShelterUrls = $petShelterUrls->merge($additionalUrlsArray);
         }
 
         $maxDepth = (int)$this->option("depth");
 
-        foreach ($petShelterUrls as $index => $url) {
-            $urlString = is_object($url) ? $url->url : $url["url"];
+        if ($maxDepth < 1) {
+            $this->error("Invalid depth value. It must be a positive integer.");
 
+            return;
+        }
+
+        foreach ($petShelterUrls as $index => $urlString) {
             $this->info("Processing shelter " . ($index + 1) . " of " . count($petShelterUrls) . ": $urlString");
-
             $this->crawlSite($urlString, $maxDepth);
-
             $this->info("Completed crawling: $urlString");
             $this->line("---");
-
-            if ($index < count($petShelterUrls) - 1) {
-                sleep(2);
-            }
         }
     }
 
@@ -98,139 +86,65 @@ class CrawlPets extends Command
         }
 
         while ($queue) {
-            [$adoptionUrl, $depth] = array_shift($queue);
+            [$currentUrl, $depth] = array_shift($queue);
 
-            if (isset($visited[$adoptionUrl]) || $depth > $maxDepth) {
+            if (isset($visited[$currentUrl]) || $depth > $maxDepth) {
                 continue;
             }
 
-            if ($this->checkIfUrlContainAntiKeywords($adoptionUrl)) {
-                $this->info("Contains anti-keywords: $adoptionUrl - Skipping");
-                $visited[$adoptionUrl] = true;
+            if (UrlValidator::checkIfUrlContainAntiKeywords($currentUrl, "crawl_keywords.anti_keywords") && $depth > 0) {
+                $this->info("Contains anti-keywords: $currentUrl - Skipping");
+                $visited[$currentUrl] = true;
 
                 continue;
             }
 
-            $visited[$adoptionUrl] = true;
-            $this->info("Crawling (depth $depth): $adoptionUrl");
-            Log::info("Crawling page: $adoptionUrl");
+            $visited[$currentUrl] = true;
+            $this->info("Crawling (depth $depth): $currentUrl");
+            Log::info("Crawling page: $currentUrl");
 
             try {
-                $response = $this->connector->send(new GetPageRequest($adoptionUrl));
+                $response = $this->connector->send(new GetPageRequest($currentUrl));
 
                 if ($response->isCached() && $depth > 0) {
-                    $this->info("Respone is cached - Skipping HTTP request for $adoptionUrl");
+                    $this->info("Respone is cached - Skipping HTTP request for $currentUrl");
 
                     continue;
                 }
-                Log::info("Fetched fresh response for $adoptionUrl");
+                Log::info("Fetched fresh response for $currentUrl");
 
                 $html = $response->body();
+
+                if (!$html) {
+                    $this->warn("Skipping $currentUrl due to failed HTTP request or cache.");
+
+                    continue;
+                }
             } catch (RequestException $e) {
-                Log::warning("HTTP request failed for $adoptionUrl: " . $e->getMessage());
+                Log::warning("HTTP request failed for $currentUrl: " . $e->getMessage());
 
                 continue;
             } catch (FatalRequestException $e) {
-                Log::error("Critical error while requesting $adoptionUrl: " . $e->getMessage());
+                Log::error("Critical error while requesting $currentUrl: " . $e->getMessage());
 
                 continue;
             }
 
-            if (!$html) {
-                $this->warn("Skipping $adoptionUrl due to failed HTTP request or cache.");
-
-                continue;
-            }
+            AnalyzePetPage::dispatch($html, $currentUrl, UrlFormatHelper::getBaseUrl($currentUrl))
+                ->onQueue("analyze_pet_pages");
 
             $crawler = new Crawler($html);
-
-            $getWebpageClearBodyText = DomAttributeCleaner::clearHtmlUnnecessaryTags($crawler);
-
-            if ((!$this->petPageAnalyzer->isLikelyAPetPage($getWebpageClearBodyText, 7)) && $depth > 0) {
-                $this->info("Page does not appear to be specific pet page: $adoptionUrl - Skipping");
-
-                continue;
-            }
-
-            DomAttributeCleaner::removeUnnecessaryNodes($crawler);
-
-            $imageAltsArr = DomAttributeExtractor::getImageAltsFromWebpage($crawler);
-            $iconsArr = DomAttributeExtractor::getIconsFromWebpage($crawler);
-            $svgsArr = DomAttributeExtractor::getSvgLabelsFromWebpage($crawler);
-
-            $imageAlts = array_filter(array_map(
-                fn(array $img): string => $img["alt"],
-                $imageAltsArr,
-            ));
-
-            $iconTitles = array_filter(array_map(
-                fn(array $icon): string => $icon["title"],
-                $iconsArr,
-            ));
-
-            $svgLabels = array_filter(array_map(
-                fn(array $svg): string => $svg["aria"],
-                $svgsArr,
-            ));
-
-            $fullPayload = WebpagePayloadBuilder::build(
-                $getWebpageClearBodyText,
-                $imageAlts,
-                $iconTitles,
-                $svgLabels,
-            );
-
-            $prompt = config("prompts.crawl_shelters");
-            $payload = $this->gemini->createGeminiPayload($prompt, $fullPayload);
-
-            try {
-                $result = $this->gemini->generateContent($payload);
-                $raw = $this->gemini->getGeminiResult($result);
-
-                if ($raw) {
-                    $jsonClean = preg_replace("/^```(json)?|```$/m", "", trim($raw));
-                    $this->line($jsonClean);
-
-                    $petData = json_decode($jsonClean, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($petData)) {
-                        $baseUrl = UrlFormatHelper::getBaseUrl($adoptionUrl);
-                        $this->petService->store($petData, $baseUrl, $adoptionUrl);
-                    }
-                }
-                sleep(1);
-            } catch (Exception $e) {
-                $this->warn("Gemini failed: " . $e->getMessage());
-            }
-
-            $links = DomAttributeExtractor::getLinksFromWebpage($crawler);
+            $links = DomAttributeExtractor::getLinksFromWebpage($crawler, $currentUrl);
 
             foreach ($links as $link) {
-                if (!$link) {
-                    continue;
-                }
-
-                $absoluteUrl = UrlFormatHelper::normalizeUrl($link, $adoptionUrl);
-
-                if (!$absoluteUrl) {
-                    continue;
-                }
-
-                $linkHost = UrlFormatHelper::getUrlHost($absoluteUrl);
+                $linkHost = UrlFormatHelper::getUrlHost($link);
 
                 if ($linkHost !== $baseHost) {
                     continue;
                 }
 
-                $queue[] = [$absoluteUrl, $depth + 1];
+                $queue[] = [$link, $depth + 1];
             }
         }
-    }
-
-    protected function checkIfUrlContainAntiKeywords(string $url): bool
-    {
-        $antiKeywords = config("crawl.anti_keywords");
-
-        return collect($antiKeywords)->contains(fn($keyword) => stripos($url, $keyword) !== false);
     }
 }
