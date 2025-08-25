@@ -19,12 +19,8 @@ class PetShelter extends Model
         "phone",
         "email",
         "description",
+        "url",
     ];
-
-    public function address(): HasOne
-    {
-        return $this->hasOne(PetShelterAddress::class);
-    }
 
     public function users(): BelongsToMany
     {
@@ -34,5 +30,10 @@ class PetShelter extends Model
     public function pets(): HasMany
     {
         return $this->hasMany(Pet::class);
+    }
+
+    public function address(): HasOne
+    {
+        return $this->hasOne(PetShelterAddress::class);
     }
 }

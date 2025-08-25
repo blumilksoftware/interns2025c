@@ -46,7 +46,6 @@ class PetFactory extends Factory
             "activity_level" => $this->faker->optional()->randomElement(["low", "medium", "high"]),
             "behavioral_notes" => $this->faker->optional()->sentence(5),
             "admission_date" => $this->faker->optional()->date(),
-            "quarantine_end_date" => $this->faker->optional()->date(),
             "found_location" => $this->faker->optional()->city(),
             "adoption_status" => $this->faker->optional()->randomElement(["available", "adopted", "pending", "fostered"]),
             "shelter_id" => PetShelter::factory(),

@@ -6,10 +6,12 @@ use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use App\Providers\JetstreamServiceProvider;
+use App\Providers\ObserverServiceProvider;
 
 return [
     AppServiceProvider::class,
     AuthServiceProvider::class,
     FortifyServiceProvider::class,
     JetstreamServiceProvider::class,
+    ObserverServiceProvider::class,
 ];
