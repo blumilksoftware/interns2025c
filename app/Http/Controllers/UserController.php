@@ -22,6 +22,15 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(User $user): Response
+    {
+        $this->authorize("view", $user);
+
+        return Inertia::render("Profile/Show", [
+            "user" => new UserResource($user),
+        ]);
+    }
+
     public function destroy(Request $request, User $user): RedirectResponse
     {
         $this->authorize("delete", $user);

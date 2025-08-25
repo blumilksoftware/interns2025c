@@ -25,6 +25,7 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
+    Route::get("/users/{user}", [UserController::class, "show"])->name("users.show");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
