@@ -30,9 +30,9 @@ Route::middleware([
     Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
         "title" => __("titles.adminPanel"),
     ]))->name("admin");
+    Route::resource("preferences", PreferenceController::class)->only(["index", "store", "update", "destroy"]);
 });
-Route::resource("preferences", PreferenceController::class)->only(["index", "store", "update", "destroy"]);
-Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("store", "update", "destroy");
 Route::resource("pet-shelters", PetShelterController::class)->only("index", "store", "update", "destroy");
+Route::resource("pet-shelter-addresses", PetShelterAddressController::class)->only("update", "destroy");
 Route::resource("pets", PetController::class)->except(["create", "edit"]);
 Route::resource("tags", TagController::class)->only(["store", "update", "destroy"]);

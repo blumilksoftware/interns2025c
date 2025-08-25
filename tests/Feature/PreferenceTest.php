@@ -13,133 +13,122 @@ class PreferenceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testUserCanCreatePreference(): void
+    public function testPreferencesIndexCanBeRendered(): void
     {
         $user = User::factory()->create();
+        Preference::factory()->for($user)->create();
 
-        $preferenceData = Preference::factory()->make([
-            "user_id" => $user->id,
-        ])->toArray();
+        $this->actingAs($user)
+            ->get("/preferences")
+            ->assertStatus(200)
+            ->assertSee("preferences");
+    }
 
-        $response = $this->actingAs($user)->post("/preferences", $preferenceData);
+    public function testGuestsCannotAccessPreferencesIndex(): void
+    {
+        $this->get("/preferences")->assertRedirect("/login");
+    }
 
-        $response->assertStatus(302);
+    public function testPreferenceCanBeCreated(): void
+    {
+        $user = User::factory()->create();
+        $data = Preference::factory()->make()->toArray();
+
+        $this->actingAs($user)
+            ->post("/preferences", $data)
+            ->assertRedirect("/preferences");
+
+        $this->assertDatabaseCount("preferences", 1);
         $this->assertDatabaseHas("preferences", [
             "user_id" => $user->id,
-            "name" => $preferenceData["name"],
         ]);
     }
 
-    public function testUserCannotCreateDuplicatePreference(): void
+    public function testPreferenceCannotBeCreatedWithoutPreferencesField(): void
     {
         $user = User::factory()->create();
+        $data = [];
 
-        $preference = Preference::factory()->create([
-            "user_id" => $user->id,
-        ]);
+        $this->actingAs($user)
+            ->post("/preferences", $data)
+            ->assertSessionHasErrors(["preferences"]);
 
-        $duplicateData = Preference::factory()->make([
-            "name" => $preference->name,
-        ])->toArray();
-
-        $response = $this->actingAs($user)->post("/preferences", $duplicateData);
-
-        $response->assertSessionHasErrors(["name"]);
-
-        $this->assertCount(
-            1,
-            Preference::where("user_id", $user->id)->get(),
-        );
+        $this->assertDatabaseCount("preferences", 0);
     }
 
-    public function testUserCanUpdatePreference(): void
+    public function testPreferenceCanBeUpdated(): void
     {
         $user = User::factory()->create();
-        $preference = Preference::factory()->create([
-            "user_id" => $user->id,
-            "name" => "Old Name",
-        ]);
+        $preference = Preference::factory()->for($user)->create();
+        $newWeight = 9;
+        $data = $preference->preferences;
+        $firstSpecies = $data["species"][0] ?? ["value" => "dog", "weight" => 1];
+        $firstSpecies["weight"] = $newWeight;
+        $data["species"][0] = $firstSpecies;
 
-        $updateData = ["name" => "New Name"];
+        $this->actingAs($user)
+            ->put("/preferences/{$preference->id}", ["preferences" => $data])
+            ->assertRedirect("/preferences");
 
-        $response = $this->actingAs($user)->put("/preferences/{$preference->id}", $updateData);
-
-        $response->assertStatus(302);
-        $preference->refresh();
-        $this->assertEquals("New Name", $preference->name);
+        $this->assertEquals($newWeight, Preference::first()->preferences["species"][0]["weight"]);
     }
 
-    public function testUserCannotUpdateOthersPreference(): void
+    public function testPreferenceCannotBeUpdatedWithInvalidEnum(): void
     {
         $user = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $preference = Preference::factory()->create([
-            "user_id" => $otherUser->id,
-            "name" => "Old Name",
-        ]);
+        $preference = Preference::factory()->for($user)->create();
+        $data = $preference->preferences;
+        $data["species"][0]["value"] = "invalid_species";
 
-        $updateData = ["name" => "New Name"];
-
-        $response = $this->actingAs($user)->put("/preferences/{$preference->id}", $updateData);
-
-        $response->assertStatus(403);
-        $preference->refresh();
-        $this->assertEquals("Old Name", $preference->name);
+        $this->actingAs($user)
+            ->put("/preferences/{$preference->id}", ["preferences" => $data])
+            ->assertSessionHasErrors(["preferences.species.0.value"]);
     }
 
-    public function testUserCanDeleteOwnPreference(): void
+    public function testPreferenceCanBeDeleted(): void
     {
         $user = User::factory()->create();
-        $preference = Preference::factory()->create([
-            "user_id" => $user->id,
-        ]);
+        $preference = Preference::factory()->for($user)->create();
 
-        $response = $this->actingAs($user)->delete("/preferences/{$preference->id}");
+        $this->actingAs($user)
+            ->delete("/preferences/{$preference->id}")
+            ->assertRedirect("/preferences");
 
-        $response->assertStatus(302);
-        $this->assertDatabaseMissing("preferences", ["id" => $preference->id]);
+        $this->assertDatabaseCount("preferences", 0);
     }
 
-    public function testUserCannotDeleteOthersPreference(): void
+    public function testGuestCannotDeletePreference(): void
+    {
+        $preference = Preference::factory()->create();
+
+        $this->delete("/preferences/{$preference->id}")
+            ->assertRedirect("/login");
+
+        $this->assertDatabaseCount("preferences", 1);
+    }
+
+    public function testPreferenceCannotBeCreatedWithInvalidWeight(): void
     {
         $user = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $preference = Preference::factory()->create([
-            "user_id" => $otherUser->id,
-        ]);
+        $data = Preference::factory()->make()->toArray();
 
-        $response = $this->actingAs($user)->delete("/preferences/{$preference->id}");
+        if (isset($data["preferences"]["species"][0])) {
+            $data["preferences"]["species"][0]["weight"] = -5;
+        }
 
-        $response->assertStatus(403);
-        $this->assertDatabaseHas("preferences", ["id" => $preference->id]);
+        $this->actingAs($user)
+            ->post("/preferences", $data)
+            ->assertSessionHasErrors(["preferences.species.0.weight"]);
     }
 
-    public function testCannotCreatePreferenceWithInvalidData(): void
+    public function testPreferenceCannotBeCreatedWithInvalidBoolean(): void
     {
         $user = User::factory()->create();
+        $data = Preference::factory()->make()->toArray();
+        $data["preferences"]["vaccinated"]["value"] = "not_a_boolean";
 
-        $invalidData = [
-            "user_id" => $user->id,
-            "name" => null,
-        ];
-
-        $response = $this->actingAs($user)->post("/preferences", $invalidData);
-
-        $response->assertSessionHasErrors(["name"]);
-        $this->assertDatabaseMissing("preferences", [
-            "user_id" => $user->id,
-        ]);
-    }
-
-    public function testGuestCannotCreatePreference(): void
-    {
-        $preferenceData = Preference::factory()->make()->toArray();
-
-        $response = $this->post("/preferences", $preferenceData);
-
-        $response->assertRedirect("/login");
-        $this->assertDatabaseMissing("preferences", [
-            "name" => $preferenceData["name"],
-        ]);
+        $this->actingAs($user)
+            ->post("/preferences", $data)
+            ->assertSessionHasErrors(["preferences.vaccinated.value"]);
     }
 }

@@ -11,10 +11,8 @@ return new class() extends Migration {
     {
         Schema::create("preferences", function (Blueprint $table): void {
             $table->id();
-            $table->foreignId("user_id")
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->string("name");
+            $table->foreignId("user_id")->constrained()->cascadeOnDelete();
+            $table->json("preferences")->nullable();
             $table->timestamps();
         });
     }

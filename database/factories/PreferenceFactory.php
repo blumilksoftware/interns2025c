@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetAdoptionStatus;
+use App\Enums\PetAge;
+use App\Enums\PetAttitudeToCats;
+use App\Enums\PetAttitudeToChildren;
+use App\Enums\PetAttitudeToDogs;
+use App\Enums\PetAttitudeToPeople;
+use App\Enums\PetHealthStatus;
+use App\Enums\PetSex;
+use App\Enums\PetSize;
+use App\Enums\PetSpecies;
 use App\Models\Preference;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -16,7 +26,49 @@ class PreferenceFactory extends Factory
     {
         return [
             "user_id" => User::factory(),
-            "name" => $this->faker->words(2, true),
+            "preferences" => [
+                "species" => $this->generateWeightedEnumArray(PetSpecies::values()),
+                "breed" => $this->generateWeightedArray(["labrador", "siamese", "bulldog"]),
+                "sex" => $this->generateWeightedEnumArray(PetSex::values()),
+                "size" => $this->generateWeightedEnumArray(PetSize::values()),
+                "age" => $this->generateWeightedEnumArray(PetAge::values()),
+                "health_status" => $this->generateWeightedEnumArray(PetHealthStatus::values()),
+                "vaccinated" => $this->generateWeightedBoolean(),
+                "sterilized" => $this->generateWeightedBoolean(),
+                "has_chip" => $this->generateWeightedBoolean(),
+                "dewormed" => $this->generateWeightedBoolean(),
+                "deflea_treated" => $this->generateWeightedBoolean(),
+                "adoption_status" => $this->generateWeightedEnumArray(PetAdoptionStatus::values()),
+                "attitude_to_people" => $this->generateWeightedEnumArray(PetAttitudeToPeople::values()),
+                "attitude_to_dogs" => $this->generateWeightedEnumArray(PetAttitudeToDogs::values()),
+                "attitude_to_cats" => $this->generateWeightedEnumArray(PetAttitudeToCats::values()),
+                "attitude_to_children" => $this->generateWeightedEnumArray(PetAttitudeToChildren::values()),
+                "tags" => $this->generateWeightedArray(["playful", "calm", "good_with_kids"]),
+            ],
+        ];
+    }
+
+    protected function generateWeightedEnumArray(array $values): array
+    {
+        $count = $this->faker->numberBetween(1, count($values));
+        $chosen = $this->faker->randomElements($values, $count);
+
+        return array_map(fn($v) => ["value" => $v, "weight" => $this->faker->numberBetween(1, 10)], $chosen);
+    }
+
+    protected function generateWeightedArray(array $values): array
+    {
+        $count = $this->faker->numberBetween(1, count($values));
+        $chosen = $this->faker->randomElements($values, $count);
+
+        return array_map(fn($v) => ["value" => $v, "weight" => $this->faker->numberBetween(1, 10)], $chosen);
+    }
+
+    protected function generateWeightedBoolean(): array
+    {
+        return [
+            "value" => $this->faker->boolean(),
+            "weight" => $this->faker->numberBetween(1, 10),
         ];
     }
 }

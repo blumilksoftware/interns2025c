@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum PetSex: string
+enum PetAttitudeToChildren: string
 {
-    case Male = "male";
-    case Female = "female";
+    case Friendly = "friendly";
+    case Aggressive = "aggressive";
+    case Calm = "calm";
+    case Shy = "shy";
+    case Playful = "playful";
     case Unknown = "unknown";
 
     public static function values(): array

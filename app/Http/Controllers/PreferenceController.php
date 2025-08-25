@@ -15,7 +15,7 @@ class PreferenceController extends Controller
 {
     public function index(): Response
     {
-        $preferences = Preference::all();
+        $preferences = auth()->user()->preferences()->latest()->get();
 
         return Inertia::render("Preferences/Index", [
             "preferences" => PreferenceResource::collection($preferences),
@@ -24,29 +24,30 @@ class PreferenceController extends Controller
 
     public function store(PreferenceRequest $request): RedirectResponse
     {
-        $request->user()->preferences()->create($request->validated());
+        auth()->user()->preferences()->create($request->validated());
 
-        return redirect("/admin/preferences")
-            ->with("success", "Preference created successfully.");
+        return redirect()->route("preferences.index")->with("success", "Preference created successfully.");
     }
 
     public function update(PreferenceRequest $request, Preference $preference): RedirectResponse
     {
-        $this->authorize("update", $preference);
+        if ($preference->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         $preference->update($request->validated());
 
-        return redirect("/admin/preferences")
-            ->with("success", "Preference updated successfully.");
+        return redirect()->route("preferences.index")->with("success", "Preference updated successfully.");
     }
 
     public function destroy(Preference $preference): RedirectResponse
     {
-        $this->authorize("delete", $preference);
+        if ($preference->user_id !== auth()->id()) {
+            abort(403);
+        }
 
         $preference->delete();
 
-        return redirect("/admin/preferences")
-            ->with("success", "Preference deleted successfully.");
+        return redirect()->route("preferences.index")->with("success", "Preference deleted successfully.");
     }
 }
