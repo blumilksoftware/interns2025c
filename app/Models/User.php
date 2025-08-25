@@ -29,12 +29,12 @@ class User extends Authenticatable implements MustVerifyEmail
         "remember_token",
     ];
 
-    public function haveShelterRole(): bool
+    public function hasShelterRole(): bool
     {
         return $this->role === Role::SHELTER->value;
     }
 
-    public function haveAdminRole(): bool
+    public function hasAdminRole(): bool
     {
         return $this->role === Role::ADMIN->value;
     }

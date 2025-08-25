@@ -103,7 +103,7 @@ class UserTest extends TestCase
 
         $response = $this->actingAs($user)->get("/users/{$otherUser->id}");
 
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
 
     public function testUnauthenticatedCannotAccessProfile(): void
