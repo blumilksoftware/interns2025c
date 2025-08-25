@@ -90,7 +90,7 @@ return [
         "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg",
         "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "csv", "zip", "rar",
         "article", "blog", "press-release", "files", "historia", "linki",
-        "zwiedzianie", "product", "reference",
+        "zwiedzanie", "product", "reference",
 
         "+", "desc", "asc", "?q=", "comment", "tag", "tags", "category", "categories",
         "zdom", "znalazlydom", "dom-odnaleziony", "dom-znaleziony",

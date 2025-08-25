@@ -24,6 +24,7 @@ class ExtractPetSheltersInfo implements ShouldQueue
 
     public int $tries = 3;
     public ?int $backoff = 60;
+    public int $timeout = 180;
 
     public function __construct(
         protected string $batchData,
@@ -36,8 +37,7 @@ class ExtractPetSheltersInfo implements ShouldQueue
     public function handle(GeminiService $gemini, PetShelterService $petShelterService): void
     {
         $promptKey = config("prompts.crawl_shelters_addresses");
-        $suffix = "\n\nThis is batch {$this->batchIndex} of {$this->totalBatches}. Analyze the following data and return a JSON format";
-        $promptPayload = PayloadBuilder::promptPayload($promptKey, $suffix);
+        $promptPayload = PayloadBuilder::promptPayload($promptKey);
         $fullPayload = $gemini->createGeminiPayload($promptPayload, $this->batchData);
 
         try {

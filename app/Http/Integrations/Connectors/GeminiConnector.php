@@ -12,7 +12,7 @@ class GeminiConnector extends Connector
     use HasTimeout;
 
     protected int $connectTimeout = 60;
-    protected int $requestTimeout = 120;
+    protected int $requestTimeout = 240;
     protected string $key;
     protected string $model;
     protected string $base;
