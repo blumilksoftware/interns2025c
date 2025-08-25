@@ -243,19 +243,6 @@ export function getColumnConfig(dataSetType, fieldName) {
   return columnConfig[dataSetType]?.[fieldName] || null
 }
 
-export function getColumnWidth(dataSetType, fieldName) {
-  const config = getColumnConfig(dataSetType, fieldName)
-  if (config) return config.width
-  
-  const keyLower = fieldName.toLowerCase()
-  for (const [pattern, width] of Object.entries(legacyColumnWidths)) {
-    if (keyLower.includes(pattern)) {
-      return width
-    }
-  }
-  return 'w-24 sm:w-32'
-}
-
 export function getColumnType(dataSetType, fieldName) {
   const config = getColumnConfig(dataSetType, fieldName)
   if (config) return config.type

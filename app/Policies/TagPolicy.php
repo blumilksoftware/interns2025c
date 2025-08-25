@@ -10,16 +10,16 @@ class TagPolicy
 {
     public function store(User $user): bool
     {
-        return $user->haveAdminRole();
+        return $user->hasAdminRole();
     }
 
     public function update(User $user): bool
     {
-        return $user->haveAdminRole();
+        return $user->hasAdminRole();
     }
 
     public function delete(User $user): bool
     {
-        return $user->haveAdminRole();
+        return $user->hasAdminRole();
     }
 }

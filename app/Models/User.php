@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
-use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,10 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
-
-    /** @use HasFactory<UserFactory> */
     use HasFactory;
-
     use Notifiable;
 
     protected $fillable = [
@@ -33,12 +29,12 @@ class User extends Authenticatable implements MustVerifyEmail
         "remember_token",
     ];
 
-    public function haveShelterRole(): bool
+    public function hasShelterRole(): bool
     {
         return $this->role === Role::SHELTER->value;
     }
 
-    public function haveAdminRole(): bool
+    public function hasAdminRole(): bool
     {
         return $this->role === Role::ADMIN->value;
     }

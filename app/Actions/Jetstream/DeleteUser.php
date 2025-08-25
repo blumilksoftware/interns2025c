@@ -11,6 +11,7 @@ class DeleteUser implements DeletesUsers
 {
     public function delete(User $user): void
     {
+        $user->petShelters()->detach();
         $user->tokens->each->delete();
         $user->delete();
     }
