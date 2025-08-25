@@ -40,3 +40,11 @@
         animation: heartbeat 0.8s ease-out infinite;
     }   
 }
+@layer components {
+    .heading-xl {
+        @apply text-xl font-semibold text-gray-900 mb-3;
+    }
+    .heading-lg {
+        @apply text-3xl sm:text-4xl font-bold text-gray-900;
+    }
+}
