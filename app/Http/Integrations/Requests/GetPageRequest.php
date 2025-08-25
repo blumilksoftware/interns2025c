@@ -33,6 +33,6 @@ class GetPageRequest extends Request implements Cacheable
 
     public function cacheExpiryInSeconds(): int
     {
-        return 7 * 3600;
+        return 7 * 3600; // 7 days in seconds
     }
 }

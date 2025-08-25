@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace App\Http\Integrations\Connectors;
 
-use Saloon\Http\Connector;
+use App\Contracts\LlmConnectorInterface;
 use Saloon\Traits\Plugins\HasTimeout;
 
-class GeminiConnector extends Connector
+class GeminiConnector extends CrawlerConnector implements LlmConnectorInterface
 {
     use HasTimeout;
 
-    protected int $connectTimeout = 60;
-    protected int $requestTimeout = 240;
     protected string $key;
     protected string $model;
     protected string $base;
 
     public function __construct()
     {
-        $this->key = config("services.gemini.key");
-        $this->model = config("services.gemini.model");
-        $this->base = rtrim(config("services.gemini.endpoint"), "/");
+        $this->key = config("services.llm.key");
+        $this->model = config("services.llm.model");
+        $this->base = rtrim(config("services.llm.endpoint"), "/");
     }
 
     public function resolveBaseUrl(): string
@@ -29,11 +27,10 @@ class GeminiConnector extends Connector
         return "{$this->base}/{$this->model}:generateContent";
     }
 
-    protected function defaultHeaders(): array
+    public function defaultHeaders(): array
     {
-        return [
+        return array_merge(parent::defaultHeaders(), [
             "x-goog-api-key" => $this->key,
-            "Content-Type" => "application/json",
-        ];
+        ]);
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class PetPageAnalyzer
 {
+    public const MINIMAL_SCORE_TRESHOLD = 5;
+
     protected array $petKeywords;
     protected array $requiredKeywords;
 
@@ -26,24 +28,24 @@ class PetPageAnalyzer
 
         $allKeywords = array_unique(array_merge($this->petKeywords, $this->requiredKeywords));
 
-        $allKeywordsLower = array_map(fn($k) => mb_strtolower($k), $allKeywords);
-        $allKeywordsAscii = array_map(fn($k) => Str::ascii(mb_strtolower($k)), $allKeywordsLower);
+        $lowercasedKeywords = array_map(fn($k): string => mb_strtolower($k), $allKeywords);
+        $asciiKeywords = array_map(fn($k): string => Str::ascii(mb_strtolower($k)), $lowercasedKeywords);
 
-        $threshold ??= min(5, count($allKeywords));
+        $threshold ??= min(self::MINIMAL_SCORE_TRESHOLD, count($allKeywords));
 
         $score = 0;
         $matchedKeywords = [];
 
-        foreach ($allKeywordsLower as $i => $kwLower) {
-            if ($kwLower === "") {
+        foreach ($lowercasedKeywords as $i => $keyword) {
+            if ($keyword === "") {
                 continue;
             }
 
-            if ((stripos($bodyLower, $kwLower) !== false || stripos($bodyAscii, $allKeywordsAscii[$i]) !== false)
-                && !in_array($kwLower, $matchedKeywords, true)
+            if ((stripos($bodyLower, $keyword) !== false || stripos($bodyAscii, $asciiKeywords[$i]) !== false)
+                && !in_array($keyword, $matchedKeywords, true)
             ) {
                 $score++;
-                $matchedKeywords[] = $kwLower;
+                $matchedKeywords[] = $keyword;
             }
         }
         Log::info("Threshold: $threshold, Score: $score, Matched keywords: " . implode(", ", $matchedKeywords));

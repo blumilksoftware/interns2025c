@@ -39,7 +39,7 @@ class DemoSeeder extends Seeder
         User::factory()->create([
             "email" => "shelter@example.com",
             "password" => Hash::make("password"),
-            "role" => Role::Shelter,
+            "role" => Role::ShelterEmployee,
         ]);
 
         User::factory()->create([

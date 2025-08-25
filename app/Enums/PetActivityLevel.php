@@ -10,6 +10,6 @@ enum PetActivityLevel: string
     case Low = "low";
     case Medium = "medium";
     case High = "high";
-    case VeryHigh = "very High";
+    case VeryHigh = "very high";
     case Unkown = "unknown";
 }

@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Http\Integrations\Connectors\CrawlerConnector;
+use App\Contracts\LlmConnectorInterface;
+use App\Helpers\DomAttributeExtractor;
+use App\Helpers\PetShelterHelper;
+use App\Helpers\UrlFormatHelper;
+use App\Helpers\UrlValidator;
 use App\Http\Integrations\Requests\GetPageRequest;
 use App\Jobs\AnalyzePetPage;
-use App\Models\PetShelter;
 use App\Services\GeminiService;
 use App\Services\PetPageAnalyzer;
 use App\Services\PetShelterService;
-use App\Utils\DomAttributeExtractor;
-use App\Utils\UrlFormatHelper;
-use App\Utils\UrlValidator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Saloon\Exceptions\Request\FatalRequestException;
-use Saloon\Exceptions\Request\RequestException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlPets extends Command
@@ -26,19 +24,19 @@ class CrawlPets extends Command
     protected $description = "Crawl saved url of shelter sites and analyze pages with AI to extract pet info";
     protected PetShelterService $petShelterService;
     protected GeminiService $gemini;
-    protected CrawlerConnector $connector;
+    protected LlmConnectorInterface $connector;
     protected PetPageAnalyzer $petPageAnalyzer;
 
     public function handle(
         GeminiService $gemini,
-        CrawlerConnector $connector,
+        LlmConnectorInterface $connector,
         PetPageAnalyzer $petPageAnalyzer,
     ): void {
         $this->gemini = $gemini;
         $this->connector = $connector;
         $this->petPageAnalyzer = $petPageAnalyzer;
 
-        $petSheltersWithExistingUrl = PetShelter::getAllPetShelterUrls();
+        $petSheltersWithExistingUrl = PetShelterHelper::getAllPetShelterUrls();
 
         if ($argumentUrl = $this->argument("url")) {
             $petShelterUrls = collect([$argumentUrl]);
@@ -48,7 +46,7 @@ class CrawlPets extends Command
 
         if ($additionalUrls = $this->option("additional-urls")) {
             $additionalUrlsArray = collect(explode(",", $additionalUrls))
-                ->map(fn($u) => trim($u))
+                ->map(fn(string $url): string => trim($url))
                 ->filter()
                 ->unique()
                 ->diff($petShelterUrls);
@@ -74,7 +72,7 @@ class CrawlPets extends Command
 
     protected function crawlSite(string $startUrl, int $maxDepth = 2): void
     {
-        $queue = [[$startUrl, 0]]; // url + depth
+        $urlsToVisit = [[$startUrl, 0]]; // url + depth
         $visited = [];
 
         $baseHost = UrlFormatHelper::getUrlHost($startUrl);
@@ -85,8 +83,8 @@ class CrawlPets extends Command
             return;
         }
 
-        while ($queue) {
-            [$currentUrl, $depth] = array_shift($queue);
+        while ($urlsToVisit) {
+            [$currentUrl, $depth] = array_shift($urlsToVisit);
 
             if (isset($visited[$currentUrl]) || $depth > $maxDepth) {
                 continue;
@@ -103,29 +101,19 @@ class CrawlPets extends Command
             $this->info("Crawling (depth $depth): $currentUrl");
             Log::info("Crawling page: $currentUrl");
 
-            try {
-                $response = $this->connector->send(new GetPageRequest($currentUrl));
+            $response = $this->connector->send(new GetPageRequest($currentUrl));
 
-                if ($response->isCached() && $depth > 0) {
-                    $this->info("Respone is cached - Skipping HTTP request for $currentUrl");
-
-                    continue;
-                }
-                Log::info("Fetched fresh response for $currentUrl");
-
-                $html = $response->body();
-
-                if (!$html) {
-                    $this->warn("Skipping $currentUrl due to failed HTTP request or cache.");
-
-                    continue;
-                }
-            } catch (RequestException $e) {
-                Log::warning("HTTP request failed for $currentUrl: " . $e->getMessage());
+            if ($response->isCached() && $depth > 0) {
+                $this->info("Respone is cached - Skipping HTTP request for $currentUrl");
 
                 continue;
-            } catch (FatalRequestException $e) {
-                Log::error("Critical error while requesting $currentUrl: " . $e->getMessage());
+            }
+            Log::info("Fetched fresh response for $currentUrl");
+
+            $html = $response->body();
+
+            if (!$html) {
+                $this->warn("Skipping $currentUrl due to failed HTTP request or cache.");
 
                 continue;
             }
@@ -143,7 +131,7 @@ class CrawlPets extends Command
                     continue;
                 }
 
-                $queue[] = [$link, $depth + 1];
+                $urlsToVisit[] = [$link, $depth + 1];
             }
         }
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Utils;
+namespace App\Helpers;
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -13,7 +13,7 @@ class DomAttributeExtractor
      */
     public static function getSvgLabelsFromWebpage(Crawler $crawler): array
     {
-        return $crawler->filter("svg[aria-label]")->each(fn(Crawler $node) => [
+        return $crawler->filter("svg[aria-label]")->each(fn(Crawler $node): array => [
             "aria" => trim((string)$node->attr("aria-label")),
             "class" => trim($node->attr("class") ?? ""),
         ]);
@@ -24,7 +24,7 @@ class DomAttributeExtractor
      */
     public static function getImageAltsFromWebpage(Crawler $crawler): array
     {
-        return $crawler->filter("img[alt]")->each(fn(Crawler $node) => [
+        return $crawler->filter("img[alt]")->each(fn(Crawler $node): array => [
             "alt" => trim((string)$node->attr("alt")),
             "class" => trim($node->attr("class") ?? ""),
             "title" => trim($node->attr("title") ?? ""),
@@ -37,7 +37,7 @@ class DomAttributeExtractor
     public static function getIconsFromWebpage(Crawler $crawler): array
     {
         return $crawler->filter('i[class*="icon-"], span[class*="icon-"], span.check, i.check')
-            ->each(fn(Crawler $node) => [
+            ->each(fn(Crawler $node): array => [
                 "class" => trim($node->attr("class") ?? ""),
                 "title" => trim($node->attr("title") ?? ""),
                 "aria" => trim($node->attr("aria-label") ?? ""),
@@ -48,10 +48,10 @@ class DomAttributeExtractor
     public static function getLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
         return collect(
-            $crawler->filter("a")->each(fn(Crawler $node) => $node->attr("href")),
+            $crawler->filter("a")->each(fn(Crawler $node): string => $node->attr("href")),
         )
             ->filter()
-            ->map(fn(string $href) => UrlFormatHelper::normalizeUrl($href, $baseUrl))
+            ->map(fn(string $href): ?string => UrlFormatHelper::normalizeUrl($href, $baseUrl))
             ->filter()
             ->unique()
             ->values()

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Helpers\DomAttributeCleaner;
+use App\Helpers\DomAttributeExtractor;
+use App\Helpers\PayloadBuilder;
+use App\Helpers\PromptHelper;
 use App\Services\GeminiService;
 use App\Services\PetPageAnalyzer;
 use App\Services\PetService;
-use App\Utils\DomAttributeCleaner;
-use App\Utils\DomAttributeExtractor;
-use App\Utils\PayloadBuilder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,6 +27,8 @@ class AnalyzePetPage implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
+    public const int PAGE_SCORE_THRESHOLD = 7;
 
     public int $tries = 5;
     public int $timeout = 120;
@@ -50,13 +53,12 @@ class AnalyzePetPage implements ShouldQueue
             $crawler = new Crawler($this->html);
             $cleanText = DomAttributeCleaner::clearHtmlUnnecessaryTags($crawler);
 
-            if (!$this->petPageAnalyzer->isLikelyAPetPage($cleanText, 7)) {
-                Log::info("Page does not appear to be specific pet page - Skipping");
+            if (!$this->petPageAnalyzer->isLikelyAPetPage($cleanText, self::PAGE_SCORE_THRESHOLD)) {
+                Log::info("Page does not appear to be specific pet page " . $this->url . " - Skipping");
 
                 return;
             }
 
-            // Remove unnecessary nodes and extract text again
             DomAttributeCleaner::removeUnnecessaryNodes($crawler);
             $cleanTextWithoutUnnecessaryNodes = $crawler->text();
 
@@ -64,13 +66,14 @@ class AnalyzePetPage implements ShouldQueue
             $iconsArr = DomAttributeExtractor::getIconsFromWebpage($crawler);
             $svgsArr = DomAttributeExtractor::getSvgLabelsFromWebpage($crawler);
 
-            $imageAlts = array_values(array_filter(array_map(fn($i) => $i["alt"], $imageAltsArr)));
-            $iconTitles = array_values(array_filter(array_map(fn($i) => $i["title"], $iconsArr)));
-            $svgLabels = array_values(array_filter(array_map(fn($s) => $s["aria"], $svgsArr)));
+            $imageAlts = array_values(array_filter(array_map(fn($i): ?string => $i["alt"], $imageAltsArr)));
+            $iconTitles = array_values(array_filter(array_map(fn($i): ?string => $i["title"], $iconsArr)));
+            $svgLabels = array_values(array_filter(array_map(fn($s): ?string => $s["aria"], $svgsArr)));
 
             $fullPayload = PayloadBuilder::WebpageDomPayload($cleanTextWithoutUnnecessaryNodes, $imageAlts, $iconTitles, $svgLabels);
 
-            $prompt = config("prompts.crawl_shelters");
+            $prompt = PromptHelper::getPromptFromMarkdown("crawl_pets.md");
+
             $payload = $gemini->createGeminiPayload($prompt, $fullPayload);
 
             $result = $gemini->generateContent($payload);
@@ -92,8 +95,8 @@ class AnalyzePetPage implements ShouldQueue
                     Log::warning("No JSON block found in AI response for: " . $this->url, ["raw" => $raw]);
                 }
             }
-        } catch (JsonException $e) {
-            Log::error("JSON decoding error in AnalyzePetPage job for URL: " . $this->url, ["error" => $e->getMessage()]);
+        } catch (JsonException $exception) {
+            Log::error("JSON decoding error in AnalyzePetPage job for URL: " . $this->url, ["error" => $exception->getMessage()]);
         }
     }
 

@@ -6,12 +6,21 @@ namespace App\Http\Integrations\Connectors;
 
 use Saloon\Http\Connector;
 
-class CrawlerConnector extends Connector
+abstract class CrawlerConnector extends Connector
 {
+    protected int $connectTimeout = 30;
+    protected int $requestTimeout = 120;
     protected string $baseUrl = "";
 
     public function resolveBaseUrl(): string
     {
         return $this->baseUrl;
+    }
+
+    protected function defaultHeaders(): array
+    {
+        return [
+            "Content-Type" => "application/json",
+        ];
     }
 }

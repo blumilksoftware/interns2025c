@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\UrlFormatHelper;
 use App\Models\Pet;
 use App\Models\PetShelter;
 use App\Models\Tag;
-use App\Utils\UrlFormatHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -107,7 +107,7 @@ class PetService
 
         return Str::of($text)
             ->explode($delimiter)
-            ->map(fn($tag) => trim($tag))
+            ->map(fn(string $tag): string => trim($tag))
             ->filter()
             ->unique()
             ->toArray();

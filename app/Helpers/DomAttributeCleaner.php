@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Utils;
+namespace App\Helpers;
 
 use Symfony\Component\DomCrawler\Crawler;
 

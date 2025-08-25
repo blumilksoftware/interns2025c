@@ -17,9 +17,9 @@ return [
             "channel" => env("SLACK_BOT_USER_DEFAULT_CHANNEL"),
         ],
     ],
-    "gemini" => [
-        "key" => env("GEMINI_API_KEY"),
-        "model" => env("GEMINI_MODEL", "gemini-2.5-flash"),
-        "endpoint" => env("GEMINI_API_ENDPOINT", "https://generativelanguage.googleapis.com/v1beta/models"),
+    "llm" => [
+        "key" => env("LLM_API_KEY"),
+        "model" => env("LLM_MODEL", "gemini-2.5-flash"),
+        "endpoint" => env("LLM_API_ENDPOINT", "https://generativelanguage.googleapis.com/v1beta/models"),
     ],
 ];

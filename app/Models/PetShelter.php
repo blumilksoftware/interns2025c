@@ -22,16 +22,6 @@ class PetShelter extends Model
         "url",
     ];
 
-    public static function getAllPetShelterUrls(): array
-    {
-        return self::query()
-            ->whereNotNull("url")
-            ->pluck("url")
-            ->filter()
-            ->unique()
-            ->toArray();
-    }
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -45,14 +35,5 @@ class PetShelter extends Model
     public function address(): HasOne
     {
         return $this->hasOne(PetShelterAddress::class);
-    }
-
-    protected static function booted(): void
-    {
-        static::created(function (PetShelter $shelter): void {
-            if ($shelter->address()->doesntExist()) {
-                $shelter->address()->create();
-            }
-        });
     }
 }

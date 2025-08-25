@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Utils;
+namespace App\Helpers;
 
 class UrlValidator
 {
@@ -10,6 +10,6 @@ class UrlValidator
     {
         $antiKeywords = config($config_key, []);
 
-        return collect($antiKeywords)->contains(fn($keyword) => stripos($url, $keyword) !== false);
+        return collect($antiKeywords)->contains(fn(string $keyword): bool => stripos($url, $keyword) !== false);
     }
 }

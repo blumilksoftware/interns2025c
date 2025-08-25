@@ -29,7 +29,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotCreateTag(): void
     {
-        $roles = [Role::User->value, Role::Shelter->value];
+        $roles = [Role::User->value, Role::ShelterEmployee->value];
 
         foreach ($roles as $role) {
             $user = User::factory()->create([
@@ -90,7 +90,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotUpdateTag(): void
     {
-        $roles = [Role::User->value, Role::Shelter->value];
+        $roles = [Role::User->value, Role::ShelterEmployee->value];
 
         foreach ($roles as $index => $role) {
             $user = User::factory()->create([
@@ -164,7 +164,7 @@ class TagTest extends TestCase
 
     public function testUserWithoutAdminRoleCannotDeleteTag(): void
     {
-        $roles = [Role::User->value, Role::Shelter->value];
+        $roles = [Role::User->value, Role::ShelterEmployee->value];
 
         foreach ($roles as $role => $index) {
             $user = User::factory()->create([

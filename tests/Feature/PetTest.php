@@ -19,7 +19,7 @@ class PetTest extends TestCase
     public function testUserWithProperRoleCanCreatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::Shelter->value,
+            "role" => Role::ShelterEmployee->value,
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
@@ -93,7 +93,7 @@ class PetTest extends TestCase
     public function testUserWithProperRoleCanUpdatePet(): void
     {
         $user = User::factory()->create([
-            "role" => Role::Shelter->value,
+            "role" => Role::ShelterEmployee->value,
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
@@ -156,7 +156,7 @@ class PetTest extends TestCase
 
     public function testUserWithShelterOrAdminRoleCanDeletePet(): void
     {
-        $roles = [Role::Shelter->value, Role::Admin->value];
+        $roles = [Role::ShelterEmployee->value, Role::Admin->value];
 
         foreach ($roles as $role) {
             $pet = Pet::factory()->create();

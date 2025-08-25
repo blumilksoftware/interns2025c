@@ -56,7 +56,7 @@ class PetShelterService
                 ]);
             }
 
-            if (array_filter($addressPayload, fn($v) => $v !== null && $v !== "")) {
+            if (array_filter($addressPayload, fn($value) => $value !== null && $value !== "")) {
                 $shelter->address()->update($addressPayload);
             }
         }

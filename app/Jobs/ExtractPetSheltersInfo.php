@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Helpers\PayloadBuilder;
+use App\Helpers\PromptHelper;
 use App\Services\GeminiService;
 use App\Services\PetShelterService;
-use App\Utils\PayloadBuilder;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,7 +37,7 @@ class ExtractPetSheltersInfo implements ShouldQueue
 
     public function handle(GeminiService $gemini, PetShelterService $petShelterService): void
     {
-        $promptKey = config("prompts.crawl_shelters_addresses");
+        $promptKey = PromptHelper::getPromptFromMarkdown("crawl_shelters.md");
         $promptPayload = PayloadBuilder::promptPayload($promptKey);
         $fullPayload = $gemini->createGeminiPayload($promptPayload, $this->batchData);
 
@@ -45,7 +46,7 @@ class ExtractPetSheltersInfo implements ShouldQueue
             $raw = $gemini->getGeminiResult($result);
 
             if (!$raw) {
-                Log::warning("Gemini empty response", [
+                Log::warning("LLM empty response", [
                     "url" => $this->url,
                     "batchIndex" => $this->batchIndex,
                 ]);
@@ -67,7 +68,7 @@ class ExtractPetSheltersInfo implements ShouldQueue
             }
 
             if (!is_array($analysis)) {
-                Log::warning("Gemini returned non-array", [
+                Log::warning("LLM returned non-array", [
                     "url" => $this->url,
                     "batchIndex" => $this->batchIndex,
                 ]);
@@ -77,17 +78,15 @@ class ExtractPetSheltersInfo implements ShouldQueue
 
             $petShelterService->store($analysis);
 
-            sleep(1);
-
             return;
-        } catch (Exception $e) {
-            Log::error("Gemini API call failed in job", [
-                "exception" => $e,
+        } catch (Exception $exception) {
+            Log::error("LLM API call failed in job", [
+                "exception" => $exception,
                 "url" => $this->url,
                 "batchIndex" => $this->batchIndex,
             ]);
 
-            throw $e;
+            throw $exception;
         }
     }
 

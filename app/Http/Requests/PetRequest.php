@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\PetAdoptionStatus;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSpecies;
@@ -21,7 +22,7 @@ class PetRequest extends FormRequest
                 "string",
                 "max:2048",
                 "url",
-                "prohibited_if:adoption_status,adopted",
+                Rule::prohibitedIf($this->input("adoption_status") === PetAdoptionStatus::Adopted->value),
             ],
             "species" => [
                 "required",
