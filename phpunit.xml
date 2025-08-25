@@ -22,9 +22,9 @@
         <env name="APP_KEY" value="base64:SKEJSy9oF9chQBCMbxqgj5zhtAvug9kwZ+cDiP1Y8A8="/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_HOST" value="interns2025c-db-dev"/>
-        <env name="DB_DATABASE" value="interns2025c-test"/>
-        <env name="DB_USERNAME" value="interns2025c"/>
+        <env name="DB_HOST" value="LapGo-db-dev"/>
+        <env name="DB_DATABASE" value="LapGo-test"/>
+        <env name="DB_USERNAME" value="LapGo"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

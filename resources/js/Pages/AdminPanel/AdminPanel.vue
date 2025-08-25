@@ -5,8 +5,6 @@ import { Head } from '@inertiajs/vue3'
 import AdminSidebar from '../../Components/AdminSidebar.vue'
 import DynamicTable from '../../Components/DynamicTable.vue'
 import EditModal from '../../Components/EditModal.vue'
-import { dataSets } from '../../data/adminData.js'
-
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
@@ -14,7 +12,7 @@ const { t } = useI18n()
 defineProps({
   title: {
     type: String,
-    default: 'Admin Panel - interns2025c',
+    default: 'Admin Panel - Łap Go',
   },
 })
 
@@ -124,6 +122,7 @@ function handleResize() {
 }
 
 onMounted(() => {
+  document.title = 'Admin Panel - Łap Go'
   window.addEventListener('resize', handleResize)
 })
 
