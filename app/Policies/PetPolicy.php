@@ -12,16 +12,16 @@ class PetPolicy
 
     public function store(User $user): bool
     {
-        return $user->haveShelterRole() || $user->haveAdminRole();
+        return $user->hasShelterRole() || $user->hasAdminRole();
     }
 
     public function update(User $user): bool
     {
-        return $user->haveShelterRole() || $user->haveAdminRole();
+        return $user->hasShelterRole() || $user->hasAdminRole();
     }
 
     public function delete(User $user): bool
     {
-        return $user->haveShelterRole() || $user->haveAdminRole();
+        return $user->hasShelterRole() || $user->hasAdminRole();
     }
 }

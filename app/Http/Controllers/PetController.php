@@ -18,7 +18,7 @@ class PetController extends Controller
     {
         $pets = Pet::query()->latest()->paginate(15);
 
-        return Inertia::render("Pets/Index", [
+        return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetIndexResource::collection($pets),
         ]);
     }
