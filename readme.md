@@ -8,7 +8,7 @@ cp .env.example .env
 make init
 make dev
 ```
-Application will be running under [localhost:63851](localhost:63851) and [http://LapGo.blumilk.localhost/](http://LapGo.blumilk.localhost/) in Blumilk traefik environment. If you don't have a Blumilk traefik environment set up yet, follow the instructions from this [repository](https://github.com/blumilksoftware/environment).
+Application will be running under [localhost:63851](localhost:63851) and [http://lapgo.blumilk.localhost/](http://LapGo.blumilk.localhost/) in Blumilk traefik environment. If you don't have a Blumilk traefik environment set up yet, follow the instructions from this [repository](https://github.com/blumilksoftware/environment).
 
 #### Commands
 Before running any of the commands below, you must run shell:
@@ -33,9 +33,9 @@ make shell
 
 #### Containers
 
-| service    | container name            | default host port               |
-|:-----------|:--------------------------|:--------------------------------|
-| `app`      | `LapGo-app-dev`     | [63851](http://localhost:63851) |
-| `database` | `LapGo-db-dev`      | 63853                           |
-| `redis`    | `LapGo-redis-dev`   | 63852                           |
-| `mailpit`  | `LapGo-mailpit-dev` | 63854                           |
+| service    | container name      | default host port               |
+|:-----------|:--------------------|:--------------------------------|
+| `app`      | `lapgo-app-dev`     | [63851](http://localhost:63851) |
+| `database` | `lapgo-db-dev`      | 63853                           |
+| `redis`    | `lapgo-redis-dev`   | 63852                           |
+| `mailpit`  | `lapgo-mailpit-dev` | 63854                           |

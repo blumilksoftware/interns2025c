@@ -13,8 +13,8 @@ CURRENT_USER_ID = $(shell id --user)
 CURRENT_USER_GROUP_ID = $(shell id --group)
 CURRENT_DIR = $(shell pwd)
 
-DATABASE_USERNAME=LapGo
-TEST_DATABASE_NAME=LapGo-test
+DATABASE_USERNAME=lapgo
+TEST_DATABASE_NAME=lapgo-test
 
 init: check-env-file
 	@make build \
