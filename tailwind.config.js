@@ -17,18 +17,6 @@ export default {
       fontFamily: {
         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
-      keyframes: {
-        heartbeat: {
-          '0%': { transform: 'scale(1)' },
-          '25%': { transform: 'scale(1.15)' },
-          '50%': { transform: 'scale(1)' },
-          '75%': { transform: 'scale(1.1)' },
-          '100%': { transform: 'scale(1)' },
-        },
-      },
-      animation: {
-        heartbeat: 'heartbeat 0.8s ease-out',
-      },
     },
   },
 

@@ -96,7 +96,7 @@ const logout = () => {
                 <!-- User Information -->
                 <div class="flex-1 min-w-0 space-y-3">
                   <div>
-                    <h4 class="text-xl font-semibold text-gray-900">{{ user.name }}</h4>
+                    <h4 class="heading-xl mb-0">{{ user.name }}</h4>
                     <p class="text-sm text-gray-500">{{ t('admin.profile.administrator') }}</p>
                   </div>
                   
