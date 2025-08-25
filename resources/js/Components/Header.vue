@@ -12,7 +12,7 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import NavLink from './NavLink.vue'
-import { routes } from '../routes'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 const mobileMenuOpen = ref(false)
