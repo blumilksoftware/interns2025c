@@ -13,6 +13,6 @@ enum PetAge: string
 
     public static function values(): array
     {
-        return array_map(fn($e) => $e->value, self::cases());
+        return array_map(fn(PetAge $e): string => $e->value, self::cases());
     }
 }

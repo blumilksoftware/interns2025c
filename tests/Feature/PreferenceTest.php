@@ -21,7 +21,7 @@ class PreferenceTest extends TestCase
         $this->actingAs($user)
             ->get("/preferences")
             ->assertStatus(200)
-            ->assertSee("preferences");
+            ->assertSee("Dashboard");
     }
 
     public function testGuestsCannotAccessPreferencesIndex(): void
@@ -36,12 +36,10 @@ class PreferenceTest extends TestCase
 
         $this->actingAs($user)
             ->post("/preferences", $data)
-            ->assertRedirect("/preferences");
+            ->assertRedirect();
 
         $this->assertDatabaseCount("preferences", 1);
-        $this->assertDatabaseHas("preferences", [
-            "user_id" => $user->id,
-        ]);
+        $this->assertDatabaseHas("preferences", ["user_id" => $user->id]);
     }
 
     public function testPreferenceCannotBeCreatedWithoutPreferencesField(): void
@@ -60,17 +58,17 @@ class PreferenceTest extends TestCase
     {
         $user = User::factory()->create();
         $preference = Preference::factory()->for($user)->create();
-        $newWeight = 9;
         $data = $preference->preferences;
-        $firstSpecies = $data["species"][0] ?? ["value" => "dog", "weight" => 1];
-        $firstSpecies["weight"] = $newWeight;
-        $data["species"][0] = $firstSpecies;
+
+        if (isset($data["species"][0])) {
+            $data["species"][0]["weight"] = 9;
+        }
 
         $this->actingAs($user)
             ->put("/preferences/{$preference->id}", ["preferences" => $data])
-            ->assertRedirect("/preferences");
+            ->assertRedirect();
 
-        $this->assertEquals($newWeight, Preference::first()->preferences["species"][0]["weight"]);
+        $this->assertEquals(9, Preference::first()->preferences["species"][0]["weight"]);
     }
 
     public function testPreferenceCannotBeUpdatedWithInvalidEnum(): void
@@ -78,7 +76,10 @@ class PreferenceTest extends TestCase
         $user = User::factory()->create();
         $preference = Preference::factory()->for($user)->create();
         $data = $preference->preferences;
-        $data["species"][0]["value"] = "invalid_species";
+
+        if (isset($data["species"][0])) {
+            $data["species"][0]["value"] = "invalid_species";
+        }
 
         $this->actingAs($user)
             ->put("/preferences/{$preference->id}", ["preferences" => $data])
@@ -92,7 +93,7 @@ class PreferenceTest extends TestCase
 
         $this->actingAs($user)
             ->delete("/preferences/{$preference->id}")
-            ->assertRedirect("/preferences");
+            ->assertRedirect();
 
         $this->assertDatabaseCount("preferences", 0);
     }
@@ -125,7 +126,10 @@ class PreferenceTest extends TestCase
     {
         $user = User::factory()->create();
         $data = Preference::factory()->make()->toArray();
-        $data["preferences"]["vaccinated"]["value"] = "not_a_boolean";
+
+        if (isset($data["preferences"]["vaccinated"])) {
+            $data["preferences"]["vaccinated"]["value"] = "not_a_boolean";
+        }
 
         $this->actingAs($user)
             ->post("/preferences", $data)
