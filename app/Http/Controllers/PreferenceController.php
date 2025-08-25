@@ -19,7 +19,7 @@ class PreferenceController extends Controller
 
     public function store(PreferenceRequest $request): RedirectResponse
     {
-        $request->user()->preferences()->create($request->validated());
+        auth()->user()->preferences()->create($request->validated());
 
         return redirect()->back()->with("success", "Preference created successfully.");
     }
