@@ -5,16 +5,23 @@ import { Head } from '@inertiajs/vue3'
 import AdminSidebar from '../../Components/AdminSidebar.vue'
 import DynamicTable from '../../Components/DynamicTable.vue'
 import EditModal from '../../Components/EditModal.vue'
-import { dataSets } from '../../data/adminData.js'
-
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
+const title = t('title.adminPanel')
 
-defineProps({
-  title: {
-    type: String,
-    default: 'Admin Panel - interns2025c',
+const props = defineProps({
+  pets: {
+    type: Object,
+    default: () => ({}),
+  },
+  shelters: {
+    type: Object,
+    default: () => ({}),
+  },
+  users: {
+    type: Object,
+    default: () => ({}),
   },
 })
 

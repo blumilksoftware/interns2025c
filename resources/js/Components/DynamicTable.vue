@@ -7,8 +7,6 @@ import { getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } fr
 
 const { t } = useI18n()
 
-const { t } = useI18n()
-
 function formatDateForFilter(v) {
   const d = new Date(v)
   if (isNaN(d.getTime())) {
@@ -337,7 +335,7 @@ const handleNativeDateChange = (columnKey, date) => {
                 <CellContent :column-key="column.key" :value="row[column.key] ?? '-' " />
               </div>
             </td>
-            <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="p-2 sm:px-4 text-sm text-gray-900">
               <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">{{ t('admin.table.edit') }}</button>
             </td>
           </tr>

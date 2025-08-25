@@ -1,4 +1,5 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import Header from '../../Components/Header.vue'
 import ImageSection from './ImageSection.vue'
 import BackgroundGradient from '../../Components/BackgroudGradient.vue'
@@ -6,12 +7,8 @@ import ButtonSection from './ButtonSection.vue'
 import Footer from '../../Components/Footer.vue'
 import { Head } from '@inertiajs/vue3'
 
-defineProps({
-  title: {
-    type: String,
-    default: 'Home - interns2025c',
-  },
-})
+const { t } = useI18n()
+const title = t('title.landingPage')
 
 </script>
 
