@@ -1,7 +1,7 @@
 {
-    "name": "blumilksoftware/interns2025c",
+    "name": "blumilksoftware/lapgo",
     "type": "project",
-    "description": "interns2025c project.",
+    "description": "LapGo project.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {

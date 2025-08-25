@@ -7,7 +7,7 @@ import Footer from '../Components/Footer.vue'
 import { onMounted } from 'vue'
 
 onMounted(() => {
-  document.title = 'Landing Page - interns2025c'
+  document.title = 'Landing Page - Łap Go'
 })
 </script>
 

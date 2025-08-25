@@ -1,14 +1,14 @@
 networks:
-    interns2025c-dev:
+    LapGo-dev:
         driver: bridge
     traefik-proxy-blumilk-local-environment:
       external: true
 
 volumes:
-    interns2025c-postgres-data:
-        name: interns2025c-postgres-data
-    interns2025c-redis-data:
-        name: interns2025c-redis-data
+    LapGo-postgres-data:
+        name: LapGo-postgres-data
+    LapGo-redis-data:
+        name: LapGo-redis-data
 
 services:
     app:
@@ -22,25 +22,25 @@ services:
             - "traefik.enable=true"
             - "traefik.blumilk.local.environment=true"
             # HTTP
-            - "traefik.http.routers.interns2025c-http-router.rule=Host(`${APP_DOCKER_HOST_NAME}`)"
-            - "traefik.http.routers.interns2025c-http-router.entrypoints=web"
-            - "traefik.http.routers.interns2025c-http-router.service=interns2025c"
+            - "traefik.http.routers.LapGo-http-router.rule=Host(`${APP_DOCKER_HOST_NAME}`)"
+            - "traefik.http.routers.LapGo-http-router.entrypoints=web"
+            - "traefik.http.routers.LapGo-http-router.service=LapGo"
           # HTTP to HTTPS redirect
-            #      - "traefik.http.routers.interns2025c-http-router.middlewares=https-redirect@file"
+            #      - "traefik.http.routers.LapGo-http-router.middlewares=https-redirect@file"
             # HTTPS
-            - "traefik.http.routers.interns2025c-https-router.rule=Host(`${APP_DOCKER_HOST_NAME}`)"
-            - "traefik.http.routers.interns2025c-https-router.entrypoints=websecure"
-            - "traefik.http.routers.interns2025c-https-router.tls=true"
-            - "traefik.http.routers.interns2025c-https-router.service=interns2025c"
+            - "traefik.http.routers.LapGo-https-router.rule=Host(`${APP_DOCKER_HOST_NAME}`)"
+            - "traefik.http.routers.LapGo-https-router.entrypoints=websecure"
+            - "traefik.http.routers.LapGo-https-router.tls=true"
+            - "traefik.http.routers.LapGo-https-router.service=LapGo"
             # APP LOADBALANCER
-            - "traefik.http.services.interns2025c.loadbalancer.server.port=80"
+            - "traefik.http.services.LapGo.loadbalancer.server.port=80"
             # VITE DEV SERVER
-            - "traefik.http.routers.interns2025c-vite-dev-server-https-router.rule=Host(`${VITE_DEV_SERVER_DOCKER_HOST_NAME}`)"
-            - "traefik.http.routers.interns2025c-vite-dev-server-https-router.entrypoints=websecure"
-            - "traefik.http.routers.interns2025c-vite-dev-server-https-router.tls=true"
-            - "traefik.http.routers.interns2025c-vite-dev-server-https-router.service=interns2025c-vite-dev-server"
-            - "traefik.http.services.interns2025c-vite-dev-server.loadbalancer.server.port=5173"
-        container_name: interns2025c-app-dev
+            - "traefik.http.routers.LapGo-vite-dev-server-https-router.rule=Host(`${VITE_DEV_SERVER_DOCKER_HOST_NAME}`)"
+            - "traefik.http.routers.LapGo-vite-dev-server-https-router.entrypoints=websecure"
+            - "traefik.http.routers.LapGo-vite-dev-server-https-router.tls=true"
+            - "traefik.http.routers.LapGo-vite-dev-server-https-router.service=LapGo-vite-dev-server"
+            - "traefik.http.services.LapGo-vite-dev-server.loadbalancer.server.port=5173"
+        container_name: LapGo-app-dev
         working_dir: /application
         volumes:
             - ./environment/dev/app/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -51,7 +51,7 @@ services:
         ports:
             - ${DOCKER_APP_HOST_PORT:-63851}:80
         networks:
-            - interns2025c-dev
+            - LapGo-dev
             - traefik-proxy-blumilk-local-environment
         restart: unless-stopped
         depends_on:
@@ -60,7 +60,7 @@ services:
 
     database:
         image: postgres:16.3-alpine3.18@sha256:64e18e8fb3e9c9aac89ac590c5dd8306b862478404f76cd9b5f7720d012b4c47
-        container_name: interns2025c-db-dev
+        container_name: LapGo-db-dev
         environment:
             - POSTGRES_USER=${DB_USERNAME}
             - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -74,30 +74,30 @@ services:
         ports:
             - ${DOCKER_DATABASE_HOST_PORT:-63853}:5432
         volumes:
-            - interns2025c-postgres-data:/var/lib/postgresql/data
+            - LapGo-postgres-data:/var/lib/postgresql/data
         networks:
-            - interns2025c-dev
+            - LapGo-dev
         restart: unless-stopped
 
     mailpit:
       image: axllent/mailpit:v1.27.1@sha256:986b14ff7b253e62883ea19fd3112806f116e5e2f221e03f12fb81c7312ff532
-      container_name: interns2025c-mailpit-dev
+      container_name: LapGo-mailpit-dev
       labels:
         - "traefik.enable=true"
         - "traefik.blumilk.local.environment=true"
         # HTTP
-        - "traefik.http.routers.interns2025c-mailpit-http-router.rule=Host(`${MAILPIT_DOCKER_HOST_NAME}`)"
-        - "traefik.http.routers.interns2025c-mailpit-http-router.entrypoints=web"
+        - "traefik.http.routers.LapGo-mailpit-http-router.rule=Host(`${MAILPIT_DOCKER_HOST_NAME}`)"
+        - "traefik.http.routers.LapGo-mailpit-http-router.entrypoints=web"
         # HTTP to HTTPS redirect
         #      - "traefik.http.routers.erasmus-mailpit-http-router.middlewares=https-redirect@file"
         # HTTPS
-        - "traefik.http.routers.interns2025c-mailpit-https-router.rule=Host(`${MAILPIT_DOCKER_HOST_NAME}`)"
-        - "traefik.http.routers.interns2025c-mailpit-https-router.entrypoints=websecure"
-        - "traefik.http.routers.interns2025c-mailpit-https-router.tls=true"
+        - "traefik.http.routers.LapGo-mailpit-https-router.rule=Host(`${MAILPIT_DOCKER_HOST_NAME}`)"
+        - "traefik.http.routers.LapGo-mailpit-https-router.entrypoints=websecure"
+        - "traefik.http.routers.LapGo-mailpit-https-router.tls=true"
         # LOADBALANCER MAILPIT PORT
-        - "traefik.http.services.interns2025c-mailpit.loadbalancer.server.port=8025"
+        - "traefik.http.services.LapGo-mailpit.loadbalancer.server.port=8025"
       networks:
-        - interns2025c-dev
+        - LapGo-dev
         - traefik-proxy-blumilk-local-environment
       ports:
         - ${DOCKER_MAILPIT_DASHBOARD_HOST_PORT:-63854}:8025
@@ -105,11 +105,11 @@ services:
 
     redis:
         image: redis:7.2.5-alpine3.19@sha256:8f157725f8eee31e65a8d4765f1f986d76aedc1a0503345dfb63a2b1b5a441ee
-        container_name: interns2025c-redis-dev
+        container_name: LapGo-redis-dev
         ports:
             - ${DOCKER_REDIS_HOST_PORT:-63852}:6379
         volumes:
-            - interns2025c-redis-data:/data
+            - LapGo-redis-data:/data
         networks:
-            - interns2025c-dev
+            - LapGo-dev
         restart: unless-stopped

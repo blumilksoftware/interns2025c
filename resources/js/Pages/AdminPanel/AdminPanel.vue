@@ -113,7 +113,7 @@ function handleResize() {
 }
 
 onMounted(() => {
-  document.title = 'Admin Panel - interns2025c'
+  document.title = 'Admin Panel - Łap Go'
   window.addEventListener('resize', handleResize)
 })
 
