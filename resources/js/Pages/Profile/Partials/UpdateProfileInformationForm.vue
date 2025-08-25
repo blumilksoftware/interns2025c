@@ -8,6 +8,7 @@ import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
+import { routes } from '@/routes'
 
 const props = defineProps({
   user: {
@@ -32,7 +33,7 @@ const updateProfileInformation = () => {
     form.photo = photoInput.value.files[0]
   }
 
-  form.post(route('user-profile-information.update'), {
+  form.post(routes.profile.informationUpdate(), {
     errorBag: 'updateProfileInformation',
     preserveScroll: true,
     onSuccess: () => clearPhotoFileInput(),
@@ -62,7 +63,7 @@ const updatePhotoPreview = () => {
 }
 
 const deletePhoto = () => {
-  router.delete(route('current-user-photo.destroy'), {
+  router.delete(routes.profile.photoDestroy(), {
     preserveScroll: true,
     onSuccess: () => {
       photoPreview.value = null
@@ -157,7 +158,7 @@ const clearPhotoFileInput = () => {
             Your email address is unverified.
 
             <Link
-              :href="route('verification.send')"
+              :href="routes.verification.send()"
               method="post"
               as="button"
               class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"

@@ -1,5 +1,8 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   isOpen: {
@@ -54,7 +57,7 @@ const logout = () => {
             <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
               <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">
-                  User Profile
+                  {{ t('admin.profile.title') }}
                 </h3>
                 <button
                   class="text-gray-400 hover:text-gray-600 focus:outline-none"
@@ -80,7 +83,7 @@ const logout = () => {
                   >
                   <button
                     class="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full p-1.5 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    title="Change Picture"
+                    :title="t('admin.profile.changePicture')"
                     @click="changePicture"
                   >
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
@@ -94,7 +97,7 @@ const logout = () => {
                 <div class="flex-1 min-w-0 space-y-3">
                   <div>
                     <h4 class="text-xl font-semibold text-gray-900">{{ user.name }}</h4>
-                    <p class="text-sm text-gray-500">Administrator</p>
+                    <p class="text-sm text-gray-500">{{ t('admin.profile.administrator') }}</p>
                   </div>
                   
                   <div class="space-y-2">
@@ -127,7 +130,7 @@ const logout = () => {
             <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
             </svg>
-            Change Password
+            {{ t('admin.profile.changePassword') }}
           </button>
           
           <button
@@ -138,7 +141,7 @@ const logout = () => {
             <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Logout
+            {{ t('admin.profile.logout') }}
           </button>
         </div>
       </div>

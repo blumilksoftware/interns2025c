@@ -1,12 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import Banner from '@/Components/Banner.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 import NavLink from '@/Components/NavLink.vue'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
+import { routes } from '@/routes'
+
+const { t } = useI18n()
 
 defineProps({
   title: {
@@ -17,9 +21,8 @@ defineProps({
 
 const showingNavigationDropdown = ref(false)
 
-
 const logout = () => {
-  router.post(route('logout'))
+  router.post(routes.logout())
 }
 </script>
 
@@ -39,8 +42,8 @@ const logout = () => {
               </div>
 
               <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                  Dashboard
+                <NavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
+                  {{ t('navigation.dashboard') }}
                 </NavLink>
               </div>
             </div>
@@ -67,22 +70,22 @@ const logout = () => {
 
                     <template #content>
                       <div class="block px-4 py-2 text-xs text-gray-400">
-                        Manage Account
+                        {{ t('navigation.manageAccount') }}
                       </div>
 
-                      <DropdownLink :href="route('profile.show')">
-                        Profile
+                      <DropdownLink :href="routes.profile.show()">
+                        {{ t('navigation.profile') }}
                       </DropdownLink>
 
-                      <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')">
-                        API Tokens
+                      <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()">
+                        {{ t('navigation.apiTokens') }}
                       </DropdownLink>
 
                       <div class="border-t border-gray-200 dark:border-gray-600" />
 
                       <form @submit.prevent="logout">
                         <DropdownLink as="button">
-                          Log Out
+                          {{ t('navigation.logOut') }}
                         </DropdownLink>
                       </form>
                     </template>
@@ -120,8 +123,8 @@ const logout = () => {
 
           <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
-              <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                Dashboard
+              <ResponsiveNavLink :href="routes.dashboard()" :active="$page.url.split('?')[0] === routes.dashboard()">
+                {{ t('navigation.dashboard') }}
               </ResponsiveNavLink>
             </div>
 
@@ -142,17 +145,17 @@ const logout = () => {
               </div>
 
               <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
-                  Profile
+                <ResponsiveNavLink :href="routes.profile.show()" :active="$page.url.split('?')[0] === routes.profile.show()">
+                  {{ t('navigation.profile') }}
                 </ResponsiveNavLink>
-
-                <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')" :active="route().current('api-tokens.index')">
-                  API Tokens
+                
+                <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="routes.apiTokens.index()" :active="$page.url.split('?')[0] === routes.apiTokens.index()">
+                  {{ t('navigation.apiTokens') }}
                 </ResponsiveNavLink>
-
+                
                 <form method="POST" @submit.prevent="logout">
                   <ResponsiveNavLink as="button">
-                    Log Out
+                    {{ t('navigation.logOut') }}
                   </ResponsiveNavLink>
                 </form>
               </div>

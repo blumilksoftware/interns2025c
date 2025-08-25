@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { router } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronRightIcon, Bars3Icon, XMarkIcon } from '@heroicons/vue/20/solid'
 import UserProfileModal from './UserProfileModal.vue'
 
+const { t } = useI18n()
 const emit = defineEmits(['data-set-change', 'close'])
 
 const props = defineProps({
@@ -16,13 +18,13 @@ const props = defineProps({
 
 const navigation = [
   {
-    name: 'CRUDs',
+    name: t('admin.sidebar.cruds'),
     current: false,
     children: [
-      { name: 'Pets', key: 'pets', href: '#' },
-      { name: 'Users', key: 'users', href: '#' },
-      { name: 'Shelters', key: 'shelters', href: '#' },
-      { name: 'Logs', key: 'logs', href: '#' },
+      { name: t('admin.sidebar.pets'), key: 'pets', href: '#' },
+      { name: t('admin.sidebar.users'), key: 'users', href: '#' },
+      { name: t('admin.sidebar.shelters'), key: 'shelters', href: '#' },
+      { name: t('admin.sidebar.logs'), key: 'logs', href: '#' },
     ],
   },
 ]
@@ -78,7 +80,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
             @click="openUserProfile"
           >
             <img class="size-8 rounded-full bg-gray-50" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
-            <span class="sr-only">Go to your profile</span>
+            <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
             <span aria-hidden="true">Tomasz Rebizant</span>
           </button>
         </li>
@@ -127,7 +129,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                 @click="openUserProfile"
               >
                 <img class="size-8 rounded-full bg-gray-50" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
-                <span class="sr-only">Go to your profile</span>
+                <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
                 <span aria-hidden="true">Tomasz Rebizant</span>
               </button>
             </li>
