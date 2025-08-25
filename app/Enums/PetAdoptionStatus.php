@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum PetSex: string
+enum PetAdoptionStatus: string
 {
-    case Male = "male";
-    case Female = "female";
+    case Available = "available";
+    case Pending = "pending";
+    case Adopted = "adopted";
+    case Quarantined = "quarantined";
     case Unknown = "unknown";
 
     public static function values(): array

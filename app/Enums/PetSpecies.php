@@ -8,8 +8,10 @@ enum PetSpecies: string
 {
     case Dog = "dog";
     case Cat = "cat";
-    case Bird = "bird";
-    case Rabbit = "rabbit";
-    case Reptile = "reptile";
     case Other = "other";
+
+    public static function values(): array
+    {
+        return array_map(fn($e) => $e->value, self::cases());
+    }
 }
