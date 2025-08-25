@@ -145,7 +145,7 @@ const logout = () => {
               </div>
 
               <div class="mt-3 space-y-1">
-                <ResponsiveNavLink :href="routes.profile.show()" :active="$page.url.split('?')[0] === routes.profile.show()">
+                <ResponsiveNavLink :href="routes.profile.show()">
                   {{ t('navigation.profile') }}
                 </ResponsiveNavLink>
                 

@@ -59,7 +59,7 @@ class DemoSeeder extends Seeder
                 ->where("user_id", $user->id)
                 ->exists();
 
-            if (!$userHasExistingShelter) {
+            if (!$userHasExistingShelter && !$user->hasAdminRole()) {
                 $randomShelter = $petShelters->random();
                 $randomShelter->users()->attach($user->id);
 
