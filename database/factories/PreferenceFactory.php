@@ -4,19 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App<?php
-
-declare(strict_types=1);
-
-namespace App\Http\Resources;
-
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class PreferenceResource extends JsonResource
-{
-    public function toArray($request): array
-    {
-        retur\Enums\PetAdoptionStatus;
+use App\Enums\PetAdoptionStatus;
 use App\Enums\PetAge;
 use App\Enums\PetAttitudeToCats;
 use App\Enums\PetAttitudeToChildren;
