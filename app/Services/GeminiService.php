@@ -42,10 +42,10 @@ class GeminiService
 
     public function getGeminiResult(array $response): string
     {
-        if (isset($response["candidates"][0]["content"]["parts"][0]["text"])) {
-            return $response["candidates"][0]["content"]["parts"][0]["text"];
+        if (!isset($response["candidates"][0]["content"]["parts"][0]["text"])) {
+            throw new RuntimeException("Invalid LLM response structure");
         }
 
-        throw new RuntimeException("Invalid LLM response structure");
+        return $response["candidates"][0]["content"]["parts"][0]["text"];
     }
 }

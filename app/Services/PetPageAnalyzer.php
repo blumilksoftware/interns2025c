@@ -28,8 +28,8 @@ class PetPageAnalyzer
 
         $allKeywords = array_unique(array_merge($this->petKeywords, $this->requiredKeywords));
 
-        $lowercasedKeywords = array_map(fn($k): string => mb_strtolower($k), $allKeywords);
-        $asciiKeywords = array_map(fn($k): string => Str::ascii(mb_strtolower($k)), $lowercasedKeywords);
+        $lowercasedKeywords = array_map(fn(string $k): string => mb_strtolower($k), $allKeywords);
+        $asciiKeywords = array_map(fn(string $k): string => Str::ascii(mb_strtolower($k)), $lowercasedKeywords);
 
         $threshold ??= min(self::MINIMAL_SCORE_TRESHOLD, count($allKeywords));
 
@@ -41,7 +41,7 @@ class PetPageAnalyzer
                 continue;
             }
 
-            if ((stripos($bodyLower, $keyword) !== false || stripos($bodyAscii, $asciiKeywords[$i]) !== false)
+            if ((str_contains($bodyLower, $keyword) || str_contains($bodyAscii, $asciiKeywords[$i]))
                 && !in_array($keyword, $matchedKeywords, true)
             ) {
                 $score++;

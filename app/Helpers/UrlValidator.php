@@ -6,10 +6,10 @@ namespace App\Helpers;
 
 class UrlValidator
 {
-    public static function checkIfUrlContainAntiKeywords(string $url, string $config_key): bool
+    public static function checkIfUrlContainAntiKeywords(string $url, string $configKey): bool
     {
-        $antiKeywords = config($config_key, []);
+        $antiKeywords = config($configKey, []);
 
-        return collect($antiKeywords)->contains(fn(string $keyword): bool => stripos($url, $keyword) !== false);
+        return collect($antiKeywords)->contains(fn(string $keyword): bool => str_contains($url, $keyword) !== false);
     }
 }
