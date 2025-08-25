@@ -76,7 +76,6 @@ const handleDragMove = (e) => {
   currentX.value = clientX
   dragOffset.value = clientX - startX.value
   
-  // Mark as dragged if movement exceeds threshold
   if (Math.abs(dragOffset.value) > 10) {
     hasDragged.value = true
   }
@@ -94,27 +93,25 @@ const handleDragEnd = () => {
   }
   isDragging.value = false
   dragOffset.value = 0
-  // Reset hasDragged after a short delay to allow click events
+  
+  // Dodajemy małe opóźnienie przed resetowaniem hasDragged, aby transition miał czas się wykonać
   setTimeout(() => {
     hasDragged.value = false
-  }, 100)
+  }, 350) // Zwiększamy z 100ms na 350ms, aby pokryć czas transition (300ms) + margines
 }
 
 const handleTouchStart = (e) => {
   handleDragStart(e)
-  // Prevent default touch behavior that might interfere
   e.preventDefault()
 }
 
 const handleTouchMove = (e) => {
   handleDragMove(e)
-  // Prevent default touch behavior that might interfere
   e.preventDefault()
 }
 
 const handleTouchEnd = (e) => {
   handleDragEnd()
-  // Prevent default touch behavior that might interfere
   e.preventDefault()
 }
 
@@ -128,8 +125,8 @@ const handleMouseUp = () => {
 const isFullscreen = ref(false)
 
 const openFullscreen = (index) => {
-  // Only open fullscreen if not dragging
-  if (hasDragged.value) return
+  // Sprawdzamy czy użytkownik rzeczywiście przesunął palcem (nie tylko kliknął)
+  if (hasDragged.value || Math.abs(dragOffset.value) > 5) return
   currentImageIndex.value = index
   isFullscreen.value = true
 }
@@ -159,34 +156,39 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative w-full overflow-hidden bg-gray-300/60 px-4 sm:px-6 md:px-4 lg:px-12 py-4 rounded-lg dark:bg-neutral-900">
+  <div 
+    class="relative w-full overflow-hidden bg-gray-300/60 p-4 sm:px-6 md:px-4 lg:px-12 rounded-lg dark:bg-neutral-900 cursor-grab active:cursor-grabbing select-none"
+    @mousedown="handleDragStart"
+    @mousemove="handleDragMove"
+    @mouseup="handleDragEnd"
+    @mouseleave="handleDragEnd"
+    @pointerdown="handleDragStart"
+    @pointermove="handleDragMove"
+    @pointerup="handleDragEnd"
+    @touchstart="handleTouchStart"
+    @touchmove="handleTouchMove"
+    @touchend="handleTouchEnd"
+  >
     <div v-if="imageUrls.length > 0" class="relative hidden sm:flex h-80 md:h-128 justify-center">
       <div 
-        class="flex h-full cursor-grab active:cursor-grabbing select-none" 
-        :class="{ 'ml-[50vw]': hasMultipleImages, 'transition-transform duration-700': !isDragging }"
+        class="flex h-full transition-transform duration-300 ease-out" 
+        :class="{ 'ml-[50vw]': hasMultipleImages, 'duration-0': isDragging }"
         :style="{ transform: carouselTransform, 'will-change': 'transform', 'touch-action': 'pan-y' }"
-        @mousedown="handleDragStart"
-        @mousemove="handleDragMove"
-        @mouseup="handleDragEnd"
-        @mouseleave="handleDragEnd"
-        @pointerdown="handleDragStart"
-        @pointermove="handleDragMove"
-        @pointerup="handleDragEnd"
       >
         <div 
           v-for="(url, index) in imageUrls" 
           :key="index"
-          class="w-[50vw] flex-shrink-0 px-2 md:px-[2vw] lg:px-[5vw]"
+          class="w-[50vw] shrink-0 px-2 md:px-[2vw] lg:px-[5vw]"
         >
           <div class="flex justify-center h-full bg-transparent dark:bg-neutral-900">
             <img
               :src="url"
               :alt="`${props.pet?.name || 'Pet'} - ${index + 1}`"
               class="max-w-full max-h-full object-contain transition-transform  duration-300 rounded-lg cursor-zoom-in"
-              @click="openFullscreen(index)"
               draggable="false"
+              @click="openFullscreen(index)"
               @dragstart.prevent
-            />
+            >
           </div>
         </div>
       </div>
@@ -195,21 +197,18 @@ onBeforeUnmount(() => {
     <div v-if="imageUrls.length > 0" class="relative sm:hidden">
       <div class="relative w-full h-72 overflow-hidden">
         <div
-          class="flex h-full transition-transform duration-300"
+          class="flex h-full transition-transform duration-300 ease-out"
           :class="{ 'duration-0': isDragging }"
           :style="{ transform: mobileTransform }"
-          @touchstart="handleTouchStart"
-          @touchmove="handleTouchMove"
-          @touchend="handleTouchEnd"
         >
-          <div v-for="(url, index) in imageUrls" :key="`m-${index}`" class="shrink-0 w-full h-full flex items-center justify-center">
+          <div v-for="(url, index) in imageUrls" :key="`m-${index}`" class="shrink-0 size-full flex items-center justify-center">
             <img
               :src="url"
               :alt="`${props.pet?.name || 'Pet'} - ${index + 1}`"
-              class="w-full h-full object-contain rounded-lg select-none"
+              class="size-full object-contain rounded-lg select-none"
               draggable="false"
               @click="openFullscreen(index)"
-            />
+            >
           </div>
         </div>
       </div>
@@ -218,13 +217,13 @@ onBeforeUnmount(() => {
     <button 
       v-if="imageUrls.length > 1"
       type="button" 
-      @click="prevImage"
       :disabled="currentImageIndex === 0"
       class="absolute inset-y-0 start-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+      @click="prevImage"
     >
       <span class="text-2xl" aria-hidden="true">
         <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m15 18-6-6 6-6"></path>
+          <path d="m15 18-6-6 6-6" />
         </svg>
       </span>
       <span class="sr-only">Previous</span>
@@ -232,14 +231,14 @@ onBeforeUnmount(() => {
     <button 
       v-if="imageUrls.length > 1"
       type="button" 
-      @click="nextImage"
       :disabled="currentImageIndex >= imageUrls.length - 1"
       class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+      @click="nextImage"
     >
       <span class="sr-only">Next</span>
       <span class="text-2xl" aria-hidden="true">
         <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6"></path>
+          <path d="m9 18 6-6-6-6" />
         </svg>
       </span>
     </button>

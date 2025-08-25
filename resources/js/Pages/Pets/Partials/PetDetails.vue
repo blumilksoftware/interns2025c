@@ -91,11 +91,9 @@ const characteristics = computed(() => {
             </span>
           </li>
         </ul>
-
-
       </div>
 
-      <div class="mb-8" v-if="personalityTraits.length">
+      <div v-if="personalityTraits.length" class="mb-8">
         <h2 class="heading-xl">{{ t('dashboard.mvp.personalityTraits') }}</h2>
         <div class="flex flex-wrap gap-2">
           <span 
@@ -116,9 +114,9 @@ const characteristics = computed(() => {
         <div class="mt-8 space-y-6">
           <div v-if="props.pet?.health_status || props.pet?.status" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
             <div class="flex items-center gap-3 mb-4">
-              <div class="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              <div class="shrink-0 size-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                <svg class="size-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
               <div>
@@ -129,50 +127,50 @@ const characteristics = computed(() => {
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div v-if="props.pet?.health_status" class="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="flex-shrink-0">
-                  <div v-if="props.pet.health_status === 'healthy'" class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="shrink-0">
+                  <div v-if="props.pet.health_status === 'healthy'" class="size-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <div v-else-if="props.pet.health_status === 'sick'" class="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                  <div v-else-if="props.pet.health_status === 'sick'" class="size-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                   </div>
-                  <div v-else-if="props.pet.health_status === 'recovering'" class="w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  <div v-else-if="props.pet.health_status === 'recovering'" class="size-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <div v-else-if="props.pet.health_status === 'critical'" class="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <div v-else-if="props.pet.health_status === 'critical'" class="size-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <div v-else class="w-8 h-8 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <div v-else class="size-8 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900 dark:text-white">
                     {{ props.pet.health_status === 'healthy' ? 'Zdrowy' : 
-                       props.pet.health_status === 'sick' ? 'Chory' :
-                       props.pet.health_status === 'recovering' ? 'W rekonwalescencji' :
-                       props.pet.health_status === 'critical' ? 'Stan krytyczny' :
-                       props.pet.health_status === 'unknown' ? 'Nieznany' : props.pet.health_status }}
+                      props.pet.health_status === 'sick' ? 'Chory' :
+                      props.pet.health_status === 'recovering' ? 'W rekonwalescencji' :
+                      props.pet.health_status === 'critical' ? 'Stan krytyczny' :
+                      props.pet.health_status === 'unknown' ? 'Nieznany' : props.pet.health_status }}
                   </p>
                   <p class="text-xs text-gray-500 dark:text-gray-400">Stan zdrowia</p>
                 </div>
               </div>
 
               <div v-if="props.pet?.status" class="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="flex-shrink-0">
-                  <div class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="shrink-0">
+                  <div class="size-8 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 </div>
@@ -185,9 +183,9 @@ const characteristics = computed(() => {
 
             <div v-if="props.pet?.current_treatment" class="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
               <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mt-0.5">
-                  <svg class="w-3 h-3 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                <div class="shrink-0 size-6 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mt-0.5">
+                  <svg class="size-3 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
                 <div>
@@ -202,9 +200,9 @@ const characteristics = computed(() => {
               <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-3">Informacje medyczne</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-if="props.pet?.vaccinated" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <div class="size-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
@@ -214,9 +212,9 @@ const characteristics = computed(() => {
                 </div>
 
                 <div v-if="props.pet?.dewormed" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div class="w-8 h-8 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <div class="size-8 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
@@ -226,10 +224,10 @@ const characteristics = computed(() => {
                 </div>
 
                 <div v-if="props.pet?.microchipped" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div class="w-8 h-8 bg-cyan-100 dark:bg-cyan-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <rect x="4" y="4" width="16" height="16" rx="3"></rect>
-                      <path d="M8 8h8M8 12h8M8 16h5"></path>
+                  <div class="size-8 bg-cyan-100 dark:bg-cyan-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <rect x="4" y="4" width="16" height="16" rx="3" />
+                      <path d="M8 8h8M8 12h8M8 16h5" />
                     </svg>
                   </div>
                   <div>
@@ -239,8 +237,8 @@ const characteristics = computed(() => {
                 </div>
 
                 <div v-if="props.pet?.neutered" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div class="w-8 h-8 bg-fuchsia-100 dark:bg-fuchsia-900 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <div class="size-8 bg-fuchsia-100 dark:bg-fuchsia-900 rounded-full flex items-center justify-center">
+                    <svg class="size-4 text-fuchsia-600 dark:text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M17 3v1c-.007 2.46 -.91 4.554 -2.705 6.281m-2.295 1.719c-3.328 1.99 -5 4.662 -5.008 8.014v1" />
                       <path d="M17 21.014v-1c0 -1.44 -.315 -2.755 -.932 -3.944m-4.068 -4.07c-1.903 -1.138 -3.263 -2.485 -4.082 -4.068" />
                       <path d="M8 4h9" />

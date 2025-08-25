@@ -25,7 +25,6 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
-
     Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
         "title" => __("titles.adminPanel"),
     ]))->name("admin");
