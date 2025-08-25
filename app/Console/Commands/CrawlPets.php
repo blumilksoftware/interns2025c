@@ -104,7 +104,7 @@ class CrawlPets extends Command
             $response = $this->connector->send(new GetPageRequest($currentUrl));
 
             if ($response->isCached() && $depth > 0) {
-                $this->info("Respone is cached - Skipping HTTP request for $currentUrl");
+                $this->info("Response is cached - Skipping HTTP request for $currentUrl");
 
                 continue;
             }

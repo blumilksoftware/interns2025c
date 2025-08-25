@@ -93,7 +93,7 @@ class PetService
 
         if ($shelter) {
             return $shelter;
-        }  
+        }
         Log::warning("No shelter found for URL: $shelterUrl");
 
         return null;
