@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
-import { getColumnWidth, getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '../data/columnConfig.js'
+import { getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '../data/columnConfig.js'
 
 const { t } = useI18n()
 
@@ -71,7 +71,6 @@ const columns = computed(() => {
   return Object.keys(firstRow).map(key => ({
     key,
     label: getColumnLabel(props.dataSetType, key),
-    width: getColumnWidth(props.dataSetType, key),
     renderer: getColumnRenderer(props.dataSetType, key),
   }))
 })
@@ -241,7 +240,7 @@ const handleNativeDateChange = (columnKey, date) => {
 </script>
 
 <template>
-  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden w-full min-w-0">
     <div class="p-4 sm:px-6 border-b border-gray-200">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
@@ -259,7 +258,7 @@ const handleNativeDateChange = (columnKey, date) => {
 
       <div v-if="showFilters" class="mt-4 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div v-for="column in columns" :key="column.key" class="space-y-1">
-          <label :for="`filter-${column.key}`" class="block text-xs font-medium text-gray-700">{{ column.label }}</label>
+          <label :for="`filter-${column.key}`" class="inline text-xs font-medium text-gray-700">{{ column.label }}</label>
           
           <div v-if="getFilterType(props.dataSetType, column.key) === 'date'" class="relative">
             <input 
@@ -312,11 +311,11 @@ const handleNativeDateChange = (columnKey, date) => {
       </div>
     </div>
 
-    <div class="overflow-auto max-h-[50vh]">
-      <table class="min-w-full divide-y divide-gray-200">
+    <div class="overflow-x-auto max-w-full min-w-0">
+      <table class="divide-y divide-gray-200 ">
         <thead class="bg-gray-50">
           <tr>
-            <th v-for="column in columns" :key="column.key" :class="[column.width, 'p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none']" @click="handleSort(column.key)">
+            <th v-for="column in columns" :key="column.key" class="text-wrap break-words p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" @click="handleSort(column.key)">
               <div class="flex items-center justify-between">
                 <span>{{ column.label }}</span>
                 <div class="flex flex-col ml-1">
@@ -329,12 +328,14 @@ const handleNativeDateChange = (columnKey, date) => {
             <th class="w-20 p-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('admin.table.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-gray-200 ">
           <tr v-for="row in paginatedData" :key="row.id" class="hover:bg-gray-50">
-            <td v-for="column in columns" :key="column.key" :class="[column.width, 'p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900']">
-              <CellContent :column-key="column.key" :value="row[column.key]" />
+            <td v-for="column in columns" :key="column.key" class="p-2 sm:px-4 text-sm text-center text-gray-900 border-2 border-gray-100 ">
+              <div class="overflow-auto h-30 w-auto flex justify-center items-center">
+                <CellContent :column-key="column.key" :value="row[column.key] ?? '-' " />
+              </div>
             </td>
-            <td class="p-2 sm:px-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="p-2 sm:px-4 text-sm text-gray-900">
               <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">{{ t('admin.table.edit') }}</button>
             </td>
           </tr>
