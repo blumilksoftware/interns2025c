@@ -6,14 +6,8 @@ namespace App\Enums;
 
 enum PetAdoptionStatus: string
 {
-    case Available = "available";
-    case Pending = "pending";
     case Adopted = "adopted";
+    case WaitingForAdoption = "waiting for adoption";
     case Quarantined = "quarantined";
-    case Unknown = "unknown";
-
-    public static function values(): array
-    {
-        return array_map(fn(PetAdoptionStatus $e): string => $e->value, self::cases());
-    }
+    case TemporaryHome = "in temporary home";
 }

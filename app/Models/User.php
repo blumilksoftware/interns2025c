@@ -45,12 +45,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasShelterRole(): bool
     {
-        return $this->role === Role::SHELTER->value;
+        return $this->role === Role::ShelterEmployee->value;
     }
 
     public function hasAdminRole(): bool
     {
-        return $this->role === Role::ADMIN->value;
+        return $this->role === Role::Admin->value;
     }
 
     public function petShelters(): BelongsToMany

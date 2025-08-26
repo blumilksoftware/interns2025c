@@ -47,7 +47,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
 <template>
   <div class="hidden xl:flex min-w-[100px] max-w-xs shrink-0 flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
     <div class="flex h-16 shrink-0 justify-between items-center">
-      <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async">  
+      <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="LapGo app logo" height="32" loading="lazy" decoding="async">
     </div>
     <nav class="flex flex-1 flex-col">
       <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -93,7 +93,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
       <div class="fixed inset-0 bg-black/20" @click="$emit('close')" />
       <div class="relative w-64 bg-white h-full shadow-xl flex flex-col gap-y-5 px-6 py-4">
         <div class="flex h-16 shrink-0 justify-between items-center">
-          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="Interns2025c app logo" height="32" loading="lazy" decoding="async">
+          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="LapGo app logo" height="32" loading="lazy" decoding="async">
           <button class="text-gray-700 hover:text-gray-900 p-2 rounded focus:outline-none" @click="$emit('close')">
             <XMarkIcon class="size-6" />
           </button>
