@@ -16,11 +16,11 @@ class UserTest extends TestCase
     public function testAdminCanDeleteOtherUser(): void
     {
         $admin = User::factory()->create([
-            "role" => Role::ADMIN->value,
+            "role" => Role::Admin->value,
         ]);
 
         $user = User::factory()->create([
-            "role" => Role::USER->value,
+            "role" => Role::User->value,
         ]);
 
         $response = $this->actingAs($admin)->delete("/users/{$user->id}");
@@ -31,11 +31,11 @@ class UserTest extends TestCase
 
     public function testNonAdminCannotDeleteUser(): void
     {
-        $roles = [Role::USER->value, Role::SHELTER->value];
+        $roles = [Role::User->value, Role::ShelterEmployee->value];
 
         foreach ($roles as $role) {
             $user = User::factory()->create(["role" => $role]);
-            $target = User::factory()->create(["role" => Role::USER->value]);
+            $target = User::factory()->create(["role" => Role::User->value]);
 
             $response = $this->actingAs($user)->delete("/users/{$target->id}");
 
@@ -46,7 +46,7 @@ class UserTest extends TestCase
 
     public function testAdminCannotDeleteOwnAccount(): void
     {
-        $admin = User::factory()->create(["role" => Role::ADMIN->value]);
+        $admin = User::factory()->create(["role" => Role::Admin->value]);
 
         $response = $this->actingAs($admin)->delete("/users/{$admin->id}");
 
@@ -56,8 +56,8 @@ class UserTest extends TestCase
 
     public function testUserCannotDeleteAnotherUser(): void
     {
-        $user = User::factory()->create(["role" => Role::USER->value]);
-        $target = User::factory()->create(["role" => Role::USER->value]);
+        $user = User::factory()->create(["role" => Role::User->value]);
+        $target = User::factory()->create(["role" => Role::User->value]);
 
         $response = $this->actingAs($user)->delete("/users/{$target->id}");
 
@@ -67,7 +67,7 @@ class UserTest extends TestCase
 
     public function testAdminCanViewOwnProfile(): void
     {
-        $admin = User::factory()->create(["role" => Role::ADMIN->value]);
+        $admin = User::factory()->create(["role" => Role::Admin->value]);
 
         $response = $this->actingAs($admin)->get("/profile");
 
@@ -76,7 +76,7 @@ class UserTest extends TestCase
 
     public function testUserCanViewOwnProfile(): void
     {
-        $user = User::factory()->create(["role" => Role::USER->value]);
+        $user = User::factory()->create(["role" => Role::User->value]);
 
         $response = $this->actingAs($user)->get("/profile");
 

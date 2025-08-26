@@ -11,11 +11,19 @@ class CreatePetShelterAction
 {
     public function execute(array $data): PetShelter
     {
-        $shelter = PetShelter::query()->create($data);
+        $shelterData = Arr::only($data, [
+            "name",
+            "phone",
+            "email",
+            "description",
+            "url",
+        ]);
+
+        $shelter = PetShelter::query()->create($shelterData);
         $addressData = Arr::only($data, ["address", "city", "postal_code"]);
 
         if (!empty($addressData["address"])) {
-            $shelter->address()->create($addressData);
+            $shelter->address()->update($addressData);
         }
 
         return $shelter;
