@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetActivityLevel;
 use App\Enums\PetAdoptionStatus;
 use App\Enums\PetAge;
-use App\Enums\PetAttitudeToCats;
-use App\Enums\PetAttitudeToChildren;
-use App\Enums\PetAttitudeToDogs;
-use App\Enums\PetAttitudeToPeople;
+use App\Enums\PetAttitude;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSize;
@@ -39,10 +37,8 @@ class PreferenceFactory extends Factory
                 "dewormed" => $this->generateWeightedBoolean(),
                 "deflea_treated" => $this->generateWeightedBoolean(),
                 "adoption_status" => $this->generateWeightedEnumArray(PetAdoptionStatus::values()),
-                "attitude_to_people" => $this->generateWeightedEnumArray(PetAttitudeToPeople::values()),
-                "attitude_to_dogs" => $this->generateWeightedEnumArray(PetAttitudeToDogs::values()),
-                "attitude_to_cats" => $this->generateWeightedEnumArray(PetAttitudeToCats::values()),
-                "attitude_to_children" => $this->generateWeightedEnumArray(PetAttitudeToChildren::values()),
+                "attitude" => $this->generateWeightedEnumArray(PetAttitude::values()),
+                "activity_level" => $this->generateWeightedEnumArray(PetActivityLevel::values()),
                 "tags" => $this->generateWeightedArray(["playful", "calm", "good_with_kids"]),
             ],
         ];
@@ -53,7 +49,7 @@ class PreferenceFactory extends Factory
         $count = $this->faker->numberBetween(1, count($values));
         $chosen = $this->faker->randomElements($values, $count);
 
-        return array_map(fn($v) => ["value" => $v, "weight" => $this->faker->numberBetween(1, 10)], $chosen);
+        return array_map(fn($v) => ["value" => $v, "weight" => 1], $chosen);
     }
 
     protected function generateWeightedArray(array $values): array
@@ -61,14 +57,14 @@ class PreferenceFactory extends Factory
         $count = $this->faker->numberBetween(1, count($values));
         $chosen = $this->faker->randomElements($values, $count);
 
-        return array_map(fn($v) => ["value" => $v, "weight" => $this->faker->numberBetween(1, 10)], $chosen);
+        return array_map(fn($v) => ["value" => $v, "weight" => 1], $chosen);
     }
 
     protected function generateWeightedBoolean(): array
     {
         return [
             "value" => $this->faker->boolean(),
-            "weight" => $this->faker->numberBetween(1, 10),
+            "weight" => 1,
         ];
     }
 }

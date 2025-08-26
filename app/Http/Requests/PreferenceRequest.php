@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\PetActivityLevel;
 use App\Enums\PetAdoptionStatus;
 use App\Enums\PetAge;
-use App\Enums\PetAttitudeToCats;
-use App\Enums\PetAttitudeToChildren;
-use App\Enums\PetAttitudeToDogs;
-use App\Enums\PetAttitudeToPeople;
+use App\Enums\PetAttitude;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSize;
@@ -19,11 +17,6 @@ use Illuminate\Validation\Rule;
 
 class PreferenceRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
@@ -64,18 +57,12 @@ class PreferenceRequest extends FormRequest
             "preferences.adoption_status" => ["sometimes", "array"],
             "preferences.adoption_status.*.value" => ["string", Rule::in(PetAdoptionStatus::values())],
             "preferences.adoption_status.*.weight" => ["integer", "min:0"],
-            "preferences.attitude_to_people" => ["sometimes", "array"],
-            "preferences.attitude_to_people.*.value" => ["string", Rule::in(PetAttitudeToPeople::values())],
-            "preferences.attitude_to_people.*.weight" => ["integer", "min:0"],
-            "preferences.attitude_to_dogs" => ["sometimes", "array"],
-            "preferences.attitude_to_dogs.*.value" => ["string", Rule::in(PetAttitudeToDogs::values())],
-            "preferences.attitude_to_dogs.*.weight" => ["integer", "min:0"],
-            "preferences.attitude_to_cats" => ["sometimes", "array"],
-            "preferences.attitude_to_cats.*.value" => ["string", Rule::in(PetAttitudeToCats::values())],
-            "preferences.attitude_to_cats.*.weight" => ["integer", "min:0"],
-            "preferences.attitude_to_children" => ["sometimes", "array"],
-            "preferences.attitude_to_children.*.value" => ["string", Rule::in(PetAttitudeToChildren::values())],
-            "preferences.attitude_to_children.*.weight" => ["integer", "min:0"],
+            "preferences.attitude" => ["sometimes", "array"],
+            "preferences.attitude.*.value" => ["string", Rule::in(PetAttitude::values())],
+            "preferences.attitude.*.weight" => ["integer", "min:0"],
+            "preferences.activity_level" => ["sometimes", "array"],
+            "preferences.activity_level.*.value" => ["string", Rule::in(PetActivityLevel::values())],
+            "preferences.activity_level.*.weight" => ["integer", "min:0"],
             "preferences.tags" => ["sometimes", "array"],
             "preferences.tags.*.value" => ["string"],
             "preferences.tags.*.weight" => ["integer", "min:0"],

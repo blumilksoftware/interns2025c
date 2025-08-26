@@ -9,11 +9,12 @@ enum PetHealthStatus: string
     case Healthy = "healthy";
     case Sick = "sick";
     case Recovering = "recovering";
+    case Critical = "critical";
     case SpecialNeeds = "special_needs";
     case Unknown = "unknown";
 
     public static function values(): array
     {
-        return array_map(fn(PetHealthStatus $e): string => $e->value, self::cases());
+        return array_map(fn(PetHealthStatus $element): string => $element->value, self::cases());
     }
 }

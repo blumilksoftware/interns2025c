@@ -21,8 +21,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $password
  * @property string $role
- * @property Carbon|null $email_verified_at
- * @property string|null $remember_token
+ * @property ?Carbon $email_verified_at
+ * @property ?string $remember_token
  * @property-read Collection|array<PetShelter> $petShelters
  * @property-read Collection|array<Preference> $preferences
  */

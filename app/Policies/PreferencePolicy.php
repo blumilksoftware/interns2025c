@@ -11,11 +11,11 @@ class PreferencePolicy
 {
     public function update(User $user, Preference $preference): bool
     {
-        return $user->id === $preference->user_id;
+        return $user->is($preference->user);
     }
 
     public function delete(User $user, Preference $preference): bool
     {
-        return $user->id === $preference->user_id;
+        return $user->is($preference->user);
     }
 }

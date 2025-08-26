@@ -12,4 +12,9 @@ enum PetAttitude: string
     case High = "high";
     case VeryHigh = "very high";
     case Unkown = "unknown";
+
+    public static function values(): array
+    {
+        return array_map(fn(PetAttitude $element): string => $element->value, self::cases());
+    }
 }

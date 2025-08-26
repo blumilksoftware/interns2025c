@@ -18,18 +18,16 @@ class DemoSeeder extends Seeder
 {
     public const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public const NUMBER_OF_USERS_TO_CREATE = 100;
-    public const NUMBER_OF_TAGS_TO_CREATE = 20;
+    public const NUMBER_OF_TAGS_TO_CREATE = 20; 
+    public const NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE = 20;
+    public const NUMBER_OF_TAGS_PER_PREFERENCE = 3;
 
     public function run(): void
     {
         Tag::factory()
             ->count(self::NUMBER_OF_TAGS_TO_CREATE)
             ->make()
-            ->each(function ($tag): void {
-                Tag::firstOrCreate(
-                    ["name" => $tag->name],
-                );
-            });
+            ->each(fn($tag) => Tag::firstOrCreate(["name" => $tag->name]));
 
         User::factory()->create([
             "email" => "user@example.com",
@@ -70,23 +68,22 @@ class DemoSeeder extends Seeder
             }
         }
 
-        $pets->each(function (Pet $pet) use ($petShelters): void {
-            $pet->shelter()->associate($petShelters->random());
-            $pet->save();
-        });
+        $pets->each(fn(Pet $pet) => $pet->shelter()->associate($petShelters->random())->save());
 
         $tags = Tag::all();
 
         foreach ($users as $user) {
-            $numberOfPreferences = random_int(1, 5);
             Preference::factory()
-                ->count($numberOfPreferences)
+                ->count(self::NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE)
                 ->for($user)
                 ->create()
                 ->each(function (Preference $preference) use ($tags): void {
-                    $preference->tags()->sync(
-                        $tags->random(random_int(1, min(5, $tags->count())))->pluck("id")->toArray(),
-                    );
+                    $preferenceData = $preference->preferences;
+                    $preferenceData["tags"] = $tags
+                        ->random(DemoSeeder::NUMBER_OF_TAGS_PER_PREFERENCE)
+                        ->pluck("name")
+                        ->toArray();
+                    $preference->update(["preferences" => $preferenceData]);
                 });
         }
     }
