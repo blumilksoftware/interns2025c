@@ -1,8 +1,13 @@
+<script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+</script>
+
 <template>
   <div class="mx-auto max-w-6xl px-6 lg:px-8 py-8">
     <div class="bg-white dark:bg-gray-800 py-8 px-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
       <h2 class="heading-xl dark:text-white mb-6 text-center">
-        📍 Lokalizacja schroniska
+        📍 {{ t('pets.location.heading') }}
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -15,8 +20,8 @@
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 dark:text-white">Schronisko dla Zwierząt "Przyjazne Łapki"</h3>
-              <p class="text-gray-600 dark:text-gray-300">ul. Leśna 15, 00-001 Warszawa</p>
+              <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.shelterName') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.address') }}</p>
             </div>
           </div>
           
@@ -27,8 +32,8 @@
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 dark:text-white">Godziny otwarcia</h3>
-              <p class="text-gray-600 dark:text-gray-300">Pon-Pt: 9:00 - 18:00<br>Weekend: 10:00 - 16:00</p>
+              <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.openingHoursTitle') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.openingHoursWeek') }}<br>{{ t('pets.location.openingHoursWeekend') }}</p>
             </div>
           </div>
           
@@ -39,20 +44,21 @@
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 dark:text-white">Kontakt</h3>
-              <p class="text-gray-600 dark:text-gray-300">Tel: +48 22 123 45 67<br>Email: kontakt@przyjaznelapki.pl</p>
+              <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.contactTitle') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.contactPhone') }}<br>{{ t('pets.location.contactEmail') }}</p>
             </div>
           </div>
         </div>
         
         <div class="space-y-4">
-          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 h-48 flex items-center justify-center">
-            <div class="text-center">
-              <svg class="size-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
-              </svg>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Podgląd mapy</p>
-            </div>
+          <div class="rounded-lg overflow-hidden h-48">
+            <iframe
+              class="size-full border-0"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=ul.+Leśna+15,+Warszawa&output=embed"
+            />
           </div>
           
           <a 
@@ -64,13 +70,12 @@
             <svg class="size-5 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-            Otwórz w Google Maps
+            {{ t('pets.location.openInGoogleMaps') }}
           </a>
           
           <div class="text-center">
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              🚗 Parking dostępny na miejscu<br>
-              🚌 Autobus: linie 123, 456 (przystanek "Schronisko")
+              {{ t('pets.location.extraInfo') }}
             </p>
           </div>
         </div>
@@ -78,9 +83,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-</script>
 
 <style scoped>
 </style>

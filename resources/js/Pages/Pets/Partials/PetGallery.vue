@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   pet: {
@@ -94,10 +97,9 @@ const handleDragEnd = () => {
   isDragging.value = false
   dragOffset.value = 0
   
-  // Dodajemy małe opóźnienie przed resetowaniem hasDragged, aby transition miał czas się wykonać
   setTimeout(() => {
     hasDragged.value = false
-  }, 350) // Zwiększamy z 100ms na 350ms, aby pokryć czas transition (300ms) + margines
+  }, 350)
 }
 
 const handleTouchStart = (e) => {
@@ -125,7 +127,6 @@ const handleMouseUp = () => {
 const isFullscreen = ref(false)
 
 const openFullscreen = (index) => {
-  // Sprawdzamy czy użytkownik rzeczywiście przesunął palcem (nie tylko kliknął)
   if (hasDragged.value || Math.abs(dragOffset.value) > 5) return
   currentImageIndex.value = index
   isFullscreen.value = true
@@ -226,7 +227,7 @@ onBeforeUnmount(() => {
           <path d="m15 18-6-6 6-6" />
         </svg>
       </span>
-      <span class="sr-only">Previous</span>
+      <span class="sr-only">{{ t('pets.gallery.previous') }}</span>
     </button>
     <button 
       v-if="imageUrls.length > 1"
@@ -235,7 +236,7 @@ onBeforeUnmount(() => {
       class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
       @click="nextImage"
     >
-      <span class="sr-only">Next</span>
+      <span class="sr-only">{{ t('pets.gallery.next') }}</span>
       <span class="text-2xl" aria-hidden="true">
         <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m9 18 6-6-6-6" />

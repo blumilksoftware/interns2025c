@@ -31,7 +31,28 @@
       "seeMore": "Zobacz więcej",
       "temperament": "Temperament",
       "gentle": "Łagodny i cierpliwy",
-      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać."
+      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać.",
+      "similarPets": "Podobne zwierzaki",
+      "healthStatus": {
+        "title": "Status zdrowia",
+        "description": "Aktualny stan zdrowia zwierzaka",
+        "healthState": "Stan zdrowia",
+        "healthy": "Zdrowy",
+        "sick": "Chory",
+        "recovering": "W rekonwalescencji",
+        "critical": "Stan krytyczny",
+        "unknown": "Nieznany",
+        "currentTreatment": "Aktualne leczenie",
+        "medicalInfo": "Informacje medyczne",
+        "vaccinated": "Zaszczepiony",
+        "vaccinatedDesc": "Szczepienia aktualne",
+        "dewormed": "Odrobaczony",
+        "dewormedDesc": "Ostatnie odrobaczenie",
+        "chipped": "Zachipowany",
+        "chippedDesc": "Chip identyfikacyjny",
+        "neutered": "Wykastrowany",
+        "neuteredDesc": "Sterylizacja wykonana"
+      }
     }
   }
 }

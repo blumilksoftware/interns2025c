@@ -31,7 +31,6 @@ const characteristics = computed(() => {
   const items = []
   if (p.age) items.push({ key: 'age', label: t('dashboard.mvp.age'), value: p.age })
   if (p.breed) items.push({ key: 'breed', label: t('dashboard.mvp.breed'), value: p.breed })
-  if (p.status) items.push({ key: 'status', label: t('dashboard.mvp.status'), value: p.status })
   if (p.gender || p.sex) {
     const isMale = (p.gender === 'male') || (String(p.sex).toLowerCase() === 'male' || String(p.sex).toLowerCase() === 'm')
     items.push({ key: 'gender', label: t('dashboard.mvp.gender'), value: isMale ? t('dashboard.mvp.male') : t('dashboard.mvp.female') })
@@ -41,13 +40,31 @@ const characteristics = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="max-w-5xl mx-auto">
     <div class="mb-6">
-      <h1 class="heading-lg">{{ props.pet?.name }}</h1>
-      <p v-if="props.pet?.breed" class="mt-1 text-lg text-gray-600">{{ props.pet.breed }}</p>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="heading-lg">{{ props.pet?.name }}</h1>
+          <p v-if="props.pet?.breed" class="mt-1 text-lg text-gray-600">{{ props.pet.breed }}</p>
+        </div>
+        <div v-if="props.pet?.status" class="mt-4 mr-4">
+          <div 
+            class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium border"
+            :class="(props.pet.status === 'Dostępny' || props.pet.status === 'Dostępna') 
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:border-emerald-800' 
+              : 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/20 dark:text-gray-200 dark:border-gray-700'"
+          >
+            <span 
+              class="size-2 rounded-full"
+              :class="(props.pet.status === 'Dostępny' || props.pet.status === 'Dostępna') ? 'bg-emerald-500' : 'bg-gray-400'"
+            />
+            <span>{{ props.pet.status }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="max-w-4xl my-4 space-y-2">
+    <div class="w-full my-4 space-y-2">
       <div class="mb-8"> 
         <h2 class="heading-xl">{{ t('dashboard.mvp.characteristics') }}</h2>
         <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-4 gap-x-6 text-gray-700">
@@ -62,9 +79,6 @@ const characteristics = computed(() => {
               <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
               <path d="M9 11v.01" />
               <path d="M15 11v.01" />
-            </svg>
-            <svg v-else-if="item.key === 'status'" class="mt-1 size-4 text-emerald-600 flex-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
             <svg v-else-if="item.key === 'gender' && ((props.pet?.gender || String(props.pet?.sex || '')).toLowerCase().startsWith('m'))" class="mt-1 size-4 text-sky-500 flex-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="9" cy="15" r="5" />
@@ -112,7 +126,7 @@ const characteristics = computed(() => {
         <h2 class="heading-xl">{{ t('dashboard.aboutPet') }}</h2>
         <p class="text-base text-gray-700 leading-relaxed">{{ props.pet?.description }}</p>
         <div class="mt-8 space-y-6">
-          <div v-if="props.pet?.health_status || props.pet?.status" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div v-if="props.pet?.health_status" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
             <div class="flex items-center gap-3 mb-4">
               <div class="shrink-0 size-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
                 <svg class="size-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,8 +134,8 @@ const characteristics = computed(() => {
                 </svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Status zdrowia</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Aktualny stan zdrowia zwierzaka</p>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.title') }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.description') }}</p>
               </div>
             </div>
             
@@ -156,27 +170,13 @@ const characteristics = computed(() => {
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-900 dark:text-white">
-                    {{ props.pet.health_status === 'healthy' ? 'Zdrowy' : 
-                      props.pet.health_status === 'sick' ? 'Chory' :
-                      props.pet.health_status === 'recovering' ? 'W rekonwalescencji' :
-                      props.pet.health_status === 'critical' ? 'Stan krytyczny' :
-                      props.pet.health_status === 'unknown' ? 'Nieznany' : props.pet.health_status }}
+                    {{ props.pet.health_status === 'healthy' ? t('dashboard.mvp.healthStatus.healthy') : 
+                      props.pet.health_status === 'sick' ? t('dashboard.mvp.healthStatus.sick') :
+                      props.pet.health_status === 'recovering' ? t('dashboard.mvp.healthStatus.recovering') :
+                      props.pet.health_status === 'critical' ? t('dashboard.mvp.healthStatus.critical') :
+                      props.pet.health_status === 'unknown' ? t('dashboard.mvp.healthStatus.unknown') : props.pet.health_status }}
                   </p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Stan zdrowia</p>
-                </div>
-              </div>
-
-              <div v-if="props.pet?.status" class="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="shrink-0">
-                  <div class="size-8 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center">
-                    <svg class="size-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">{{ props.pet.status }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Status adopcji</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.healthState') }}</p>
                 </div>
               </div>
             </div>
@@ -189,7 +189,7 @@ const characteristics = computed(() => {
                   </svg>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-amber-900 dark:text-amber-100">Aktualne leczenie</p>
+                  <p class="text-sm font-medium text-amber-900 dark:text-amber-100">{{ t('dashboard.mvp.healthStatus.currentTreatment') }}</p>
                   <p class="text-sm text-amber-800 dark:text-amber-200 mt-1">{{ props.pet.current_treatment }}</p>
                 </div>
               </div>
@@ -197,7 +197,7 @@ const characteristics = computed(() => {
 
             <!-- Informacje medyczne -->
             <div v-if="props.pet?.vaccinated || props.pet?.dewormed || props.pet?.microchipped || props.pet?.neutered" class="mt-6">
-              <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-3">Informacje medyczne</h4>
+              <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-3">{{ t('dashboard.mvp.healthStatus.medicalInfo') }}</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-if="props.pet?.vaccinated" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                   <div class="size-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
@@ -206,8 +206,8 @@ const characteristics = computed(() => {
                     </svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">Zaszczepiony</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Szczepienia aktualne</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.vaccinated') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.vaccinatedDesc') }}</p>
                   </div>
                 </div>
 
@@ -218,8 +218,8 @@ const characteristics = computed(() => {
                     </svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">Odrobaczony</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Ostatnie odrobaczenie</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.dewormed') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.dewormedDesc') }}</p>
                   </div>
                 </div>
 
@@ -231,8 +231,8 @@ const characteristics = computed(() => {
                     </svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">Zachipowany</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Chip identyfikacyjny</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.chipped') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.chippedDesc') }}</p>
                   </div>
                 </div>
 
@@ -249,8 +249,8 @@ const characteristics = computed(() => {
                     </svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">Wykastrowany</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Sterylizacja wykonana</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.neutered') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.neuteredDesc') }}</p>
                   </div>
                 </div>
               </div>
