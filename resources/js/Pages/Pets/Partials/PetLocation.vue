@@ -45,7 +45,7 @@ const { t } = useI18n()
             </div>
             <div>
               <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.contactTitle') }}</h3>
-              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.contactPhone') }}<br>{{ t('pets.location.contactEmail') }}</p>
+              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.contactPhone') }}<br>{{ t('pets.location.contactEmail', { email: 'kontakt@przyjaznelapki.pl' }) }}</p>
             </div>
           </div>
         </div>

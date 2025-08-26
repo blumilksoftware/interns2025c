@@ -9,7 +9,7 @@
       "openingHoursWeekend": "Weekend: 10:00 - 16:00",
       "contactTitle": "Kontakt",
       "contactPhone": "Tel: +48 22 123 45 67",
-      "contactEmail": "Email: kontakt@przyjaznelapki.pl",
+      "contactEmail": "Email: {email}",
       "mapPreview": "Podgląd mapy",
       "openInGoogleMaps": "Otwórz w Google Maps",
       "extraInfo": "Dodatkowe informacje o lokalizacji schroniska"

@@ -107,10 +107,10 @@ nextTick(() => {
         <div 
           v-for="pet in pets" 
           :key="pet.id" 
-          class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 ring-gray-100 hover:shadow-xl hover:ring-blue-200 transition-all duration-300 overflow-hidden relative"
+          class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
-          <div class="relative aspect-square">
-            <a :href="`/pets/static/${pet.id}`">
+          <div class="relative aspect-square ">
+            <a :href="`/pets/static/${pet.id}`" class="focus-visible:outline-none">
               <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
             </a>
 

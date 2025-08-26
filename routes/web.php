@@ -29,15 +29,15 @@ Route::middleware([
         "title" => __("titles.adminPanel"),
     ]))->name("admin");
 
-    Route::get("/pets/static/{id}", fn(int $id) => Inertia::render("Pets/Show", [
-        "title" => __("titles.dashboard"),
-    ]))->name("pets.static.show");
-
     Route::get("/users/{user}", [UserController::class, "show"])->name("users.show");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
 });
+
+Route::get("/pets/static/{id}", fn(int $id) => Inertia::render("Pets/Show", [
+    "title" => __("titles.dashboard"),
+]))->name("pets.static.show");
 
 Route::middleware([
     "auth:sanctum",
