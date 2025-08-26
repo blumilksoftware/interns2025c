@@ -46,6 +46,17 @@ return [
     "url_generator" => DefaultUrlGenerator::class,
     "moves_media_on_update" => false,
     "version_urls" => false,
+    "enable_vapor_uploads" => env("ENABLE_MEDIA_LIBRARY_VAPOR_UPLOADS", false),
+    "default_loading_attribute_value" => null,
+    "prefix" => env("MEDIA_PREFIX", ""),
+    "force_lazy_loading" => env("FORCE_MEDIA_LIBRARY_LAZY_LOADING", true),
+    "temporary_directory_path" => null,
+    "image_driver" => env("IMAGE_DRIVER", "gd"),
+    "ffmpeg_path" => env("FFMPEG_PATH", "/usr/bin/ffmpeg"),
+    "ffprobe_path" => env("FFPROBE_PATH", "/usr/bin/ffprobe"),
+    "media_downloader" => DefaultDownloader::class,
+    "media_downloader_ssl" => env("MEDIA_DOWNLOADER_SSL", true),
+    "temporary_url_default_lifetime" => env("MEDIA_TEMPORARY_URL_DEFAULT_LIFETIME", 5),
     "image_optimizers" => [
         Jpegoptim::class => [
             "-m85",
@@ -85,7 +96,6 @@ return [
             "-a tune=ssim",
         ],
     ],
-
     "image_generators" => [
         Image::class,
         Webp::class,
@@ -94,38 +104,18 @@ return [
         Svg::class,
         Video::class,
     ],
-
-    "temporary_directory_path" => null,
-    "image_driver" => env("IMAGE_DRIVER", "gd"),
-    "ffmpeg_path" => env("FFMPEG_PATH", "/usr/bin/ffmpeg"),
-    "ffprobe_path" => env("FFPROBE_PATH", "/usr/bin/ffprobe"),
     "jobs" => [
         "perform_conversions" => PerformConversionsJob::class,
         "generate_responsive_images" => GenerateResponsiveImagesJob::class,
     ],
-
-    "media_downloader" => DefaultDownloader::class,
-    "media_downloader_ssl" => env("MEDIA_DOWNLOADER_SSL", true),
-
-    "temporary_url_default_lifetime" => env("MEDIA_TEMPORARY_URL_DEFAULT_LIFETIME", 5),
-
     "remote" => [
         "extra_headers" => [
             "CacheControl" => "max-age=604800", // 7 days
         ],
     ],
-
     "responsive_images" => [
         "width_calculator" => FileSizeOptimizedWidthCalculator::class,
         "use_tiny_placeholders" => true,
         "tiny_placeholder_generator" => Blurred::class,
     ],
-
-    "enable_vapor_uploads" => env("ENABLE_MEDIA_LIBRARY_VAPOR_UPLOADS", false),
-
-    "default_loading_attribute_value" => null,
-
-    "prefix" => env("MEDIA_PREFIX", ""),
-
-    "force_lazy_loading" => env("FORCE_MEDIA_LIBRARY_LAZY_LOADING", true),
 ];
