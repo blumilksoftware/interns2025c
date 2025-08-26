@@ -37,7 +37,6 @@ return new class() extends Migration {
             $table->string("activity_level")->nullable();
             $table->text("behavioral_notes")->nullable();
             $table->date("admission_date")->nullable();
-            $table->date("quarantine_end_date")->nullable();
             $table->string("found_location")->nullable();
             $table->string("adoption_status")->nullable();
             $table->foreignId("shelter_id")->constrained("pet_shelters");

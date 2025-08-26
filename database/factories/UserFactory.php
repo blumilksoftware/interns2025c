@@ -31,12 +31,12 @@ class UserFactory extends Factory
 
     public function chooseRandomRole(): string
     {
-        return $this->faker->randomElement([Role::ADMIN, Role::USER])->value;
+        return $this->faker->randomElement([Role::Admin, Role::User])->value;
     }
 
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn(array $attributes): array => [
             "email_verified_at" => null,
         ]);
     }
