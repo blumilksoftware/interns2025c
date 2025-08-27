@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class DomAttributeExtractor
@@ -48,7 +49,7 @@ class DomAttributeExtractor
     public static function getLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
         return collect(
-            $crawler->filter("a")->each(fn(Crawler $node): string => $node->attr("href")),
+            $crawler->filter("a")->each(fn(Crawler $node): ?string => $node->attr("href")),
         )
             ->filter()
             ->map(fn(string $href): ?string => UrlFormatHelper::normalizeUrl($href, $baseUrl))
@@ -58,16 +59,32 @@ class DomAttributeExtractor
             ->all();
     }
 
-    public static function getImagesSrcFromWebpage(Crawler $crawler, string $baseUrl): array
+    public static function scrapImageLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
-        return collect(
-            $crawler->filter("img")->each(fn(Crawler $node): string => (string)$node->attr("src")),
-        )
-            ->filter()
-            ->map(fn(string $src): ?string => UrlFormatHelper::normalizeUrl($src, $baseUrl))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+        $images = $crawler->filter("img")->each(function (Crawler $node) use ($baseUrl): ?string {
+            $allowedExtensions = ["jpg", "jpeg", "png"];
+            $src = (string)$node->attr("src");
+
+            if (!$src) {
+                Log::info("Skipping image: no src attribute");
+
+                return null;
+            }
+
+            $extension = UrlFormatHelper::getPathInfoExtension($src);
+
+            if (!in_array($extension, $allowedExtensions, true)) {
+                Log::info("Skipping image: invalid extension", ["src" => $src, "extension" => $extension]);
+
+                return null;
+            }
+
+            $normalized = UrlFormatHelper::normalizeUrl($src, $baseUrl);
+            Log::info("Adding image", ["src" => $src, "normalized" => $normalized]);
+
+            return $normalized;
+        });
+
+        return array_filter($images);
     }
 }
