@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class PetPageAnalyzer
 {
-    public const MINIMAL_SCORE_TRESHOLD = 5;
+    public const int MINIMAL_SCORE_THRESHOLD = 5;
 
     protected array $petKeywords;
     protected array $requiredKeywords;
@@ -31,7 +31,7 @@ class PetPageAnalyzer
         $lowercasedKeywords = array_map(fn(string $k): string => mb_strtolower($k), $allKeywords);
         $asciiKeywords = array_map(fn(string $k): string => Str::ascii(mb_strtolower($k)), $lowercasedKeywords);
 
-        $threshold ??= min(self::MINIMAL_SCORE_TRESHOLD, count($allKeywords));
+        $threshold ??= min(self::MINIMAL_SCORE_THRESHOLD, count($allKeywords));
 
         $score = 0;
         $matchedKeywords = [];

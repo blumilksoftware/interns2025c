@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Contracts\LlmConnectorInterface;
 use App\Http\Integrations\Requests\PostGeminiRequest;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use RuntimeException;
 
@@ -47,5 +48,15 @@ class GeminiService
         }
 
         return $response["candidates"][0]["content"]["parts"][0]["text"];
+    }
+
+    public function geminiResponseContainSpecificAnimal(array $data): bool
+    {
+        $numberOfAnimalsAllowed = 1;
+        Log::info("Gemini response data: " . print_r($data, true));
+
+        return isset($data["contains_animals"], $data["animals"])
+            && $data["contains_animals"] === true
+            && count($data["animals"]) === $numberOfAnimalsAllowed;
     }
 }
