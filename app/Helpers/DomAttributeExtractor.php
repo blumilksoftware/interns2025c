@@ -57,4 +57,17 @@ class DomAttributeExtractor
             ->values()
             ->all();
     }
+
+    public static function getImagesSrcFromWebpage(Crawler $crawler, string $baseUrl): array
+    {
+        return collect(
+            $crawler->filter("img")->each(fn(Crawler $node): string => (string)$node->attr("src")),
+        )
+            ->filter()
+            ->map(fn(string $src): ?string => UrlFormatHelper::normalizeUrl($src, $baseUrl))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
 }
