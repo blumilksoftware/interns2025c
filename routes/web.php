@@ -25,9 +25,7 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
-    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel", [
-        "title" => __("titles.adminPanel"),
-    ]))->name("admin");
+    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel"))->name("admin");
 
     Route::get("/users/{user}", [UserController::class, "show"])->name("users.show");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
@@ -35,9 +33,6 @@ Route::middleware([
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
 });
 
-Route::get("/pets/static/{id}", fn(int $id) => Inertia::render("Pets/Show", [
-    "title" => __("titles.dashboard"),
-]))->name("pets.static.show");
 
 Route::middleware([
     "auth:sanctum",

@@ -68,11 +68,10 @@ const handleHidePetList = () => {
             <div class="flex flex-col md:flex-row md:items-center">
               <div class="w-full md:w-[40vw] lg:w-80 shrink-0">
                 <img 
-                  class="w-full h-auto object-cover" 
+                  class="w-full h-auto object-cover cursor-pointer" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
-                  style="cursor: pointer;"
-                  @click="$inertia.visit(`/pets/static/${pet.id}`)"
+                  @click="$inertia.visit(`/pets/${pet.id}`)"
                 >
               </div>
               
@@ -108,7 +107,7 @@ const handleHidePetList = () => {
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
                 <div class="mt-3">
-                  <a :href="`/pets/static/${pet.id}`" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</a>
+                  <a :href="`/pets/${pet.id}`" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</a>
                 </div>
               </div>
             </div>

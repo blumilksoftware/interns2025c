@@ -6,6 +6,8 @@
     "aboutPet": "O zwierzaku",
     "pageTitle": "Panel główny - interns2025c",
     "mvp": {
+      "availablemale": "Dostępny",
+      "availablefemale": "Dostępna",
       "featuredPet": "Polecany zwierzak",
       "meetPet": "Poznaj",
       "personalityTraits": "Cechy charakteru",
@@ -50,8 +52,8 @@
         "dewormedDesc": "Ostatnie odrobaczenie",
         "chipped": "Zachipowany",
         "chippedDesc": "Chip identyfikacyjny",
-        "neutered": "Wykastrowany",
-        "neuteredDesc": "Sterylizacja wykonana"
+        "sterilized": "Wykastrowany",
+        "sterilizedDesc": "Sterylizacja wykonana"
       }
     }
   }

@@ -5,6 +5,7 @@ import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { getPetTags } from '../data/petTagsConfig.js'
+import { getGenderInfo } from '../data/genderMapper.js'
 
 const { t } = useI18n()
 
@@ -110,7 +111,7 @@ nextTick(() => {
           class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square ">
-            <a :href="`/pets/static/${pet.id}`" class="focus-visible:outline-none">
+            <a :href="`/pets/${pet.id}`" class="focus-visible:outline-none">
               <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
             </a>
 
@@ -123,8 +124,7 @@ nextTick(() => {
             </button>
             
             <div class="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
-              <span v-if="pet.gender === 'male'" class="text-blue-400">♂</span>
-              <span v-else class="text-pink-400">♀</span>
+              <span :class="getGenderInfo(pet.gender).color">{{ getGenderInfo(pet.gender).symbol }}</span>
             </div>
           </div>
           

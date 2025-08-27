@@ -8,7 +8,7 @@ import Footer from '../../Components/Footer.vue'
 import { Head } from '@inertiajs/vue3'
 
 const { t } = useI18n()
-const title = t('dashboard.pageTitle')
+const title = t('title.landingPage')
 
 const showPetList = ref(false)
 const currentPetList = ref(null)

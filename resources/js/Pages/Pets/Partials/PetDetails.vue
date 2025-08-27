@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getPetTags } from '../../../data/petTagsConfig.js'
+import { getPetTags } from '@/data/petTagsConfig.js'
 
 const props = defineProps({
   pet: {
@@ -37,6 +37,10 @@ const characteristics = computed(() => {
   }
   return items
 })
+
+const isPetAvailable = computed(() => {
+  return props.pet?.status === t('dashboard.mvp.availablemale') || props.pet?.status === t('dashboard.mvp.availablefemale')
+})
 </script>
 
 <template>
@@ -50,13 +54,13 @@ const characteristics = computed(() => {
         <div v-if="props.pet?.status" class="mt-4 mr-4">
           <div 
             class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium border"
-            :class="(props.pet.status === 'Dostępny' || props.pet.status === 'Dostępna') 
+            :class="isPetAvailable 
               ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:border-emerald-800' 
               : 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/20 dark:text-gray-200 dark:border-gray-700'"
           >
             <span 
               class="size-2 rounded-full"
-              :class="(props.pet.status === 'Dostępny' || props.pet.status === 'Dostępna') ? 'bg-emerald-500' : 'bg-gray-400'"
+              :class="isPetAvailable ? 'bg-emerald-500' : 'bg-gray-400'"
             />
             <span>{{ props.pet.status }}</span>
           </div>
@@ -196,7 +200,7 @@ const characteristics = computed(() => {
             </div>
 
             <!-- Informacje medyczne -->
-            <div v-if="props.pet?.vaccinated || props.pet?.dewormed || props.pet?.microchipped || props.pet?.neutered" class="mt-6">
+            <div v-if="props.pet?.vaccinated || props.pet?.dewormed || props.pet?.microchipped || props.pet?.sterilized" class="mt-6">
               <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-3">{{ t('dashboard.mvp.healthStatus.medicalInfo') }}</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-if="props.pet?.vaccinated" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -236,7 +240,7 @@ const characteristics = computed(() => {
                   </div>
                 </div>
 
-                <div v-if="props.pet?.neutered" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div v-if="props.pet?.sterilized" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                   <div class="size-8 bg-fuchsia-100 dark:bg-fuchsia-900 rounded-full flex items-center justify-center">
                     <svg class="size-4 text-fuchsia-600 dark:text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M17 3v1c-.007 2.46 -.91 4.554 -2.705 6.281m-2.295 1.719c-3.328 1.99 -5 4.662 -5.008 8.014v1" />
@@ -249,8 +253,8 @@ const characteristics = computed(() => {
                     </svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.neutered') }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.neuteredDesc') }}</p>
+                      <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.sterilized') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.sterilizedDesc') }}</p>
                   </div>
                 </div>
               </div>

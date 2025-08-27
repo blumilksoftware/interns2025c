@@ -23,10 +23,12 @@ class PetController extends Controller
         ]);
     }
 
-    public function show(Pet $pet): Response
+    public function show(string $pet): Response
     {
+        $model = Pet::find($pet);
+
         return Inertia::render("Pets/Show", [
-            "pet" => new PetShowResource($pet),
+            "pet" => $model ? new PetShowResource($model) : null,
         ]);
     }
 
