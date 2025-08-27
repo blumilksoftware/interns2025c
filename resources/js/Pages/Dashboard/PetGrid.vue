@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import PetStrip from '../../Components/PetStrip.vue'
 import { bestMatches, dogs, cats } from '../../data/petsData.js'
 import { getPetTags } from '../../data/petTagsConfig.js'
+import { getGenderInfo } from '../../data/genderMapper.js'
 
 const props = defineProps({
   showPetList: {
@@ -86,14 +87,13 @@ const handleHidePetList = () => {
                 <div class="flex items-center gap-2 mb-3">
                   <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
                   <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
-                  <span v-if="pet.gender === 'male'" class="text-blue-400 text-xl">♂</span>
-                  <span v-else class="text-pink-400 text-xl">♀</span>
+                  <span :class="getGenderInfo(pet.gender).color + ' text-xl'">{{ getGenderInfo(pet.gender).symbol }}</span>
                 </div>
                 
                 <div class="flex flex-wrap gap-1 mb-3">
                   <span 
                     v-for="tag in getPetTagsForPet(pet)" 
-                    :key="tag.name"
+                    :key="`${pet.id}-${tag.name}`"
                     class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium border"
                     :class="tag.color"
                   >

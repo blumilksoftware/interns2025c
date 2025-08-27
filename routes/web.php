@@ -33,7 +33,6 @@ Route::middleware([
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
 });
 
-
 Route::middleware([
     "auth:sanctum",
     config("jetstream.auth_session"),

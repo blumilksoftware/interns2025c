@@ -27,8 +27,12 @@ class PetController extends Controller
     {
         $model = Pet::find($pet);
 
+        if (!$model) {
+            abort(404);
+        }
+
         return Inertia::render("Pets/Show", [
-            "pet" => $model ? new PetShowResource($model) : null,
+            "pet" => new PetShowResource($model),
         ]);
     }
 
