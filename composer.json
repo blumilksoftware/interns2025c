@@ -17,6 +17,7 @@
         "saloonphp/cache-plugin": "^3.0",
         "saloonphp/saloon": "^3.0",
         "spatie/crawler": "^8.4",
+        "spatie/laravel-medialibrary": "^11.14",
         "symfony/css-selector": "^7.3",
         "symfony/dom-crawler": "^7.3"
     },
