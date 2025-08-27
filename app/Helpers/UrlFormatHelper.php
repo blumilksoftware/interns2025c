@@ -42,4 +42,17 @@ class UrlFormatHelper
 
         return $scheme . "://" . $host . "/" . ltrim($url, "/");
     }
+
+    public static function getPathInfoExtension(string $url): ?string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if ($path === null) {
+            return null;
+        }
+
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+        return $extension !== "" ? strtolower($extension) : null;
+    }
 }
