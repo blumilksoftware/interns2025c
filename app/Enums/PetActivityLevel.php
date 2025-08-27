@@ -11,7 +11,7 @@ enum PetActivityLevel: string
     case Medium = "medium";
     case High = "high";
     case VeryHigh = "very high";
-    case Unkown = "unknown";
+    case Unknown = "unknown";
 
     public static function values(): array
     {

@@ -10,7 +10,6 @@ enum PetSize: string
     case Medium = "medium";
     case Large = "large";
     case Giant = "giant";
-    case Unknown = "unknown";
 
     public static function values(): array
     {

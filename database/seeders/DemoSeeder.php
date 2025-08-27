@@ -27,7 +27,7 @@ class DemoSeeder extends Seeder
         Tag::factory()
             ->count(self::NUMBER_OF_TAGS_TO_CREATE)
             ->make()
-            ->each(fn($tag) => Tag::firstOrCreate(["name" => $tag->name]));
+            ->each(fn(Tag $tag) => Tag::firstOrCreate(["name" => $tag->name]));
 
         User::factory()->create([
             "email" => "user@example.com",
@@ -80,7 +80,7 @@ class DemoSeeder extends Seeder
                 ->each(function (Preference $preference) use ($tags): void {
                     $preferenceData = $preference->preferences;
                     $preferenceData["tags"] = $tags
-                        ->random(DemoSeeder::NUMBER_OF_TAGS_PER_PREFERENCE)
+                        ->random(self::NUMBER_OF_TAGS_PER_PREFERENCE)
                         ->pluck("name")
                         ->toArray();
                     $preference->update(["preferences" => $preferenceData]);

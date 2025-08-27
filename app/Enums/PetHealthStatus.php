@@ -10,7 +10,6 @@ enum PetHealthStatus: string
     case Sick = "sick";
     case Recovering = "recovering";
     case Critical = "critical";
-    case SpecialNeeds = "special_needs";
     case Unknown = "unknown";
 
     public static function values(): array
