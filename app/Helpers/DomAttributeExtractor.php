@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class DomAttributeExtractor
@@ -66,23 +65,16 @@ class DomAttributeExtractor
             $src = (string)$node->attr("src");
 
             if (!$src) {
-                Log::info("Skipping image: no src attribute");
-
                 return null;
             }
 
             $extension = UrlFormatHelper::getPathInfoExtension($src);
 
             if (!in_array($extension, $allowedExtensions, true)) {
-                Log::info("Skipping image: invalid extension", ["src" => $src, "extension" => $extension]);
-
                 return null;
             }
 
-            $normalized = UrlFormatHelper::normalizeUrl($src, $baseUrl);
-            Log::info("Adding image", ["src" => $src, "normalized" => $normalized]);
-
-            return $normalized;
+            return UrlFormatHelper::normalizeUrl($src, $baseUrl);
         });
 
         return array_filter($images);
