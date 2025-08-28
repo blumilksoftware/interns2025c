@@ -65,7 +65,7 @@ class PetService
                 "admission_date" => isset($animal["admission_date"]) ? Carbon::parse($animal["admission_date"]) : null,
                 "has_chip" => $animal["has_chip"] ?? null,
                 "adoption_url" => $extractedPetAdoptionUrl,
-                "image_urls" => array_values($petData["image_urls"] ?? []),
+                "image_urls" => array_values($petData["image_urls"] ?? null),
             ];
 
             Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
