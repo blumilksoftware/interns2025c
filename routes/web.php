@@ -42,6 +42,8 @@ Route::middleware([
     Route::get("/admin", [AdminController::class, "index"])->name("admin");
 });
 
+Route::get("/preferences", fn() => Inertia::render("Preferences/Preferences"))->name("preferences");
+
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)
     ->only("store", "update", "destroy");
 

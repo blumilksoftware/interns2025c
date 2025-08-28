@@ -52,6 +52,9 @@ export const routes = {
     update: (id: number | string) => `/pet-shelter-addresses/${id}`,
     destroy: (id: number | string) => `/pet-shelter-addresses/${id}`,
   },
+  preferences: {
+    index: () => '/preferences',
+  },
 } as const
 
 export function isActive(currentUrl: string, path: string): boolean {
