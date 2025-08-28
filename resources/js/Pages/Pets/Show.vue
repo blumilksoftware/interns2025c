@@ -1,15 +1,17 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import Header from '@/Components/Header.vue'
 import Footer from '@/Components/Footer.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { bestMatches, dogs, cats } from '@/data/petsData.js'
-import { getGenderInfo } from '@/data/genderMapper.js'
+import { getGenderInfo } from '@/helpers/mappers'
 import PetGallery from './Partials/PetGallery.vue'
 import PetDetails from './Partials/PetDetails.vue'
 import PetLocation from './Partials/PetLocation.vue'
 import PetStrip from '@/Components/PetStrip.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   pet: {
@@ -17,8 +19,6 @@ const props = defineProps({
     default: null,
   },
 })
-
-const { t } = useI18n()
 
 const allPets = [...bestMatches, ...dogs, ...cats]
 
@@ -40,8 +40,6 @@ const effectivePet = computed(() => {
   }
   return props.pet ?? staticPet.value
 })
-
-const pageTitle = computed(() => effectivePet.value?.name ? `${t('dashboard.mvp.meetPet')} ${effectivePet.value.name}` : 'Pet')
 
 const similarPets = computed(() => {
   const current = effectivePet.value
@@ -72,7 +70,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
 
 <template>
   <div class="min-h-screen bg-white">
-    <Head :title="pageTitle" />     
+    <Head :title="t('titles.petShow')" />     
     <Header />
 
     <PetGallery v-if="effectivePet" :pet="effectivePet" />
@@ -167,9 +165,3 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
     <Footer />
   </div>
 </template>
-
-<style scoped>
-</style>
-
-
-  

@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import PetStrip from '../../Components/PetStrip.vue'
-import { bestMatches, dogs, cats } from '../../data/petsData.js'
-import { getPetTags } from '../../data/petTagsConfig.js'
-import { getGenderInfo } from '../../data/genderMapper.js'
+import PetStrip from '@/Components/PetStrip.vue'
+import { bestMatches, dogs, cats } from '@/data/petsData.js'
+import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { Link } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 
 const props = defineProps({
   showPetList: {
@@ -72,7 +73,7 @@ const handleHidePetList = () => {
                   class="w-full h-auto object-cover cursor-pointer" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
-                  @click="$inertia.visit(`/pets/${pet.id}`)"
+                  @click="handleShowPetList(pet)"
                 >
               </div>
               
@@ -107,7 +108,7 @@ const handleHidePetList = () => {
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
                 <div class="mt-3">
-                  <a :href="`/pets/${pet.id}`" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</a>
+                  <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
                 </div>
               </div>
             </div>
@@ -138,6 +139,3 @@ const handleHidePetList = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

@@ -20,10 +20,10 @@ const animals = [...dogs, ...cats].slice(0, 6)
           <div class="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
           <div class="absolute inset-0 -z-10 rounded-2xl ring-1 ring-gray-900/10" />
           <h3 class="mt-3 text-lg/6 font-semibold text-white">
-            <a :href="`/pets/${post.id}`">
+            <Link :href="routes.pets.show(post.id)">
               <span class="absolute inset-0" />
               {{ post.name }}
-            </a>
+            </Link>
           </h3>
           <p class="mt-2 text-sm/6 text-gray-300">{{ post.description }}</p>
         </article>

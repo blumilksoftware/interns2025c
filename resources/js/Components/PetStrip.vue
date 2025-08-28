@@ -1,11 +1,12 @@
 <script setup>
+import { Link } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 import { ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { getPetTags } from '../data/petTagsConfig.js'
-import { getGenderInfo } from '../data/genderMapper.js'
+import { getPetTags, getGenderInfo } from '@/helpers/mappers'
 
 const { t } = useI18n()
 
@@ -111,9 +112,9 @@ nextTick(() => {
           class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square ">
-            <a :href="`/pets/${pet.id}`" class="focus-visible:outline-none">
+            <Link :href="routes.pets.show(pet.id)" class="focus-visible:outline-none">
               <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
-            </a>
+            </Link> 
 
             <button 
               class="absolute top-2 sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 

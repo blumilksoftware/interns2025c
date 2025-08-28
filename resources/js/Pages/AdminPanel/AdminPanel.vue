@@ -2,13 +2,13 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Head } from '@inertiajs/vue3'
-import AdminSidebar from '../../Components/AdminSidebar.vue'
-import DynamicTable from '../../Components/DynamicTable.vue'
-import EditModal from '../../Components/EditModal.vue'
+import AdminSidebar from '@/Components/AdminSidebar.vue'
+import DynamicTable from '@/Components/DynamicTable.vue'
+import EditModal from '@/Components/EditModal.vue'
 import { Bars3Icon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
-const title = t('title.adminPanel')
+const title = t('titles.adminPanel')
 
 const props = defineProps({
   pets: {
@@ -37,9 +37,9 @@ const itemsPerPage = 10
 const searchQuery = ref('')
 
 const dataSets = computed(() => ({
-  pets: props.pets?.data ?? [],
-  shelters: props.shelters?.data ?? [],
-  users: props.users?.data ?? [],
+  pets: props.pets?.data || [],
+  shelters: props.shelters?.data || [],
+  users: props.users?.data || [],
 }))
 
 const filteredData = computed(() => {
@@ -57,7 +57,7 @@ const filteredData = computed(() => {
   )
 })
 
-const tableData = computed(() => filteredData.value)
+const tableData = computed(() => filteredData.value || [])
 
 const isModalOpen = ref(false)
 const editingItem = ref({})
@@ -81,13 +81,15 @@ const closeModal = () => {
 }
 
 const saveChanges = (updatedItem) => {
-  const index = tableData.value.findIndex(item => item.id === updatedItem.id)
+  const currentTableData = tableData.value || []
+  const index = currentTableData.findIndex(item => item.id === updatedItem.id)
   if (index !== -1) {
-    tableData.value[index] = { ...updatedItem }
+    currentTableData[index] = { ...updatedItem }
     const key = currentDataSet.value
-    const dsIndex = dataSets.value[key].findIndex(item => item.id === updatedItem.id)
+    const currentDataSetData = dataSets.value[key] || []
+    const dsIndex = currentDataSetData.findIndex(item => item.id === updatedItem.id)
     if (dsIndex !== -1) {
-      dataSets.value[key][dsIndex] = { ...updatedItem }
+      currentDataSetData[dsIndex] = { ...updatedItem }
     }
   }
   closeModal()
@@ -132,7 +134,7 @@ onBeforeUnmount(() => {
         <div class="mb-2 sm:mb-4">
           <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
             {{ t('admin.currentlyViewing') }} <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
-            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData.length }} {{ t('admin.records') }})</span>
+            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData?.length || 0 }} {{ t('admin.records') }})</span>
           </h2>
         </div>
         <div class="mb-2 sm:mb-4">

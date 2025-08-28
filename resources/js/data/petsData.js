@@ -12,7 +12,7 @@ export const bestMatches = [
     healthy: true,
     health_status: 'healthy',
     microchipped: true,
-    description: 'Energiczny kocur, uwielbia eksplorować i wspinaczki. Jest bardzo aktywny i lubi się bawić. Jego ulubionym zajęciem jest gra w piłkę. Jest bardzo inteligentny i lubi się uczyć nowych rzeczy. Jest bardzo miły i lubi się przytulać.  ',
+    description: 'Energiczny kocur, uwielbia eksplorować i wspinaczki. Jest bardzo aktywny i lubi się bawić. Jego ulubionym zajęciem jest gra w piłkę. Jest bardzo inteligentny i lubi się uczyć nowych rzeczy. Jest bardzo miły i lubi się przytulać.',
     imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',
     photos: [
       'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80',

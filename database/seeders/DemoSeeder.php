@@ -51,7 +51,7 @@ class DemoSeeder extends Seeder
         User::factory()->count(self::NUMBER_OF_USERS_TO_CREATE)->create();
         $users = User::all();
 
-        $pets = Pet::factory()->count(10)->create();
+        $pets = Pet::factory()->count(15)->create();
         $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
 
         foreach ($users as $user) {

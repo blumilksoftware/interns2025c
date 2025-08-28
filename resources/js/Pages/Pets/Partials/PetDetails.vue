@@ -1,10 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getPetTags } from '@/data/petTagsConfig.js'
-import { getAvailableMedicalInfo, getHealthStatusInfo } from '@/data/medicalInfoMapper.js'
-import { getPetCharacteristics } from '@/data/characteristicsMapper.js'
-import { getStatusInfo } from '@/data/statusMapper.js'
+import { getPetTags, getAvailableMedicalInfo, getHealthStatusInfo, getPetCharacteristics, getStatusInfo } from '@/helpers/mappers'
 import PetIcons from '@/Components/Icons/PetIcons.vue'
 
 const props = defineProps({
@@ -19,15 +16,15 @@ const { t } = useI18n()
 const petTags = getPetTags()
 
 const petTagObjects = computed(() => {
-  const p = props.pet
-  if (!p?.tags || !Array.isArray(p.tags)) return []
-  return p.tags.map(tagId => petTags[tagId]).filter(Boolean)
+  const petData = props.pet
+  if (!petData?.tags || !Array.isArray(petData.tags)) return []
+  return petData.tags.map(tagId => petTags[tagId]).filter(Boolean)
 })
 
 const personalityTraits = computed(() => {
-  const p = props.pet
-  if (!p?.tags || !Array.isArray(p.tags)) return []
-  return p.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
+  const pet = props.pet
+  if (!pet?.tags || !Array.isArray(pet.tags)) return []
+  return pet.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
 })
 
 const characteristics = computed(() => {
@@ -168,6 +165,3 @@ const medicalInfo = computed(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

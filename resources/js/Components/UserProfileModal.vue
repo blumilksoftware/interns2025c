@@ -93,7 +93,6 @@ const logout = () => {
                   </button>
                 </div>
                 
-                <!-- User Information -->
                 <div class="flex-1 min-w-0 space-y-3">
                   <div>
                     <h4 class="heading-xl mb-0">{{ user.name }}</h4>
