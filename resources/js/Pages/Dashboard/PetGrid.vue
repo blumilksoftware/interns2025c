@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import PetStrip from '../../Components/PetStrip.vue'
-import { bestMatches, dogs, cats } from '../../data/petsData.js'
-import { getPetTags } from '../../data/petTagsConfig.js'
+import PetStrip from '@/Components/PetStrip.vue'
+import { bestMatches, dogs, cats } from '@/data/petsData.js'
+import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { Link } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 
 const props = defineProps({
   showPetList: {
@@ -68,9 +70,10 @@ const handleHidePetList = () => {
             <div class="flex flex-col md:flex-row md:items-center">
               <div class="w-full md:w-[40vw] lg:w-80 shrink-0">
                 <img 
-                  class="w-full h-auto object-cover" 
+                  class="w-full h-auto object-cover cursor-pointer" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
+                  @click="handleShowPetList(pet)"
                 >
               </div>
               
@@ -85,14 +88,13 @@ const handleHidePetList = () => {
                 <div class="flex items-center gap-2 mb-3">
                   <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
                   <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
-                  <span v-if="pet.gender === 'male'" class="text-blue-400 text-xl">♂</span>
-                  <span v-else class="text-pink-400 text-xl">♀</span>
+                  <span :class="getGenderInfo(pet.gender).color + ' text-xl'">{{ getGenderInfo(pet.gender).symbol }}</span>
                 </div>
                 
                 <div class="flex flex-wrap gap-1 mb-3">
                   <span 
                     v-for="tag in getPetTagsForPet(pet)" 
-                    :key="tag.name"
+                    :key="`${pet.id}-${tag.name}`"
                     class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium border"
                     :class="tag.color"
                   >
@@ -105,6 +107,9 @@ const handleHidePetList = () => {
               <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
+                <div class="mt-3">
+                  <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
+                </div>
               </div>
             </div>
           </div>
@@ -134,6 +139,3 @@ const handleHidePetList = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

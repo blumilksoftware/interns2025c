@@ -1,6 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import PawPrints from '../../Components/PawPrints.vue'
+import PawPrints from '@/Components/PawPrints.vue'
 
 const { t } = useI18n()
 </script>

@@ -185,6 +185,18 @@
           "description": "Rocky to 4-letni Owczarek Niemiecki. Jest bardzo lojalny i opiekuńczy. Uwielbia treningi i lubi być wśród swojej rodziny."
         }
       }
+    },
+    "petTags": {
+      "friendly": "Przyjazny",
+      "gentle": "Łagodny",
+      "energetic": "Energiczny",
+      "playful": "Skory do zabawy",
+      "calm": "Spokojny",
+      "loyal": "Lojalny",
+      "smart": "Inteligentny",
+      "protective": "Opiekuńczy",
+      "social": "Towarzyski",
+      "active": "Aktywny"
     }
   },
   "The provided password was incorrect.": "Podane hasło jest nieprawidłowe.",

@@ -4,6 +4,7 @@ import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createI18n } from 'vue-i18n'
+import VueEasyLightbox from 'vue-easy-lightbox'
 
 const plModules = import.meta.glob('./lang/pl/*.json', { eager: true })
 const pl = Object.values(plModules).reduce((merged, mod) => {
@@ -27,6 +28,7 @@ createInertiaApp({
     return createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(i18n)
+      .use(VueEasyLightbox)
       .mount(el)
   },
   progress: {

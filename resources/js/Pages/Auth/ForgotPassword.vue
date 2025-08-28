@@ -28,7 +28,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('title.forgotPassword')" />
+  <Head :title="t('titles.forgotPassword')" />
 
   <AuthenticationCard>
     <template #logo>

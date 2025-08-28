@@ -1,0 +1,18 @@
+{
+  "titles": {
+    "landingPage": "Strona główna",
+    "dashboard": "Panel główny",
+    "adminPanel": "Panel administracyjny",
+    "userProfile": "Profil",
+    "petShow": "Zwierzak",
+    "login": "Logowanie",
+    "register": "Rejestracja",
+    "forgotPassword": "Zapomniałem hasła",
+    "resetPassword": "Zresetuj hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "emailVerification": "Potwierdź swój e-mail",
+    "termsOfService": "Regulamin",
+    "privacyPolicy": "Polityka prywatności"
+  }
+}
+

@@ -37,7 +37,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('title.resetPassword')" />
+  <Head :title="t('titles.resetPassword')" />
 
   <AuthenticationCard>
     <template #logo>
