@@ -7,7 +7,7 @@ import {
   getColumnAttributes, 
   getColumnLabel, 
   isColumnEditable, 
-} from '../data/columnConfig.js'
+} from '@/data/columnConfig.js'
 
 const { t } = useI18n()
 

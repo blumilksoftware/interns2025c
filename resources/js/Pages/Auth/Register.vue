@@ -11,7 +11,6 @@ import TextInput from '@/Components/TextInput.vue'
 import { routes } from '@/routes'
 
 const { t } = useI18n()
-
 const form = useForm({
   name: '',
   email: '',
@@ -28,7 +27,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('title.register')" />
+  <Head :title="t('titles.register')" />
 
   <AuthenticationCard>
     <template #logo>

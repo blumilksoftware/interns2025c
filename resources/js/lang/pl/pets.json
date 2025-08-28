@@ -1,0 +1,22 @@
+{
+  "pets": {
+    "location": {
+      "heading": "Lokalizacja schroniska",
+      "shelterName": "Schronisko dla Zwierząt \"Przyjazne Łapki\"",
+      "address": "ul. Leśna 15, 00-001 Warszawa",
+      "openingHoursTitle": "Godziny otwarcia",
+      "openingHoursWeek": "Pon-Pt: 9:00 - 18:00",
+      "openingHoursWeekend": "Weekend: 10:00 - 16:00",
+      "contactTitle": "Kontakt",
+      "contactPhone": "Tel: +48 22 123 45 67",
+      "contactEmail": "E-mail: {email}",
+      "mapPreview": "Podgląd mapy",
+      "openInGoogleMaps": "Otwórz w Google Maps",
+      "extraInfo": "Dodatkowe informacje o lokalizacji schroniska"
+    },
+    "gallery": {
+      "previous": "Poprzedni",
+      "next": "Następny"
+    }
+  }
+}

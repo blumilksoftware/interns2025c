@@ -26,6 +26,8 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
+    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel"))->name("admin");
+
     Route::get("/users/{user}", [UserController::class, "show"])->name("users.show");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");

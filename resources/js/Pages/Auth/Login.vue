@@ -40,7 +40,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('title.login')" />
+  <Head :title="t('titles.login')" />
 
   <AuthenticationCard>
     <template #logo>

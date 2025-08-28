@@ -9,7 +9,6 @@ import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
 
 const { t } = useI18n()
-const title = t('title.userProfile')
 
 defineProps({
   sessions: {
@@ -20,7 +19,7 @@ defineProps({
 </script>
 
 <template>
-  <AppLayout :title="title">
+  <AppLayout :title="t('titles.userProfile')">
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         Profile

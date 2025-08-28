@@ -1,14 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Header from '../../Components/Header.vue'
+import Header from '@/Components/Header.vue'
 import MVPSection from './MVPSection.vue'
 import PetGrid from './PetGrid.vue'
-import Footer from '../../Components/Footer.vue'
+import Footer from '@/Components/Footer.vue'
 import { Head } from '@inertiajs/vue3'
 
 const { t } = useI18n()
-const title = t('dashboard.pageTitle')
 
 const showPetList = ref(false)
 const currentPetList = ref(null)
@@ -24,7 +23,7 @@ const handleHidePetList = () => {
 </script>
 
 <template>
-  <Head :title="title" />
+  <Head :title="t('titles.dashboard')" />
   
   <transition 
     enter-active-class="transition-opacity duration-500"
