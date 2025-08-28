@@ -1,0 +1,90 @@
+{
+  "preferences": {
+    "title": "Preferencje wyszukiwania",
+    "subtitle": "Dopasuj parametry, aby znaleźć idealnego zwierzaka.",
+    "labels": {
+      "species": "Gatunek",
+      "breed": "Rasa",
+      "sex": "Płeć",
+      "age": "Wiek",
+      "location": "Lokalizacja",
+      "radiusKm": "Promień (km)",
+      "size": "Wielkość",
+      "weightKg": "Waga (kg)",
+      "color": "Kolor",
+      "healthStatus": "Stan zdrowia",
+      "adoptionStatus": "Status adopcji",
+      "healthChecks": "Badania / zabiegi",
+      "attitudeToDogs": "Stosunek do psów",
+      "attitudeToCats": "Stosunek do kotów",
+      "attitudeToChildren": "Stosunek do dzieci",
+      "attitudeToAdults": "Stosunek do dorosłych",
+      "activityLevel": "Poziom aktywności",
+      "tags": "Cechy"
+    },
+    "placeholders": {
+      "any": "Dowolne",
+      "cityOrZip": "Miasto lub kod pocztowy"
+    },
+    "species": {
+      "dog": "Pies",
+      "cat": "Kot",
+      "other": "Inne"
+    },
+    "sex": {
+      "male": "Samiec",
+      "female": "Samica"
+    },
+    "age": {
+      "young": "Młody",
+      "adult": "Dorosły",
+      "senior": "Senior"
+    },
+    "size": {
+      "small": "Mały",
+      "medium": "Średni",
+      "large": "Duży"
+    },
+    "level": {
+      "veryLow": "Bardzo niski",
+      "low": "Niski",
+      "medium": "Średni",
+      "high": "Wysoki",
+      "veryHigh": "Bardzo wysoki"
+    },
+    "colors": {
+      "black": "Czarny",
+      "white": "Biały",
+      "brown": "Brązowy",
+      "grey": "Szary",
+      "ginger": "Rudy",
+      "mixed": "Mieszany"
+    },
+    "health": {
+      "healthy": "Zdrowy",
+      "sick": "Chory",
+      "recovering": "W trakcie leczenia",
+      "critical": "Krytyczny",
+      "unknown": "Nieznany"
+    },
+    "adoption": {
+      "adopted": "Adoptowany",
+      "waiting": "Czeka na dom",
+      "quarantined": "Kwarantanna",
+      "temporaryHome": "Dom tymczasowy"
+    },
+    "checks": {
+      "vaccinated": "Szczepiony",
+      "sterilized": "Wysterylizowany/odkastr.",
+      "microchipped": "Zachipowany",
+      "dewormed": "Odrobaczony",
+      "defleaTreated": "Zabezpieczony przeciw pchłom"
+    },
+    "actions": {
+      "apply": "Zastosuj",
+      "reset": "Wyczyść"
+    }
+  }
+}
+
+
