@@ -108,7 +108,11 @@ class AnalyzePetPage implements ShouldQueue
 
             $petImages = DomAttributeExtractor::scrapImageLinksFromWebpage($crawler, $this->url);
             $data["image_urls"] = $petImages;
-            Log::info("Extracted " . count($petImages) . " images from page: " . $this->url);
+            Log::info(sprintf(
+                "Extracted %d images from page: %s",
+                count($petImages),
+                $this->url,
+            ));
 
             $petService->store($data, $this->baseUrl, $this->url);
             Log::info("Pet data extracted: " . json_encode($data));

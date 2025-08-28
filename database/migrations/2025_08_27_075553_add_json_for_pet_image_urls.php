@@ -10,7 +10,7 @@ return new class() extends Migration {
     public function up(): void
     {
         Schema::table("pets", function (Blueprint $table): void {
-            $table->json("image_urls")->nullable()->after("adoption_url");
+            $table->json("image_urls")->nullable();
         });
     }
 
