@@ -1,9 +1,11 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
+import { Link } from '@inertiajs/vue3'
 import { HeartIcon, StarIcon, CalendarIcon, MapPinIcon } from '@heroicons/vue/20/solid'
-import { bestMatches } from '../../data/petsData.js'
-import { getPetTags } from '../../data/petTagsConfig.js'
+import { bestMatches } from '@/data/petsData.js'
+import { getPetTags } from '@/helpers/mappers'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 
@@ -77,13 +79,13 @@ const characteristics = computed(() => [
             </div>
 
             <div class="mt-6 flex">
-              <a href="#" class="group relative inline-flex items-center justify-center overflow-hidden rounded-md bg-indigo-600 px-6 py-3 text-sm/6 font-bold text-white transition hover:scale-110">
+              <Link :href="routes.pets.show(petData.id)" class="group relative inline-flex items-center justify-center overflow-hidden rounded-md bg-indigo-600 px-6 py-3 text-sm/6 font-bold text-white transition hover:scale-110">
                 <span>{{ t('dashboard.mvp.adoptPet') }} {{ petData.name }}</span>
                 <span aria-hidden="true" class="ml-2">&rarr;</span>
                 <div class="absolute inset-0 flex size-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
                   <div class="relative h-full w-8 bg-white/20" />
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -94,7 +96,3 @@ const characteristics = computed(() => [
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

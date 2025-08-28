@@ -12,13 +12,6 @@ import { routes } from '@/routes'
 
 const { t } = useI18n()
 
-defineProps({
-  title: {
-    type: String,
-    default: '',
-  },
-})
-
 const showingNavigationDropdown = ref(false)
 
 const logout = () => {

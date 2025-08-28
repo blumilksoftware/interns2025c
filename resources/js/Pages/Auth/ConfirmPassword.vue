@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
-import { useI18n } from 'vue-i18n'
 import AuthenticationCard from '@/Components/AuthenticationCard.vue'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 import InputError from '@/Components/InputError.vue'
@@ -9,6 +8,7 @@ import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import { routes } from '@/routes'
+import { useI18n } from 'vue-i18n'
 
 const form = useForm({
   password: '',
@@ -30,7 +30,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="t('title.secure')" />
+  <Head :title="t('titles.confirmPassword')" />
 
   <AuthenticationCard>
     <template #logo>

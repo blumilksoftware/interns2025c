@@ -1,0 +1,90 @@
+import type {
+  MedicalInfoMapper,
+  MedicalInfoItem,
+  MedicalInfoDisplay,
+  HealthStatusMapper,
+  HealthStatusInfo,
+  Pet
+} from './types';
+
+export const medicalInfoMapper: MedicalInfoMapper = {
+  vaccinated: {
+    icon: 'vaccinated',
+    bgColor: 'bg-green-100 dark:bg-green-900',
+    label: 'dashboard.mvp.healthStatus.vaccinated',
+    description: 'dashboard.mvp.healthStatus.vaccinatedDesc',
+  },
+  dewormed: {
+    icon: 'dewormed',
+    bgColor: 'bg-amber-100 dark:bg-amber-900',
+    label: 'dashboard.mvp.healthStatus.dewormed',
+    description: 'dashboard.mvp.healthStatus.dewormedDesc',
+  },
+  microchipped: {
+    icon: 'microchipped',
+    bgColor: 'bg-cyan-100 dark:bg-cyan-900',
+    label: 'dashboard.mvp.healthStatus.chipped',
+    description: 'dashboard.mvp.healthStatus.chippedDesc',
+  },
+  sterilized: {
+    icon: 'sterilized',
+    bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900',
+    label: 'dashboard.mvp.healthStatus.sterilized',
+    description: 'dashboard.mvp.healthStatus.sterilizedDesc',
+  },
+};
+
+export const getMedicalInfo = (type: string): MedicalInfoItem | null => {
+  return medicalInfoMapper[type as keyof MedicalInfoMapper] || null;
+};
+
+export const getAvailableMedicalInfo = (pet: Pet): MedicalInfoDisplay[] => {
+  const available: string[] = [];
+
+  if (pet?.vaccinated) available.push('vaccinated');
+  if (pet?.dewormed) available.push('dewormed');
+  if (pet?.microchipped) available.push('microchipped');
+  if (pet?.sterilized) available.push('sterilized');
+
+  return available.map((type): MedicalInfoDisplay => ({
+    type,
+    ...medicalInfoMapper[type as keyof MedicalInfoMapper],
+  }));
+};
+
+export const healthStatusMapper: HealthStatusMapper = {
+  healthy: {
+    icon: 'healthy',
+    bgColor: 'bg-green-100 dark:bg-green-900',
+    label: 'dashboard.mvp.healthStatus.healthy',
+    description: 'dashboard.mvp.healthStatus.healthState',
+  },
+  sick: {
+    icon: 'sick',
+    bgColor: 'bg-red-100 dark:bg-red-900',
+    label: 'dashboard.mvp.healthStatus.sick',
+    description: 'dashboard.mvp.healthStatus.healthState',
+  },
+  recovering: {
+    icon: 'recovering',
+    bgColor: 'bg-yellow-100 dark:bg-yellow-900',
+    label: 'dashboard.mvp.healthStatus.recovering',
+    description: 'dashboard.mvp.healthStatus.healthState',
+  },
+  critical: {
+    icon: 'critical',
+    bgColor: 'bg-red-100 dark:bg-red-900',
+    label: 'dashboard.mvp.healthStatus.critical',
+    description: 'dashboard.mvp.healthStatus.healthState',
+  },
+  unknown: {
+    icon: 'unknown',
+    bgColor: 'bg-gray-100 dark:bg-gray-900',
+    label: 'dashboard.mvp.healthStatus.unknown',
+    description: 'dashboard.mvp.healthStatus.healthState',
+  },
+};
+
+export const getHealthStatusInfo = (status: string): HealthStatusInfo => {
+  return healthStatusMapper[status as keyof HealthStatusMapper] || healthStatusMapper.unknown;
+};
