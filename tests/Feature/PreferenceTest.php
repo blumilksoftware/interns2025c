@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\Preference;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Utils\TestUtils;
-use App\Models\Preference;
 
 class PreferenceTest extends TestCase
 {
