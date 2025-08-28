@@ -1,7 +1,7 @@
 {
-    "name": "blumilksoftware/interns2025c",
+    "name": "blumilksoftware/lapgo",
     "type": "project",
-    "description": "interns2025c project.",
+    "description": "LapGo project.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
@@ -13,7 +13,12 @@
         "laravel/framework": "^12.20.0",
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "saloonphp/cache-plugin": "^3.0",
+        "saloonphp/saloon": "^3.0",
+        "spatie/crawler": "^8.4",
+        "symfony/css-selector": "^7.3",
+        "symfony/dom-crawler": "^7.3"
     },
     "require-dev": {
         "blumilksoftware/codestyle": "^v5.0.0",
