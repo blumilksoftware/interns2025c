@@ -12,10 +12,10 @@ const props = defineProps({
 })
 
 const imageUrls = computed(() => {
-  const p = props.pet
-  if (!p) return []
-  if (Array.isArray(p.photos) && p.photos.length) return p.photos
-  if (p.imageUrl) return [p.imageUrl]
+  const pet = props.pet
+  if (!pet) return []
+  if (Array.isArray(pet.photos) && pet.photos.length) return pet.photos
+  if (pet.imageUrl) return [pet.imageUrl]
   return []
 })
 

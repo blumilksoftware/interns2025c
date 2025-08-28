@@ -1,5 +1,3 @@
-// Types for all mapper functions and data structures
-
 export interface GenderInfo {
   symbol: string;
   color: string;

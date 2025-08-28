@@ -10,6 +10,7 @@ import PetDetails from './Partials/PetDetails.vue'
 import PetLocation from './Partials/PetLocation.vue'
 import PetStrip from '@/Components/PetStrip.vue'
 import { useI18n } from 'vue-i18n'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 
@@ -152,7 +153,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
                   <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                   <p class="text-base text-gray-700 leading-relaxed">{{ similarPet.description }}</p>
                   <div class="mt-3">
-                    <Link :href="`/pets/${similarPet.id}`" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
+                    <Link :href="routes.pets.show(similarPet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
                   </div>
                 </div>
               </div>
