@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
-import { getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '../data/columnConfig.js'
+import { getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '@/data/columnConfig.js'
 
 const { t } = useI18n()
 

@@ -13,6 +13,8 @@
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
         "@inertiajs/vue3": "^2.0.14",
+        "@tabler/icons": "^3.34.1",
+        "@tabler/icons-vue": "^3.34.1",
         "@tailwindcss/forms": "^0.5.10",
         "@tailwindcss/typography": "^0.5.16",
         "@tailwindcss/vite": "^4.1.11",
@@ -21,6 +23,7 @@
         "laravel-vite-plugin": "^2.0.0",
         "lodash": "^4.17.21",
         "vue": "^3.5.17",
+        "vue-easy-lightbox": "^1.19.0",
         "vue-i18n": "^11.1.11"
     },
     "devDependencies": {
