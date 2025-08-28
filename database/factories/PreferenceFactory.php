@@ -49,7 +49,7 @@ class PreferenceFactory extends Factory
         $count = $this->faker->numberBetween(1, count($values));
         $chosen = $this->faker->randomElements($values, $count);
 
-        return array_map(fn($v) => ["value" => $v, "weight" => 1], $chosen);
+        return array_map(fn($v): array => ["value" => $v, "weight" => 1], $chosen);
     }
 
     protected function generateWeightedArray(array $values): array
@@ -57,7 +57,7 @@ class PreferenceFactory extends Factory
         $count = $this->faker->numberBetween(1, count($values));
         $chosen = $this->faker->randomElements($values, $count);
 
-        return array_map(fn($v) => ["value" => $v, "weight" => 1], $chosen);
+        return array_map(fn($v): array => ["value" => $v, "weight" => 1], $chosen);
     }
 
     protected function generateWeightedBoolean(): array

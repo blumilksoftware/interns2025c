@@ -12,6 +12,6 @@ enum PetSex: string
 
     public static function values(): array
     {
-        return array_map(fn(PetSex $element): string => $element->value, self::cases());
+        return array_column(self::cases(), "value");
     }
 }

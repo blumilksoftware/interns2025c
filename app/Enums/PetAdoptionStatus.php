@@ -13,6 +13,6 @@ enum PetAdoptionStatus: string
 
     public static function values(): array
     {
-        return array_map(fn(PetAdoptionStatus $element): string => $element->value, self::cases());
+        return array_column(self::cases(), "value");
     }
 }

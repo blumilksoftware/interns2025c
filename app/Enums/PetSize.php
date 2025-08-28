@@ -13,6 +13,6 @@ enum PetSize: string
 
     public static function values(): array
     {
-        return array_map(fn(PetSize $element): string => $element->value, self::cases());
+        return array_column(self::cases(), "value");
     }
 }

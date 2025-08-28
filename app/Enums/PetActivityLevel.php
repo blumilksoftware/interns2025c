@@ -15,6 +15,6 @@ enum PetActivityLevel: string
 
     public static function values(): array
     {
-        return array_map(fn(PetActivityLevel $element): string => $element->value, self::cases());
+        return array_column(self::cases(), "value");
     }
 }

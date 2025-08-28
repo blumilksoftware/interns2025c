@@ -6,13 +6,13 @@ namespace App\Enums;
 
 enum PetAge: string
 {
-    case Youngling = "youngling";
+    case Juvenile = "juvenile";
     case Adult = "adult";
     case Senior = "senior";
     case Unknown = "unknown";
 
     public static function values(): array
     {
-        return array_map(fn(PetAge $element): string => $element->value, self::cases());
+        return array_column(self::cases(), "value");    
     }
 }

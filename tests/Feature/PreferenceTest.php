@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Utils\TestUtils;
+use App\Models\Preference;
 
 class PreferenceTest extends TestCase
 {
@@ -89,7 +90,7 @@ class PreferenceTest extends TestCase
 
     public function testGuestCannotDeletePreference(): void
     {
-        [$user, $preference] = $this->createUserWithPreference();
+        $preference = Preference::factory()->create();
 
         $this->delete("/preferences/{$preference->id}")
             ->assertRedirect("/login");
