@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Pet;
+use App\Services\PetMatcher;
 use App\Http\Requests\PreferenceRequest;
 use App\Models\Preference;
 use Illuminate\Http\RedirectResponse;
@@ -12,11 +14,26 @@ use Inertia\Response;
 
 class PreferenceController extends Controller
 {
-    public function index(): Response
-    {
-        return Inertia::render("Dashboard/Dashboard");
-    }
+    public function index(PetMatcher $matcher): Response
+{
+    $user = request()->user();
+    $preference = $user->preferences()->first();
 
+    $pets = Pet::all()->map(function ($pet) use ($preference, $matcher) {
+        $matchPercentage = $preference
+            ? $matcher->match($pet->toArray(), $preference->preferences)
+            : 0;
+
+        return [
+            'pet' => $pet,
+            'match' => $matchPercentage,
+        ];
+    })->sortByDesc('match')->values();
+
+    return Inertia::render('Dashboard/Dashboard', [
+        'pets' => $pets,
+    ]);
+}
     public function store(PreferenceRequest $request): RedirectResponse
     {
         $request->user()->preferences()->create($request->validated());
