@@ -3,26 +3,16 @@ import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getPetTags } from '@/helpers/mappers'
 import { dogs, cats } from '@/data/petsData.js'
-import CommonIcons from '@/Components/Icons/CommonIcons.vue'
+import PawPrints from '@/Components/PawPrints.vue'
+import ChoiceTiles from '@/Components/ChoiceTiles.vue'
+import { selectorConfigs } from '@/helpers/selectors'
+import { speciesOptions as speciesCfg, sexOptions as sexCfg, ageTextOptions as ageTextCfg, colorOptions as colorCfg, healthOptions as healthCfg, adoptionOptions as adoptionCfg } from '@/helpers/preferencesConfig'
 
 const { t } = useI18n()
 
-const speciesOptions = [
-  { value: 'dog', label: t('preferences.species.dog') },
-  { value: 'cat', label: t('preferences.species.cat') },
-  { value: 'other', label: t('preferences.species.other') },
-]
+const speciesOptions = speciesCfg
 
-const sexOptions = [
-  { value: 'male', label: t('preferences.sex.male') },
-  { value: 'female', label: t('preferences.sex.female') },
-]
-
-const ageOptions = [
-  { value: 'young', label: t('preferences.age.young') },
-  { value: 'adult', label: t('preferences.age.adult') },
-  { value: 'senior', label: t('preferences.age.senior') },
-]
+const sexOptions = sexCfg
 
 const allTags = getPetTags()
 const tagOptions = computed(() =>
@@ -33,9 +23,9 @@ const form = ref({
   species: '',
   breed: '',
   sex: '',
-  ageIndex: 1,
-  sizeIndex: 1,
-  weightState: 1,
+  ageIndex: null,
+  sizeIndex: null,
+  weightState: null,
   color: '',
   healthStatus: '',
   vaccinated: false,
@@ -43,11 +33,11 @@ const form = ref({
   microchipped: false,
   dewormed: false,
   defleaTreated: false,
-  attitudeToDogs: 2,
-  attitudeToCats: 2,
-  attitudeToChildren: 2,
-  attitudeToAdults: 2,
-  activityLevel: 2,
+  attitudeToDogs: null,
+  attitudeToCats: null,
+  attitudeToChildren: null,
+  attitudeToAdults: null,
+  activityLevel: null,
   adoptionStatus: '',
   tags: [],
   location: '',
@@ -65,9 +55,9 @@ function resetForm() {
     species: '',
     breed: '',
     sex: '',
-    ageIndex: 1,
-    sizeIndex: 1,
-    weightState: 1,
+    ageIndex: null,
+    sizeIndex: null,
+    weightState: null,
     color: '',
     healthStatus: '',
     vaccinated: false,
@@ -75,11 +65,11 @@ function resetForm() {
     microchipped: false,
     dewormed: false,
     defleaTreated: false,
-    attitudeToDogs: 2,
-    attitudeToCats: 2,
-    attitudeToChildren: 2,
-    attitudeToAdults: 2,
-    activityLevel: 2,
+    attitudeToDogs: null,
+    attitudeToCats: null,
+    attitudeToChildren: null,
+    attitudeToAdults: null,
+    activityLevel: null,
     adoptionStatus: '',
     tags: [],
     location: '',
@@ -101,56 +91,31 @@ const breedOptions = computed(() => {
 
 watch(() => form.value.species, () => { form.value.breed = '' })
 
-const sizeLabels = [t('preferences.size.small'), t('preferences.size.medium'), t('preferences.size.large')]
-const levelLabels = [
-  t('preferences.level.veryLow'),
-  t('preferences.level.low'),
-  t('preferences.level.medium'),
-  t('preferences.level.high'),
-  t('preferences.level.veryHigh'),
-]
+const colorOptions = colorCfg
 
-const colorOptions = [
-  { value: 'black', label: t('preferences.colors.black') },
-  { value: 'white', label: t('preferences.colors.white') },
-  { value: 'brown', label: t('preferences.colors.brown') },
-  { value: 'grey', label: t('preferences.colors.grey') },
-  { value: 'ginger', label: t('preferences.colors.ginger') },
-  { value: 'mixed', label: t('preferences.colors.mixed') },
-]
+const healthOptions = healthCfg
 
-const healthOptions = [
-  { value: 'healthy', label: t('preferences.health.healthy') },
-  { value: 'sick', label: t('preferences.health.sick') },
-  { value: 'recovering', label: t('preferences.health.recovering') },
-  { value: 'critical', label: t('preferences.health.critical') },
-  { value: 'unknown', label: t('preferences.health.unknown') },
-]
-
-const adoptionOptions = [
-  { value: 'adopted', label: t('preferences.adoption.adopted') },
-  { value: 'waiting', label: t('preferences.adoption.waiting') },
-  { value: 'quarantined', label: t('preferences.adoption.quarantined') },
-  { value: 'temporary_home', label: t('preferences.adoption.temporaryHome') },
-]
+const adoptionOptions = adoptionCfg
 
 </script>
 
 <template>
     <Head :title="t('titles.preferences')" />
-  <div class="mx-auto max-w-5xl px-6 lg:px-8 py-10">
+  <div class="min-h-screen bg-gradient-to-br from-orange-200/40 via-pink-100/40 to-blue-200/40 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900 relative">
+    <PawPrints mode="scatter" />
+    <div class="mx-auto max-w-5xl px-6 lg:px-8 py-10">
     <div class="mb-6">
       <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">{{ t('preferences.title') }}</h1>
       <p class="mt-2 text-gray-600 dark:text-gray-300">{{ t('preferences.subtitle') }}</p>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 space-y-6">
+    <div class="bg-white/70 dark:bg-gray-800/20 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-6 space-y-6 shadow-lg">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.species') }}</label>
           <select v-model="form.species" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="">{{ t('preferences.placeholders.any') }}</option>
-            <option v-for="opt in speciesOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+            <option v-for="opt in speciesOptions" :key="opt.value" :value="opt.value">{{ t(opt.labelKey) }}</option>
           </select>
         </div>
 
@@ -166,35 +131,20 @@ const adoptionOptions = [
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.sex') }}</label>
           <select v-model="form.sex" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="">{{ t('preferences.placeholders.any') }}</option>
-            <option v-for="opt in sexOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+            <option v-for="opt in sexOptions" :key="opt.value" :value="opt.value">{{ t(opt.labelKey) }}</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.age') }}</label>
-          <input
-            v-model.number="form.ageIndex"
-            type="range"
-            min="0"
-            max="2"
-            step="1"
-            class="w-full range-custom"
-            :style="{ '--range-progress': (form.ageIndex / 2 * 100) + '%' }"
-          />
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.ageIndex === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-kid" />
-              {{ ageOptions[0].label }}
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.ageIndex === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="man" />
-              {{ ageOptions[1].label }}
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.ageIndex === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="old" />
-              {{ ageOptions[2].label }}
-            </span>
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.age') }}</label>
+            <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.ageIndex = null">{{ t('preferences.placeholders.any') }}</button>
           </div>
+          <ChoiceTiles :columns="selectorConfigs.age.columns" :options="selectorConfigs.age.options" :model-value="form.ageIndex" @update:modelValue="val => form.ageIndex = val">
+            <template #label="{ option }">
+              <span class="text-sm font-medium">{{ option.labelKey ? t(option.labelKey) : option.label }}</span>
+            </template>
+          </ChoiceTiles>
         </div>
         
         <div>
@@ -209,48 +159,30 @@ const adoptionOptions = [
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.size') }}</label>
-          <input v-model.number="form.sizeIndex" type="range" min="0" max="2" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.sizeIndex / 2 * 100) + '%' }">
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.sizeIndex === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="horse" class="w-4 h-4"/>
-              {{ sizeLabels[0] }}
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.sizeIndex === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="horse" class="w-6 h-6"/>
-              {{ sizeLabels[1] }}
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.sizeIndex === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="horse" class="w-8 h-8"/>
-              {{ sizeLabels[2] }}
-            </span>
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.size') }}</label>
+            <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.sizeIndex = null">{{ t('preferences.placeholders.any') }}</button>
           </div>
+          <ChoiceTiles :columns="selectorConfigs.size.columns" :options="selectorConfigs.size.options" :model-value="form.sizeIndex" @update:modelValue="val => form.sizeIndex = val">
+            <template #label="{ option }">
+              <span class="text-sm font-medium">{{ option.labelKey ? t(option.labelKey) : option.label }}</span>
+            </template>
+          </ChoiceTiles>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.weightKg') }}</label>
-          <input v-model.number="form.weightState" type="range" min="0" max="2" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.weightState / 2 * 100) + '%' }">
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-2" :class="form.weightState === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="weight" class="w-5 h-5" :style="{ strokeWidth: form.weightState === 0 ? 2 : 1 }"/>
-              chudy
-            </span>
-            <span class="inline-flex items-center gap-2" :class="form.weightState === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="weight" class="w-6 h-6" :style="{ strokeWidth: form.weightState === 1 ? 2.5 : 2 }"/>
-              średni
-            </span>
-            <span class="inline-flex items-center gap-2" :class="form.weightState === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="weight" class="w-7 h-7" :style="{ strokeWidth: form.weightState === 2 ? 3 : 3 }"/>
-              gruby
-            </span>
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.weightKg') }}</label>
+            <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.weightState = null">{{ t('preferences.placeholders.any') }}</button>
           </div>
+          <ChoiceTiles :columns="selectorConfigs.weight.columns" :options="selectorConfigs.weight.options" :model-value="form.weightState" @update:modelValue="val => form.weightState = val" />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.color') }}</label>
           <select v-model="form.color" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="">{{ t('preferences.placeholders.any') }}</option>
-            <option v-for="opt in colorOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+            <option v-for="opt in colorOptions" :key="opt.value" :value="opt.value">{{ t(opt.labelKey) }}</option>
           </select>
         </div>
 
@@ -258,7 +190,7 @@ const adoptionOptions = [
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.healthStatus') }}</label>
           <select v-model="form.healthStatus" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="">{{ t('preferences.placeholders.any') }}</option>
-            <option v-for="opt in healthOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+            <option v-for="opt in healthOptions" :key="opt.value" :value="opt.value">{{ t(opt.labelKey) }}</option>
           </select>
         </div>
 
@@ -266,16 +198,30 @@ const adoptionOptions = [
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.adoptionStatus') }}</label>
           <select v-model="form.adoptionStatus" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="">{{ t('preferences.placeholders.any') }}</option>
-            <option v-for="opt in adoptionOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+            <option v-for="opt in adoptionOptions" :key="opt.value" :value="opt.value">{{ t(opt.labelKey) }}</option>
           </select>
         </div>
 
 
       </div>
 
-      <details class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-        <summary class="cursor-pointer font-medium text-gray-800 dark:text-gray-100">{{ t('preferences.labels.healthChecks') }}</summary>
-        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <details class="disclosure rounded-lg border border-gray-200 dark:border-gray-700 p-0">
+        <summary class="disclosure-summary cursor-pointer">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.75H6.5a.75.75 0 000 1.5h2.75v2.75a.75.75 0 001.5 0V11h2.75a.75.75 0 000-1.5H10.75V6.75z" clip-rule="evenodd" />
+            </svg>
+            <span class="disclosure-title">{{ t('preferences.labels.healthChecks') }}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="disclosure-hint hidden sm:inline text-xs text-gray-500 dark:text-gray-400">kliknij, aby rozwinąć</span>
+            <span v-if="(form.vaccinated?1:0)+(form.sterilized?1:0)+(form.microchipped?1:0)+(form.dewormed?1:0)+(form.defleaTreated?1:0) > 0" class="badge-selected">{{ (form.vaccinated?1:0)+(form.sterilized?1:0)+(form.microchipped?1:0)+(form.dewormed?1:0)+(form.defleaTreated?1:0) }}</span>
+            <svg class="chevron w-4 h-4 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
             <input type="checkbox" v-model="form.vaccinated" class="rounded border-gray-300 dark:border-gray-700"> {{ t('preferences.checks.vaccinated') }}
           </label>
@@ -294,141 +240,51 @@ const adoptionOptions = [
         </div>
       </details>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.attitudeToDogs') }}</label>
-          <input v-model.number="form.attitudeToDogs" type="range" min="0" max="4" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.attitudeToDogs / 4 * 100) + '%' }">
-          <div class="grid grid-cols-5 place-items-center text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToDogs === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-sad" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToDogs === 0 ? 2.25 : 1.5 }"/>
-              wrogi
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToDogs === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="warning" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToDogs === 1 ? 2.25 : 1.5 }"/>
-              ostrożny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToDogs === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-empty" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToDogs === 2 ? 2.25 : 1.5 }"/>
-              obojętny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToDogs === 3 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-smile" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToDogs === 3 ? 2.25 : 1.5 }"/>
-              przyjazny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToDogs === 4 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="heart" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToDogs === 4 ? 2.25 : 1.5 }"/>
-              bardzo przyjazny
-            </span>
-          </div>
+      <div class="bg-white/70 dark:bg-gray-800/20 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/60 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-4">
+          <label class="block text-base font-medium text-gray-800 dark:text-gray-100">Stosunki</label>
         </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.attitudeToCats') }}</label>
-          <input v-model.number="form.attitudeToCats" type="range" min="0" max="4" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.attitudeToCats / 4 * 100) + '%' }">
-          <div class="grid grid-cols-5 place-items-center text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToCats === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-sad" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToCats === 0 ? 2.25 : 1.5 }"/>
-              wrogi
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToCats === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="warning" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToCats === 1 ? 2.25 : 1.5 }"/>
-              ostrożny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToCats === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-empty" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToCats === 2 ? 2.25 : 1.5 }"/>
-              obojętny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToCats === 3 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-smile" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToCats === 3 ? 2.25 : 1.5 }"/>
-              przyjazny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToCats === 4 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="heart" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToCats === 4 ? 2.25 : 1.5 }"/>
-              bardzo przyjazny
-            </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 md:auto-rows-fr gap-6">
+          <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToDogs') }}</span>
+              <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToDogs = null">{{ t('preferences.placeholders.any') }}</button>
+            </div>
+            <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToDogs" @update:modelValue="val => form.attitudeToDogs = val" />
           </div>
-        </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.attitudeToChildren') }}</label>
-          <input v-model.number="form.attitudeToChildren" type="range" min="0" max="4" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.attitudeToChildren / 4 * 100) + '%' }">
-          <div class="grid grid-cols-5 place-items-center text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToChildren === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-sad" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToChildren === 0 ? 2.25 : 1.5 }"/>
-              wrogi
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToChildren === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="warning" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToChildren === 1 ? 2.25 : 1.5 }"/>
-              ostrożny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToChildren === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-empty" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToChildren === 2 ? 2.25 : 1.5 }"/>
-              obojętny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToChildren === 3 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-smile" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToChildren === 3 ? 2.25 : 1.5 }"/>
-              przyjazny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToChildren === 4 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="heart" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToChildren === 4 ? 2.25 : 1.5 }"/>
-              bardzo przyjazny
-            </span>
+          <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToCats') }}</span>
+              <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToCats = null">{{ t('preferences.placeholders.any') }}</button>
+        </div>
+            <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToCats" @update:modelValue="val => form.attitudeToCats = val" />
           </div>
-        </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.attitudeToAdults') }}</label>
-          <input v-model.number="form.attitudeToAdults" type="range" min="0" max="4" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.attitudeToAdults / 4 * 100) + '%' }">
-          <div class="grid grid-cols-5 place-items-center text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToAdults === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-sad" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToAdults === 0 ? 2.25 : 1.5 }"/>
-              wrogi
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToAdults === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="warning" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToAdults === 1 ? 2.25 : 1.5 }"/>
-              ostrożny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToAdults === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-empty" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToAdults === 2 ? 2.25 : 1.5 }"/>
-              obojętny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToAdults === 3 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="mood-smile" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToAdults === 3 ? 2.25 : 1.5 }"/>
-              przyjazny
-            </span>
-            <span class="inline-flex items-center gap-1" :class="form.attitudeToAdults === 4 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-              <CommonIcons name="heart" class="w-4 h-4" :style="{ strokeWidth: form.attitudeToAdults === 4 ? 2.25 : 1.5 }"/>
-              bardzo przyjazny
-            </span>
+          <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToChildren') }}</span>
+              <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToChildren = null">{{ t('preferences.placeholders.any') }}</button>
+        </div>
+            <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToChildren" @update:modelValue="val => form.attitudeToChildren = val" />
+          </div>
+
+          <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToAdults') }}</span>
+              <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToAdults = null">{{ t('preferences.placeholders.any') }}</button>
+        </div>
+            <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToAdults" @update:modelValue="val => form.attitudeToAdults = val" />
           </div>
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.activityLevel') }}</label>
-        <input v-model.number="form.activityLevel" type="range" min="0" max="4" step="1" class="w-full range-custom" :style="{ '--range-progress': (form.activityLevel / 4 * 100) + '%' }">
-        <div class="grid grid-cols-5 place-items-center text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
-          <span class="inline-flex items-center gap-1" :class="form.activityLevel === 0 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-            <CommonIcons name="zzz" class="w-4 h-4" :style="{ strokeWidth: form.activityLevel === 0 ? 2.25 : 1.5 }"/>
-            bardzo niski
-          </span>
-          <span class="inline-flex items-center gap-1" :class="form.activityLevel === 1 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-            <CommonIcons name="walk" class="w-4 h-4" :style="{ strokeWidth: form.activityLevel === 1 ? 2.25 : 1.5 }"/>
-            niski
-          </span>
-          <span class="inline-flex items-center gap-1" :class="form.activityLevel === 2 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-            <CommonIcons name="run" class="w-4 h-4" :style="{ strokeWidth: form.activityLevel === 2 ? 2.25 : 1.5 }"/>
-            średni
-          </span>
-          <span class="inline-flex items-center gap-1" :class="form.activityLevel === 3 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-            <CommonIcons name="bolt" class="w-4 h-4" :style="{ strokeWidth: form.activityLevel === 3 ? 2.25 : 1.5 }"/>
-            wysoki
-          </span>
-          <span class="inline-flex items-center gap-1" :class="form.activityLevel === 4 ? 'font-semibold text-gray-900 dark:text-white' : ''">
-            <CommonIcons name="flame" class="w-4 h-4" :style="{ strokeWidth: form.activityLevel === 4 ? 2.25 : 1.5 }"/>
-            bardzo wysoki
-          </span>
+        <div class="flex items-center justify-between mb-3">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.activityLevel') }}</label>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.activityLevel = null">{{ t('preferences.placeholders.any') }}</button>
         </div>
+        <ChoiceTiles :columns="selectorConfigs.activity.columns" :options="selectorConfigs.activity.options" :model-value="form.activityLevel" @update:modelValue="val => form.activityLevel = val" />
       </div>
 
       <div>
@@ -456,55 +312,6 @@ const adoptionOptions = [
         </button>
       </div>
     </div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.range-custom {
-  --range-progress: 0%;
-  appearance: none;
-  height: 0.375rem; /* 6px */
-  border-radius: 9999px;
-  background:
-    linear-gradient(90deg, #6366f1 0%, #ec4899 100%) 0 0/var(--range-progress) 100% no-repeat,
-    #d1d5db; /* base track */
-}
-.range-custom:focus { outline: none; }
-
-.range-custom::-webkit-slider-thumb {
-  appearance: none;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 9999px;
-  background: radial-gradient(circle at center, #ffffff 55%, transparent 55%),
-              conic-gradient(from 0deg, #6366f1, #22d3ee, #a78bfa, #6366f1);
-  box-shadow: 0 0 0 3px #ffffff inset;
-  border: 0;
-}
-.range-custom:active::-webkit-slider-thumb {
-  filter: brightness(1.05);
-}
-
-.range-custom::-moz-range-track {
-  height: 0.375rem;
-  border-radius: 9999px;
-  background: transparent;
-}
-.range-custom::-moz-range-thumb {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 9999px;
-  background: radial-gradient(circle at center, #ffffff 55%, transparent 55%),
-              conic-gradient(from 0deg, #6366f1, #22d3ee, #a78bfa, #6366f1);
-  border: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .range-custom {
-    background:
-      linear-gradient(90deg, #22d3ee 0%, #a78bfa 100%) 0 0/var(--range-progress) 100% no-repeat,
-      #374151; /* gray-700 base */
-  }
-  .range-custom::-moz-range-track { background: transparent; }
-}
-</style>
