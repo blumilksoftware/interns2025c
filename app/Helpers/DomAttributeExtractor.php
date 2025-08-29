@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
+use Throwable;
 
 class DomAttributeExtractor
 {
@@ -74,9 +76,42 @@ class DomAttributeExtractor
                 return null;
             }
 
-            return UrlFormatHelper::normalizeUrl($src, $baseUrl);
+            $normalizedUrl = UrlFormatHelper::normalizeUrl($src, $baseUrl);
+
+            if (!$normalizedUrl) {
+                return null;
+            }
+
+            return $normalizedUrl;
         });
 
         return array_filter($images);
+    }
+
+    public static function DoesImageMeetMinimumDimensions(string $imageUrl, int $minWidth, int $minHeight): bool
+    {
+        try {
+            $imageInfo = @getimagesize($imageUrl);
+
+            if ($imageInfo === false) {
+                Log::debug("Could not get image dimensions for: {$imageUrl}");
+
+                return false;
+            }
+
+            [$width, $height] = $imageInfo;
+
+            $meetsRequirements = $width >= $minWidth && $height >= $minHeight;
+
+            if (!$meetsRequirements) {
+                Log::debug("Image {$imageUrl} does not meet minimum dimensions ({$width}x{$height} < " . $minWidth . "x" . $minHeight . ")");
+            }
+
+            return $meetsRequirements;
+        } catch (Throwable $exception) {
+            Log::debug("Error checking image dimensions for {$imageUrl}: " . $exception->getMessage());
+
+            return false;
+        }
     }
 }
