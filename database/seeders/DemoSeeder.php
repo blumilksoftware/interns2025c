@@ -18,6 +18,7 @@ class DemoSeeder extends Seeder
     public const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public const NUMBER_OF_USERS_TO_CREATE = 100;
     public const NUMBER_OF_TAGS_TO_CREATE = 20;
+    public const NUMBER_OF_PETS_TO_CREATE = 100;
 
     public function run(): void
     {
@@ -51,7 +52,7 @@ class DemoSeeder extends Seeder
         User::factory()->count(self::NUMBER_OF_USERS_TO_CREATE)->create();
         $users = User::all();
 
-        $pets = Pet::factory()->count(15)->create();
+        $pets = Pet::factory()->count(self::NUMBER_OF_PETS_TO_CREATE)->create();
         $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
 
         foreach ($users as $user) {

@@ -43,13 +43,16 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon $admission_date
  * @property ?string $found_location
  * @property ?string $adoption_status
+ * @property bool $is_accepted
  * @property int $shelter_id
  */
 class Pet extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = [
+        "is_accepted",
+    ];    
     protected $casts = [
         "age" => "string",
         "admission_date" => "date",
