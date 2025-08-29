@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
@@ -43,20 +47,34 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon $admission_date
  * @property ?string $found_location
  * @property ?string $adoption_status
+ * @property ?string $adoption_url
+ * @property ?array $image_urls
  * @property int $shelter_id
  */
-class Pet extends Model
+class Pet extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 
     protected $guarded = [];
     protected $casts = [
         "age" => "string",
         "admission_date" => "date",
+        "image_urls" => "array",
     ];
 
     public function shelter(): BelongsTo
     {
         return $this->belongsTo(PetShelter::class);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $desiredWidth = 320;
+        $desiredHeight = 320;
+        $this
+            ->addMediaConversion("thumbnail")
+            ->fit(Fit::Contain, $desiredWidth, $desiredHeight)
+            ->nonQueued();
     }
 }
