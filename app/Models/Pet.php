@@ -47,6 +47,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?Carbon $admission_date
  * @property ?string $found_location
  * @property ?string $adoption_status
+ * @property ?string $adoption_url
+ * @property ?array $image_urls
  * @property int $shelter_id
  */
 class Pet extends Model implements HasMedia
@@ -58,6 +60,7 @@ class Pet extends Model implements HasMedia
     protected $casts = [
         "age" => "string",
         "admission_date" => "date",
+        "image_urls" => "array",
     ];
 
     public function shelter(): BelongsTo

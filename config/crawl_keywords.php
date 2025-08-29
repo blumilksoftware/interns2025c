@@ -23,7 +23,7 @@ return [
         "rasowy", "rasowa", "kundel", "kundelka", "mieszaniec", "długowłosy",
         "krótkowłosy", "mix",
 
-        "mały", "mała", "średni", "średnia", "duży", "duża", "ogromny", "ogromna",
+        "mały", "mała", "średni", "średnia", "średnie", "duży", "duża", "ogromny", "ogromna",
         "gigantyczny", "gigantyczna", "duże", "małe", "średnie",
 
         "biały", "biała", "czarny", "czarna", "brązowy", "brązowa", "rudy", "ruda",
@@ -33,7 +33,7 @@ return [
         "zdrowy", "zdrowa", "chory", "chora", "niepełnosprawny", "niepełnosprawna",
         "szczepiony", "szczepiona", "szczepienie", "odrobaczony", "odrobaczona",
         "odrobaczenie", "kastrowany", "kastrowana", "sterylizowany", "sterylizowana",
-        "szczepienia",
+        "szczepienia", "kastracja", "sterylizacja", "odrobaczanie", "odpchlenie", "szczepienie", "płeć", "wiek",
 
         "adoptowany", "adoptowana", "oczekuje na adopcję", "kwarantanna",
         "w domu tymczasowym",

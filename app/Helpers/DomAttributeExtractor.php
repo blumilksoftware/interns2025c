@@ -48,7 +48,7 @@ class DomAttributeExtractor
     public static function getLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
         return collect(
-            $crawler->filter("a")->each(fn(Crawler $node): string => $node->attr("href")),
+            $crawler->filter("a")->each(fn(Crawler $node): ?string => $node->attr("href")),
         )
             ->filter()
             ->map(fn(string $href): ?string => UrlFormatHelper::normalizeUrl($href, $baseUrl))
@@ -56,5 +56,27 @@ class DomAttributeExtractor
             ->unique()
             ->values()
             ->all();
+    }
+
+    public static function scrapImageLinksFromWebpage(Crawler $crawler, string $baseUrl): array
+    {
+        $images = $crawler->filter("img")->each(function (Crawler $node) use ($baseUrl): ?string {
+            $allowedExtensions = ["jpg", "jpeg", "png"];
+            $src = (string)$node->attr("src");
+
+            if (!$src) {
+                return null;
+            }
+
+            $extension = UrlFormatHelper::getPathInfoExtension($src);
+
+            if (!in_array($extension, $allowedExtensions, true)) {
+                return null;
+            }
+
+            return UrlFormatHelper::normalizeUrl($src, $baseUrl);
+        });
+
+        return array_filter($images);
     }
 }
