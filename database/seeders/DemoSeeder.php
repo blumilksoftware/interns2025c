@@ -27,7 +27,7 @@ class DemoSeeder extends Seeder
         Tag::factory()
             ->count(self::NUMBER_OF_TAGS_TO_CREATE)
             ->make()
-            ->each(fn(Tag $tag) => Tag::firstOrCreate(["name" => $tag->name]));
+            ->each(fn(Tag $tag): Tag => Tag::firstOrCreate(["name" => $tag->name]));
 
         User::factory()->create([
             "email" => "user@example.com",
@@ -68,7 +68,7 @@ class DemoSeeder extends Seeder
             }
         }
 
-        $pets->each(fn(Pet $pet) => $pet->shelter()->associate($petShelters->random())->save());
+        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($petShelters->random())->save());
 
         $tags = Tag::all();
 
