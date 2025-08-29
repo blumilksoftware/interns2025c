@@ -95,6 +95,31 @@ return [
         "+", "desc", "asc", "?q=", "comment", "tag", "tags", "category", "categories",
         "zdom", "znalazlydom", "dom-odnaleziony", "dom-znaleziony",
         "szczesliwie-adoptowane", "adoptowane", "nie-zyje", "za-teczowym-mostem",
-        "#respond", "zmarl",
+        "#respond", "zmarl", "Market", "User", "Register", "menu",
+
+        "wp-admin", "wp-login", "wp-login.php", "wp-signup", "wp-activate", "xmlrpc.php",
+        "admin-ajax.php", "wp-json", "wp-content", "wp-includes", "wp-sitemap",
+
+        "author", "autor", "archives", "archiwum",
+
+        "comment-page-", "replytocom", "wp-comments-post", "komentarze", "komentarz",
+
+        "feed", "rss", "atom", "embed", "oembed", "trackback",
+
+        "?s=", "/search/", "szukaj", "wyszukaj", "paged=", "/page/", "/strona/",
+
+        "attachment", "attachment_id", "wp-content/uploads", "uploads", "zalacznik", "załącznik",
+
+        "preview", "preview_id", "revision", "revisions",
+
+        "amp", "/amp/", "?amp",
+
+        "utm_", "fbclid", "gclid", "yclid", "mc_cid", "mc_eid",
+
+        "woocommerce", "shop", "store", "sklep", "product", "product-category", "product-tag", "produkt", "produkty",
+
+        "event", "events", "tribe-events", "wydarzenia", "kalendarium", "calendar",
+
+        "print", "drukuj", "share", "udostepnij", "mailto:", "tel:", "twitter", "x.com", "tiktok", "youtube", "youtu", "linkedin",
     ],
 ];
