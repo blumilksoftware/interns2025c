@@ -11,16 +11,25 @@ type ChoiceOption = {
 }
 
 const props = defineProps<{
-  modelValue: number | string | null
+  modelValue: number | string | null | Array<number | string>
   options: ChoiceOption[]
   columns?: number
   anyLabel?: string
+  multiple?: boolean
 }>()
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: number | string | null): void }>()
+const emit = defineEmits<{ (e: 'update:modelValue', value: number | string | null | Array<number | string>): void }>()
 
 function toggle(value: number | string) {
-  emit('update:modelValue', props.modelValue === value ? null : value)
+  if (props.multiple) {
+    const current = Array.isArray(props.modelValue) ? [...props.modelValue] as Array<number | string> : []
+    const idx = current.findIndex(v => v === value)
+    if (idx === -1) current.push(value)
+    else current.splice(idx, 1)
+    emit('update:modelValue', current)
+  } else {
+    emit('update:modelValue', props.modelValue === value ? null : value)
+  }
 }
 
 // Ensure Tailwind sees concrete class names; map common cases
@@ -44,7 +53,7 @@ const gridClasses = computed(() => {
         <input
           type="checkbox"
           class="sr-only"
-          :checked="modelValue === opt.value"
+          :checked="multiple ? Array.isArray(modelValue) && modelValue.includes(opt.value) : modelValue === opt.value"
           @change="toggle(opt.value)"
         />
         <div class="checkbox-content">

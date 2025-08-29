@@ -106,6 +106,25 @@
         transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3);
     }
     .tile-checkbox input:checked + .checkbox-content svg { color: white; }
+    .tile-checkbox input:checked + .checkbox-content span { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .label-container { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-xs { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .font-medium { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content * { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-900 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-700 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-600 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-500 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-400 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-300 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-200 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-gray-100 { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-black { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-white { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content div { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content p { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content strong { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content em { color: white !important; }
     .label-container { min-height: 2rem; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.1; }
 }
 
@@ -115,5 +134,15 @@
     .disclosure-summary { border-color: #374151; background: linear-gradient(180deg, rgba(99,102,241,0.12), transparent); }
     .badge-selected { background: rgba(99,102,241,0.25); color: #e0e7ff; border-color: rgba(99,102,241,0.45); }
     .checkbox-content { background: #1f2937; border-color: #374151; color: #d1d5db; }
-    .tile-checkbox input:checked + .checkbox-content { background: linear-gradient(135deg, #6366f1, #8b5cf6); border-color: #6366f1; color: white; }
+    .tile-checkbox input:checked + .checkbox-content { 
+        background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+        border-color: #6366f1; 
+        color: white; 
+    }
+    .tile-checkbox input:checked + .checkbox-content svg { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content span { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .label-container { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .text-xs { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content .font-medium { color: white !important; }
+    .tile-checkbox input:checked + .checkbox-content * { color: white !important; }
 }
