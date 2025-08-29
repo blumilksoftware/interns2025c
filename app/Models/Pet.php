@@ -72,9 +72,12 @@ class Pet extends Model implements HasMedia
     {
         $desiredWidth = 320;
         $desiredHeight = 320;
+        $previewScaleFactor = 2;
         $this
             ->addMediaConversion("thumbnail")
-            ->fit(Fit::Contain, $desiredWidth, $desiredHeight)
-            ->nonQueued();
+            ->fit(Fit::Contain, $desiredWidth, $desiredHeight);
+        $this
+            ->addMediaConversion("preview")
+            ->fit(Fit::Contain, $desiredWidth * $previewScaleFactor, $desiredHeight * $previewScaleFactor);
     }
 }
