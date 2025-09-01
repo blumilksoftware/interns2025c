@@ -10,6 +10,7 @@ use App\Models\PetShelter;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class PetTest extends TestCase
@@ -191,20 +192,23 @@ class PetTest extends TestCase
     {
         $pet = Pet::factory()->create();
         $tags = Tag::factory()->count(2)->create();
-        $pet->tags()->attach($tags);
+        $pet->tags()->syncWithoutDetaching($tags->pluck("id")->toArray());
 
         $response = $this->get("/pets/{$pet->id}");
-        $response->assertStatus(200);
 
-        $inertiaProps = $response->original->getData()["page"]["props"] ?? null;
+        $response->assertInertia(
+            fn(AssertableInertia $page) => $page->component("Pets/Show")
+                ->where("pet.data.id", $pet->id)
+                ->has("pet.data.tags", 2)
+                ->where("pet.data.tags.0.id", $tags[0]->id)
+                ->where("pet.data.tags.1.id", $tags[1]->id),
+        );
+    }
 
-        $this->assertNotNull($inertiaProps, "Inertia page props not found");
+    public function testShowingNonExistentPetReturnsNotFound(): void
+    {
+        $response = $this->get("/pets/999999");
 
-        $petData = $inertiaProps["pet"]["data"] ?? null;
-        $this->assertNotNull($petData, "Pet data not found in Inertia props");
-
-        $returnedTags = collect($petData["tags"])->pluck("id")->toArray();
-
-        $this->assertEqualsCanonicalizing($tags->pluck("id")->toArray(), $returnedTags);
+        $response->assertStatus(404);
     }
 }

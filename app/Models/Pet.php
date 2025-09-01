@@ -63,6 +63,6 @@ class Pet extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, "pet_tag", "pet_id", "tag_id");
+        return $this->belongsToMany(Tag::class);
     }
 }
