@@ -209,7 +209,7 @@ class PetShelterTest extends TestCase
         $this->assertDatabaseHas("pet_shelters", ["id" => $shelter->id]);
     }
 
-    public function testDeletingShelterCascadesOnAddress(): void
+    public function testDeletingShelterDoesNotDeleteAddress(): void
     {
         $user = User::factory()->create(["role" => "admin"]);
         $this->actingAs($user);
@@ -220,8 +220,6 @@ class PetShelterTest extends TestCase
         $this->delete("/pet-shelters/{$shelter->id}");
 
         $this->assertSoftDeleted("pet_shelters", ["id" => $shelter->id]);
-        // Address is cascadeOnDelete at DB level; with soft deletes, shelter isn't hard-deleted,
-        // so the address should still exist. Assert it remains.
         $this->assertDatabaseHas("pet_shelter_addresses", ["id" => $address->id]);
     }
 
