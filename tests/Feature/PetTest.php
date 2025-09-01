@@ -165,7 +165,7 @@ class PetTest extends TestCase
             $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
 
             $response->assertStatus(302);
-            $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+            $this->assertSoftDeleted("pets", ["id" => $pet->id]);
         }
     }
 

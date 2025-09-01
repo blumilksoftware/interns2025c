@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\Pet;
 use App\Models\User;
 
 class PetPolicy
@@ -23,5 +24,15 @@ class PetPolicy
     public function delete(User $user): bool
     {
         return $user->hasShelterRole() || $user->hasAdminRole();
+    }
+
+    public function accept(User $user, Pet $pet): bool
+    {
+        return $user->hasAdminRole() && $pet->is_accepted === false;
+    }
+
+    public function reject(User $user, Pet $pet): bool
+    {
+        return $user->hasAdminRole() && $pet->is_accepted === false;
     }
 }

@@ -11,7 +11,7 @@ import {
   isColumnEditable,
   isColumnRequired,
   sortFieldsByOrder,
-} from '@/data/columnConfig.js'
+} from '@/data/columns/index'
 
 const { t } = useI18n()
 

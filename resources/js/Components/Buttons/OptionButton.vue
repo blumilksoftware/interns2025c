@@ -1,3 +1,16 @@
+<script setup>
+const props = defineProps({
+  text: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: [Object, Function],
+    required: true,
+  },
+})
+</script>
+
 <template>
   <button
     type="button"
@@ -7,17 +20,3 @@
     {{ text }}
   </button>
 </template>
-
-<script setup>
-const props = defineProps({
-  text: {
-    type: String,
-    required: true,
-  },
-  icon: {
-    type: Object,
-    required: true,
-  },
-})
-
-</script>

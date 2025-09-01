@@ -17,28 +17,29 @@ class AdminController extends Controller
     public function index(): Response
     {
         $pets = Pet::query()->latest()->paginate(15);
-        $incomingPetsRequests = Pet::query()->withoutGlobalScope("is_accepted")->where("is_accepted", false)->latest()->paginate(15);
+        $incomingPetsRequests = Pet::query()->where("is_accepted", false)->latest()->paginate(15);
 
         return Inertia::render("AdminPanel/AdminPanel", [
             "pets" => PetAdminResource::collection($pets),
             "incomingPetsRequests" => PetAdminResource::collection($incomingPetsRequests),
             "shelters" => PetShelter::query()->latest()->paginate(15),
             "users" => User::query()->latest()->paginate(15),
-            "user" => auth()->user(),
         ]);
     }
 
-    public function acceptPet(int $id): RedirectResponse
+    public function acceptPet(Pet $pet): RedirectResponse
     {
-        $pet = Pet::query()->withoutGlobalScope("is_accepted")->findOrFail($id);
+        $this->authorize("accept", $pet);
+
         $pet->update(["is_accepted" => true]);
 
         return back()->with("success", "Pet accepted successfully");
     }
 
-    public function rejectPet(int $id): RedirectResponse
+    public function rejectPet(Pet $pet): RedirectResponse
     {
-        $pet = Pet::query()->withoutGlobalScope("is_accepted")->findOrFail($id);
+        $this->authorize("reject", $pet);
+
         $pet->delete();
 
         return back()->with("success", "Pet rejected and deleted successfully");

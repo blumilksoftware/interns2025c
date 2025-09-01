@@ -14,4 +14,13 @@ class PetShelterObserver
             $shelter->address()->create();
         }
     }
+
+    public function deleting(PetShelter $shelter): void
+    {
+        if ($shelter->isForceDeleting()) {
+            $shelter->pets()->withTrashed()->forceDelete();
+        } else {
+            $shelter->pets()->delete();
+        }
+    }
 }

@@ -41,6 +41,7 @@ return new class() extends Migration {
             $table->string("adoption_status")->nullable();
             $table->foreignId("shelter_id")->constrained("pet_shelters");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

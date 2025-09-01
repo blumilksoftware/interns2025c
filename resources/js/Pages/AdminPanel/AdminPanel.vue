@@ -28,10 +28,6 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
-  user: {
-    type: Object,
-    default: () => ({}),
-  },
 })
 
 function formatDateForSearch(value) {
@@ -199,7 +195,6 @@ onBeforeUnmount(() => {
 
     <AdminSidebar
       :is-open="isSidebarOpen"
-      :user="user"
       :incoming-pets-requests-count="countIncomingPetsRequests"
       @data-set-change="handleDataSetChange"
       @close="closeSidebar"

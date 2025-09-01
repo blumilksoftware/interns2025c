@@ -71,6 +71,6 @@ class AdminPanelTest extends TestCase
         $response = $this->actingAs($admin)->delete("/pets/{$pet->id}");
 
         $response->assertStatus(302);
-        $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+        $this->assertSoftDeleted("pets", ["id" => $pet->id]);
     }
 }

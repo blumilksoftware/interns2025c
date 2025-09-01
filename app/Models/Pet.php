@@ -7,10 +7,10 @@ namespace App\Models;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSpecies;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -50,6 +50,7 @@ use Illuminate\Support\Carbon;
 class Pet extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = [];
     protected $casts = [
@@ -60,12 +61,5 @@ class Pet extends Model
     public function shelter(): BelongsTo
     {
         return $this->belongsTo(PetShelter::class);
-    }
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope("is_accepted", function (Builder $builder): void {
-            $builder->where("is_accepted", true);
-        });
     }
 }

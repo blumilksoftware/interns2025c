@@ -7,6 +7,7 @@ namespace App\Http\Requests;
 use App\Enums\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UserRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UserRequest extends FormRequest
             "role" => [
                 "required",
                 "string",
-                Rule::in(array_column(Role::cases(), "value")),
+                new Enum(Role::class),
             ],
         ];
     }

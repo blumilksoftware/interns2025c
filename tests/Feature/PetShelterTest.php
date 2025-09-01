@@ -133,7 +133,7 @@ class PetShelterTest extends TestCase
         $response = $this->delete("/pet-shelters/{$shelter->id}");
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing("pet_shelters", ["id" => $shelter->id]);
+        $this->assertSoftDeleted("pet_shelters", ["id" => $shelter->id]);
     }
 
     public function testDeletePetShelterUnauthorized(): void
@@ -219,8 +219,10 @@ class PetShelterTest extends TestCase
 
         $this->delete("/pet-shelters/{$shelter->id}");
 
-        $this->assertDatabaseMissing("pet_shelters", ["id" => $shelter->id]);
-        $this->assertDatabaseMissing("pet_shelter_addresses", ["id" => $address->id]);
+        $this->assertSoftDeleted("pet_shelters", ["id" => $shelter->id]);
+        // Address is cascadeOnDelete at DB level; with soft deletes, shelter isn't hard-deleted,
+        // so the address should still exist. Assert it remains.
+        $this->assertDatabaseHas("pet_shelter_addresses", ["id" => $address->id]);
     }
 
     public function testThatNewShelterAutomaticallyCreatesAddress(): void
