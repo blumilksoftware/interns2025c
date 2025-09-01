@@ -42,10 +42,17 @@ return new class() extends Migration {
             $table->foreignId("shelter_id")->constrained("pet_shelters");
             $table->timestamps();
         });
+
+        Schema::create("pet_tag", function (Blueprint $table): void {
+            $table->foreignId("pet_id")->constrained("pets")->cascadeOnDelete();
+            $table->foreignId("tag_id")->constrained("tags")->cascadeOnDelete();
+            $table->primary(["pet_id", "tag_id"]);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists("pet_tag");
         Schema::dropIfExists("pets");
     }
 };

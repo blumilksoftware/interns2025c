@@ -39,7 +39,7 @@ class PreferenceFactory extends Factory
                 "adoption_status" => $this->generateWeightedEnumArray(PetAdoptionStatus::values()),
                 "attitude" => $this->generateWeightedEnumArray(PetAttitude::values()),
                 "activity_level" => $this->generateWeightedEnumArray(PetActivityLevel::values()),
-                "tags" => $this->generateWeightedArray(["playful", "calm", "good_with_kids"]),
+                "tags" => $this->generateWeightedArray(["playful", "calm", "friendly"]),
             ],
         ];
     }

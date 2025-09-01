@@ -46,6 +46,10 @@ class PetShowResource extends JsonResource
             "quarantine_end_date" => $pet->quarantine_end_date ? $pet->quarantine_end_date->toDateString() : null,
             "found_location" => $pet->found_location,
             "adoption_status" => $pet->adoption_status,
+            "tags" => $pet->tags->map(fn($tag) => [
+                "id" => $tag->id,
+                "name" => $tag->name,
+            ])->toArray(),
         ];
     }
 }
