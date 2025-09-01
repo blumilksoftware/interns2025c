@@ -88,7 +88,7 @@ const editableFields = computed(() => {
   const fields = allPossibleFields.filter(key => {
     if (key === 'id') return false
 
-    if (key === 'is_accepted' && props.dataSetType !== 'incomingPetsRequests') {
+    if (key === 'is_accepted') {
       return false
     }
     return isColumnEditable(props.dataSetType, key)
