@@ -21,6 +21,7 @@ class DemoSeeder extends Seeder
     public const NUMBER_OF_TAGS_TO_CREATE = 20; 
     public const NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE = 20;
     public const NUMBER_OF_TAGS_PER_PREFERENCE = 3;
+    public const NUMBER_OF_TAGS_PER_PET = 3;
 
     public function run(): void
     {
@@ -86,5 +87,11 @@ class DemoSeeder extends Seeder
                     $preference->update(["preferences" => $preferenceData]);
                 });
         }
+
+        $pets->each(function (Pet $pet) use ($tags): void {
+            $pet->tags()->attach(
+                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->toArray(),
+            );
+        });
     }
 }
