@@ -191,7 +191,9 @@ class PetTest extends TestCase
 
     public function testShowingExistingPetReturnsSuccess(): void
     {
-        $pet = Pet::factory()->create();
+        $pet = Pet::factory()->create(
+            ["is_accepted" => true],
+        );
 
         $response = $this->get("/pets/{$pet->id}");
 
