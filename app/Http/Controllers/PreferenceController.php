@@ -15,25 +15,31 @@ use Inertia\Response;
 class PreferenceController extends Controller
 {
     public function index(PetMatcher $matcher): Response
-{
-    $user = request()->user();
-    $preference = $user->preferences()->first();
+    {
+        $user = request()->user();
+        $preference = $user->preferences()->first();
 
-    $pets = Pet::all()->map(function ($pet) use ($preference, $matcher) {
-        $matchPercentage = $preference
-            ? $matcher->match($pet->toArray(), $preference->preferences)
-            : 0;
+        $pets = Pet::with('tags')->get()->map(function (Pet $pet) use ($preference, $matcher) {
+            $petData = $pet->toArray();
+            $petData['tags'] = $pet->tags->map(fn($tag) => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+            ])->toArray();
 
-        return [
-            'pet' => $pet,
-            'match' => $matchPercentage,
-        ];
-    })->sortByDesc('match')->values();
+            $matchPercentage = $preference
+                ? $matcher->match($petData, $preference->preferences)
+                : 0;
 
-    return Inertia::render('Dashboard/Dashboard', [
-        'pets' => $pets,
-    ]);
-}
+            return [
+                'pet' => $pet,
+                'match' => $matchPercentage,
+            ];
+        })->sortByDesc('match')->values();
+
+        return Inertia::render('Dashboard/Dashboard', [
+            'pets' => $pets,
+        ]);
+    }
     public function store(PreferenceRequest $request): RedirectResponse
     {
         $request->user()->preferences()->create($request->validated());
