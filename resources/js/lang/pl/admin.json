@@ -10,7 +10,9 @@
       "users": "Użytkownicy",
       "shelters": "Schroniska",
       "logs": "Logi",
-      "goToProfile": "Przejdź do swojego profilu"
+      "goToProfile": "Przejdź do swojego profilu",
+      "incomingRequests": "Przychodzące zgłoszenia",
+      "petsRequests": "Zwierzęta oczekujące na akceptację"
     },
     "table": {
       "title": "Dynamiczna tabela danych",
@@ -21,13 +23,21 @@
       "edit": "Edytuj",
       "all": "Wszystkie",
       "filterPlaceholder": "Filtruj {field}...",
-      "noResults": "Brak wyników pasujących do filtrów"
+      "noResults": "Brak wyników pasujących do filtrów",
+      "accept": "Akceptuj",
+      "reject": "Odrzuć"
     },
     "modal": {
       "edit": "Edytuj {type}",
       "saveChanges": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
       "cancel": "Anuluj",
-      "select": "Wybierz {field}"
+      "select": "Wybierz {field}",
+      "delete": "Usuń",
+      "confirmDelete": "Potwierdzenie usunięcia",
+      "confirmDeleteMessage": "Czy na pewno chcesz usunąć {type}: {name}? Ta operacja jest nieodwracalna.",
+      "confirmDeleteButton": "Tak, usuń",
+      "deleting": "Usuwanie..."
     },
     "pagination": {
       "previous": "Poprzednia",
