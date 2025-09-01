@@ -5,6 +5,7 @@ export const columnConfig = {
       type: 'number',
       editable: false,
       renderer: 'id',
+      label: 'ID',
     },
     name: {
       width: 'w-24 sm:w-32',
@@ -12,14 +13,23 @@ export const columnConfig = {
       editable: true,
       renderer: 'text',
       label: 'Name',
+      required: true,
     },
-    type: {
+    adoption_url: {
+      width: 'w-32 sm:w-40',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Adoption URL',
+    },
+    species: {
       width: 'w-16 sm:w-20',
       type: 'select',
       editable: true,
       renderer: 'status',
-      options: ['Dog', 'Cat', 'Bird', 'Fish', 'Rabbit', 'Hamster', 'Other'],
-      label: 'Type',
+      options: ['dog', 'cat', 'other'],
+      label: 'Species',
+      required: true,
     },
     breed: {
       width: 'w-28 sm:w-36',
@@ -28,31 +38,210 @@ export const columnConfig = {
       renderer: 'text',
       label: 'Breed',
     },
+    sex: {
+      width: 'w-16 sm:w-20',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['male', 'female', 'unknown'],
+      label: 'Sex',
+      required: true,
+    },
     age: {
       width: 'w-12 sm:w-16',
-      type: 'number',
+      type: 'text',
       editable: true,
-      renderer: 'age',
-      min: 0,
-      max: 30,
-      step: 1,
+      renderer: 'text',
       label: 'Age',
     },
-    status: {
+    size: {
+      width: 'w-16 sm:w-20',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['small', 'medium', 'large', 'giant'],
+      label: 'Size',
+    },
+    weight: {
+      width: 'w-16 sm:w-20',
+      type: 'number',
+      editable: true,
+      renderer: 'text',
+      label: 'Weight (kg)',
+      min: 0,
+      max: 100,
+      step: 0.1,
+    },
+    color: {
+      width: 'w-20 sm:w-24',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Color',
+    },
+    sterilized: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Sterilized',
+    },
+    description: {
+      width: 'w-40 sm:w-48',
+      type: 'textarea',
+      editable: true,
+      renderer: 'text',
+      label: 'Description',
+      required: true,
+    },
+    health_status: {
       width: 'w-20 sm:w-24',
       type: 'select',
       editable: true,
       renderer: 'status',
-      options: ['Available', 'Adopted', 'Pending', 'In Treatment'],
-      label: 'Status',
+      options: ['healthy', 'sick', 'recovering', 'critical', 'unknown'],
+      label: 'Health Status',
     },
-    shelter: {
+    current_treatment: {
       width: 'w-32 sm:w-40',
-      type: 'select',
+      type: 'text',
       editable: true,
       renderer: 'text',
-      options: ['Happy Paws', 'Cat Care', 'Animal Haven', 'Pet Paradise', 'Furry Friends', 'Safe Haven', 'Companion Care', 'Animal Rescue'],
-      label: 'Shelter',
+      label: 'Current Treatment',
+    },
+    vaccinated: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Vaccinated',
+    },
+    has_chip: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Has Chip',
+    },
+    chip_number: {
+      width: 'w-24 sm:w-32',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Chip Number',
+    },
+    dewormed: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Dewormed',
+    },
+    deflea_treated: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Deflea Treated',
+    },
+    medical_tests: {
+      width: 'w-32 sm:w-40',
+      type: 'textarea',
+      editable: true,
+      renderer: 'text',
+      label: 'Medical Tests',
+    },
+    food_type: {
+      width: 'w-24 sm:w-32',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Food Type',
+    },
+    attitude_to_people: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['very low', 'low', 'medium', 'high', 'very high', 'unknown'],
+      label: 'Attitude to People',
+    },
+    attitude_to_dogs: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['very low', 'low', 'medium', 'high', 'very high', 'unknown'],
+      label: 'Attitude to Dogs',
+    },
+    attitude_to_cats: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['very low', 'low', 'medium', 'high', 'very high', 'unknown'],
+      label: 'Attitude to Cats',
+    },
+    attitude_to_children: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['very low', 'low', 'medium', 'high', 'very high', 'unknown'],
+      label: 'Attitude to Children',
+    },
+    activity_level: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['very low', 'low', 'medium', 'high', 'very high', 'unknown'],
+      label: 'Activity Level',
+    },
+    behavioral_notes: {
+      width: 'w-40 sm:w-48',
+      type: 'textarea',
+      editable: true,
+      renderer: 'text',
+      label: 'Behavioral Notes',
+    },
+    admission_date: {
+      width: 'w-24 sm:w-32',
+      type: 'date',
+      editable: true,
+      renderer: 'date',
+      label: 'Admission Date',
+    },
+    found_location: {
+      width: 'w-32 sm:w-40',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Found Location',
+    },
+    adoption_status: {
+      width: 'w-20 sm:w-24',
+      type: 'select',
+      editable: true,
+      renderer: 'status',
+      options: ['adopted', 'waiting for adoption', 'quarantined', 'in temporary home'],
+      label: 'Adoption Status',
+    },
+    is_accepted: {
+      width: 'w-16 sm:w-20',
+      type: 'checkbox',
+      editable: true,
+      renderer: 'boolean',
+      label: 'Is Accepted',
+    },
+    shelter_id: {
+      width: 'w-20 sm:w-24',
+      type: 'number',
+      editable: true,
+      renderer: 'text',
+      label: 'Shelter ID',
+      min: 1,
+      required: true,
     },
     created_at: {
       width: 'w-24 sm:w-32',
@@ -60,6 +249,13 @@ export const columnConfig = {
       editable: false,
       renderer: 'date',
       label: 'Created At',
+    },
+    updated_at: {
+      width: 'w-24 sm:w-32',
+      type: 'datetime-local',
+      editable: false,
+      renderer: 'date',
+      label: 'Updated At',
     },
   },
 
@@ -89,8 +285,9 @@ export const columnConfig = {
       type: 'select',
       editable: true,
       renderer: 'status',
-      options: ['Admin', 'Shelter Caretaker', 'User', 'Moderator', 'Veterinarian'],
+      options: ['admin', 'shelter employee', 'user'],
       label: 'Role',
+      required: true,
     },
     status: {
       width: 'w-20 sm:w-24',
@@ -122,6 +319,7 @@ export const columnConfig = {
       type: 'number',
       editable: false,
       renderer: 'id',
+      label: 'ID',
     },
     name: {
       width: 'w-24 sm:w-32',
@@ -129,51 +327,56 @@ export const columnConfig = {
       editable: true,
       renderer: 'text',
       label: 'Name',
+      required: true,
     },
-    location: {
+    phone: {
       width: 'w-24 sm:w-32',
       type: 'text',
       editable: true,
       renderer: 'text',
-      label: 'Location',
+      label: 'Phone',
     },
-    capacity: {
-      width: 'w-16 sm:w-20',
-      type: 'number',
+    email: {
+      width: 'w-32 sm:w-40',
+      type: 'email',
       editable: true,
-      renderer: 'number',
-      min: 1,
-      max: 1000,
-      step: 1,
-      label: 'Capacity',
+      renderer: 'email',
+      label: 'Email',
     },
-    current_occupancy: {
-      width: 'w-20 sm:w-28',
-      type: 'number',
+    description: {
+      width: 'w-40 sm:w-48',
+      type: 'textarea',
       editable: true,
-      renderer: 'number',
-      min: 0,
-      max: 1000,
-      step: 1,
-      label: 'Current Occupancy',
+      renderer: 'text',
+      label: 'Description',
     },
-    rating: {
-      width: 'w-16 sm:w-20',
-      type: 'number',
+    url: {
+      width: 'w-32 sm:w-40',
+      type: 'text',
       editable: true,
-      renderer: 'rating',
-      min: 0,
-      max: 5,
-      step: 0.1,
-      label: 'Rating',
+      renderer: 'text',
+      label: 'URL',
     },
-    status: {
+    address: {
+      width: 'w-32 sm:w-40',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'Address',
+    },
+    city: {
+      width: 'w-24 sm:w-32',
+      type: 'text',
+      editable: true,
+      renderer: 'text',
+      label: 'City',
+    },
+    postal_code: {
       width: 'w-20 sm:w-24',
-      type: 'select',
+      type: 'text',
       editable: true,
-      renderer: 'status',
-      options: ['Active', 'Inactive', 'Under Maintenance', 'Full'],
-      label: 'Status',
+      renderer: 'text',
+      label: 'Postal Code',
     },
     created_at: {
       width: 'w-24 sm:w-32',
@@ -181,6 +384,13 @@ export const columnConfig = {
       editable: false,
       renderer: 'date',
       label: 'Created At',
+    },
+    updated_at: {
+      width: 'w-24 sm:w-32',
+      type: 'datetime-local',
+      editable: false,
+      renderer: 'date',
+      label: 'Updated At',
     },
   },
 
@@ -199,12 +409,12 @@ export const columnConfig = {
       options: ['User Login', 'User Logout', 'Pet Added', 'Pet Adopted', 'Shelter Updated', 'User Created', 'Data Export', 'System Backup', 'Error Logged', 'Failed Login'],
       label: 'Action',
     },
-    user_email: {
+    email: {
       width: 'w-36 sm:w-48',
       type: 'email',
       editable: true,
       renderer: 'email',
-      label: 'User Email',
+      label: 'Email',
     },
     ip_address: {
       width: 'w-28 sm:w-36',
@@ -232,11 +442,65 @@ export const columnConfig = {
 }
 
 const autoFieldTypes = {
-  text: ['name', 'breed', 'location', 'action', 'ip_address', 'description', 'notes', 'address', 'phone', 'website'],
-  email: ['email', 'user_email', 'contact_email', 'admin_email'],
-  number: ['age', 'capacity', 'current_occupancy', 'rating', 'price', 'weight', 'height', 'count', 'quantity', 'score'],
-  datetime: ['timestamp', 'created_at', 'updated_at', 'last_login', 'birth_date', 'adoption_date', 'expiry_date'],
-  select: ['status', 'type', 'role', 'shelter', 'category', 'priority', 'gender', 'size', 'color'],
+  text: ['name', 'breed', 'location', 'action', 'ip_address', 'description', 'address', 'phone', 'url', 'adoption_url', 'color', 'current_treatment', 'chip_number', 'food_type', 'found_location', 'city', 'postal_code', 'age'],
+  email: ['email'],
+  number: ['weight', 'shelter_id'],
+  date: ['admission_date'],
+  datetime: ['timestamp', 'created_at', 'updated_at', 'last_login', 'adoption_date'],
+  select: ['status', 'type', 'role', 'shelter', 'category', 'gender', 'size', 'color', 'species', 'sex', 'health_status', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats', 'attitude_to_children', 'activity_level', 'adoption_status'],
+  textarea: ['description', 'medical_tests', 'behavioral_notes'],
+  checkbox: ['sterilized', 'vaccinated', 'has_chip', 'dewormed', 'deflea_treated', 'is_accepted'],
+}
+
+export const fieldOrder = {
+  pets: [
+    // Basic Information
+    'name', 'species', 'breed', 'sex', 'age', 'size', 'weight', 'color', 'description',
+    // Health & Medical
+    'health_status', 'current_treatment', 'sterilized', 'vaccinated', 
+    'has_chip', 'chip_number', 'dewormed', 'deflea_treated', 'medical_tests',
+    // Behavior & Care
+    'food_type', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats', 
+    'attitude_to_children', 'activity_level', 'behavioral_notes',
+    // Adoption & Location
+    'adoption_url', 'admission_date', 'found_location', 'adoption_status', 
+    // Administration
+    'is_accepted', 'shelter_id',
+  ],
+  shelters: [
+    'name', 'phone', 'email', 'url', 'description', 
+    'address', 'city', 'postal_code',
+  ],
+  users: [
+    'name', 'email', 'role', 'status',
+  ],
+  logs: [
+    'action', 'email', 'ip_address', 'status', 'timestamp',
+  ],
+}
+
+export function getFieldOrder(dataSetType) {
+  return fieldOrder[dataSetType] || []
+}
+
+export function sortFieldsByOrder(dataSetType, fields) {
+  const order = getFieldOrder(dataSetType)
+  const orderedFields = []
+  const unorderedFields = []
+  
+  for (const fieldName of order) {
+    if (fields.includes(fieldName)) {
+      orderedFields.push(fieldName)
+    }
+  }
+  
+  for (const field of fields) {
+    if (!order.includes(field)) {
+      unorderedFields.push(field)
+    }
+  }
+  
+  return [...orderedFields, ...unorderedFields]
 }
 
 export function getColumnConfig(dataSetType, fieldName) {
@@ -249,7 +513,8 @@ export function getColumnType(dataSetType, fieldName) {
   
   for (const [type, fields] of Object.entries(autoFieldTypes)) {
     if (fields.includes(fieldName) || fields.some(f => fieldName.includes(f))) {
-      return type === 'datetime' ? 'datetime-local' : type
+      if (type === 'datetime') return 'datetime-local'
+      return type
     }
   }
   return 'text'
@@ -284,19 +549,6 @@ export function getColumnLabel(dataSetType, fieldName) {
   const config = getColumnConfig(dataSetType, fieldName)
   if (config?.label) return config.label
   
-  const labelMap = {
-    user_email: 'User Email',
-    ip_address: 'IP Address',
-    current_occupancy: 'Current Occupancy',
-    last_login: 'Last Login',
-    created_at: 'Created At',
-    updated_at: 'Updated At',
-  }
-  
-  if (labelMap[fieldName]) {
-    return labelMap[fieldName]
-  }
-  
   return fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/_/g, ' ')
 }
 
@@ -308,4 +560,9 @@ export function isColumnEditable(dataSetType, fieldName) {
 export function getColumnRenderer(dataSetType, fieldName) {
   const config = getColumnConfig(dataSetType, fieldName)
   return config?.renderer || 'text'
+}
+
+export function isColumnRequired(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  return config?.required === true
 }

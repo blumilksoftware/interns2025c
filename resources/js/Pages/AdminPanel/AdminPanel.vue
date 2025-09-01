@@ -1,17 +1,22 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Head } from '@inertiajs/vue3'
 import AdminSidebar from '@/Components/AdminSidebar.vue'
 import DynamicTable from '@/Components/DynamicTable.vue'
 import EditModal from '@/Components/EditModal.vue'
 import { Bars3Icon } from '@heroicons/vue/20/solid'
+import { useCrud } from '@/helpers/mappers/useCrud'
 
 const { t } = useI18n()
 const title = t('titles.adminPanel')
 
 const props = defineProps({
   pets: {
+    type: Object,
+    default: () => ({}),
+  },
+  incomingPetsRequests: {
     type: Object,
     default: () => ({}),
   },
@@ -23,23 +28,46 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  user: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
-function formatDateForSearch(v) {
-  const d = new Date(v)
-  if (isNaN(d.getTime())) return String(v ?? '')
-  return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
+function formatDateForSearch(value) {
+  const date = new Date(value)
+  if (isNaN(date.getTime())) return String(value ?? '')
+  return `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`
 }
 
 const currentDataSet = ref('pets')
 const currentPage = ref(1)
-const itemsPerPage = 10
+const itemsPerPage = 15
 const searchQuery = ref('')
 
-const dataSets = computed(() => ({
-  pets: props.pets?.data || [],
-  shelters: props.shelters?.data || [],
-  users: props.users?.data || [],
+const localDataSets = ref({
+  pets: [],
+  incomingPetsRequests: [],
+  shelters: [],
+  users: [],
+})
+
+watch(() => [props.pets, props.incomingPetsRequests, props.shelters, props.users], 
+  ([pets, incomingPetsRequests, shelters, users]) => {
+    localDataSets.value = {
+      pets: pets?.data || [],
+      incomingPetsRequests: incomingPetsRequests?.data || [],
+      shelters: shelters?.data || [],
+      users: users?.data || [],
+    }
+  }, 
+  { immediate: true, deep: true },
+)
+
+const dataSets = computed(() => localDataSets.value)
+
+const countIncomingPetsRequests = computed(() => ({
+  incomingPetsRequests: props.incomingPetsRequests?.data?.length || 0,
 }))
 
 const filteredData = computed(() => {
@@ -80,19 +108,64 @@ const closeModal = () => {
   editingItem.value = {}
 }
 
-const saveChanges = (updatedItem) => {
-  const currentTableData = tableData.value || []
-  const index = currentTableData.findIndex(item => item.id === updatedItem.id)
+const { isLoading: isSaving, isLoading: isDeleting, updateItem, deleteItem: deleteCrudItem, error, clearError } = useCrud()
+
+const saveChanges = async (updatedItem) => {
+  clearError()
+
+  await updateItem(
+    currentDataSet.value,
+    updatedItem,
+    () => {
+      updateLocalItemState(updatedItem)
+      closeModal()
+    },
+    (errors) => {
+      console.error('Update failed:', errors)
+      alert('Failed to update item. Please check the form for errors.')
+    },
+  )
+}
+
+const updateLocalItemState = (updatedItem) => {
+  const key = currentDataSet.value
+  const currentData = [...localDataSets.value[key]]
+  const index = currentData.findIndex(item => item.id === updatedItem.id)
+  
   if (index !== -1) {
-    currentTableData[index] = { ...updatedItem }
-    const key = currentDataSet.value
-    const currentDataSetData = dataSets.value[key] || []
-    const dsIndex = currentDataSetData.findIndex(item => item.id === updatedItem.id)
-    if (dsIndex !== -1) {
-      currentDataSetData[dsIndex] = { ...updatedItem }
+    currentData[index] = { ...updatedItem }
+    localDataSets.value = {
+      ...localDataSets.value,
+      [key]: currentData,
     }
   }
-  closeModal()
+}
+
+const deleteItem = async (itemToDelete) => {
+  clearError()
+
+  await deleteCrudItem(
+    currentDataSet.value,
+    itemToDelete,
+    () => {
+      removeItemFromLocalState(itemToDelete)
+      closeModal()
+    },
+    (errors) => {
+      console.error('Delete failed:', errors)
+      alert('Failed to delete item. Please try again.')
+    },
+  )
+}
+
+const removeItemFromLocalState = (itemToDelete) => {
+  const key = currentDataSet.value
+  const filteredData = localDataSets.value[key].filter(item => item.id !== itemToDelete.id)
+  
+  localDataSets.value = {
+    ...localDataSets.value,
+    [key]: filteredData,
+  }
 }
 
 const clearSearch = () => { searchQuery.value = '' }
@@ -117,16 +190,18 @@ onBeforeUnmount(() => {
 <template>
   <Head :title="title" />
   <div class="flex flex-col xl:flex-row min-h-screen bg-gray-100">
-    <button 
-      class="xl:hidden fixed top-4 right-4 z-30 bg-gray-800/20 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400" 
+    <button
+      class="xl:hidden fixed top-4 right-4 z-30 bg-gray-800/20 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
       @click="openSidebar"
     >
       <Bars3Icon class="size-6" />
     </button>
-    
-    <AdminSidebar 
+
+    <AdminSidebar
       :is-open="isSidebarOpen"
-      @data-set-change="handleDataSetChange" 
+      :user="user"
+      :incoming-pets-requests-count="countIncomingPetsRequests"
+      @data-set-change="handleDataSetChange"
       @close="closeSidebar"
     />
     <div class="flex-1 min-w-0">
@@ -170,7 +245,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-        <DynamicTable 
+        <DynamicTable
           :data="tableData"
           :data-set-type="currentDataSet"
           :current-page="currentPage"
@@ -183,8 +258,11 @@ onBeforeUnmount(() => {
         :is-open="isModalOpen"
         :item="editingItem"
         :data-set-type="currentDataSet"
+        :is-saving="isSaving"
+        :is-deleting="isDeleting"
         @close="closeModal"
         @save="saveChanges"
+        @delete="deleteItem"
       />
     </div>
   </div>
