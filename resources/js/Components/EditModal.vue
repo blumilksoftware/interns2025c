@@ -2,6 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue'
+import CommonIcons from '@/Components/Icons/CommonIcons.vue'
 import {
   columnConfig,
   getColumnType,
@@ -322,13 +323,11 @@ const handleKeydown = (event) => {
             class="w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             @click="saveChanges"
           >
-            <svg v-if="isSaving" class="animate-spin -ml-1 mr-3 size-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
+            <CommonIcons v-if="isSaving" name="loading" class="animate-spin -ml-1 mr-3 size-4 text-white" />
             {{ isSaving ? t('admin.modal.saving') : t('admin.modal.saveChanges') }}
           </button>
           <button
+          
             type="button"
             :disabled="isSaving"
             class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -342,9 +341,7 @@ const handleKeydown = (event) => {
             class="mt-3 w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:mr-auto sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             @click="confirmDelete"
           >
-            <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <CommonIcons name="delete" class="size-4 mr-2" />
             {{ t('admin.modal.delete') }}
           </button>
         </div>
