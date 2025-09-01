@@ -39,24 +39,20 @@ class PetController extends Controller
         return back()->with("success", "Pet created successfully.");
     }
 
-    public function update(PetRequest $request, int $pet): RedirectResponse
+    public function update(PetRequest $request, Pet $pet): RedirectResponse
     {
-        $petModel = Pet::query()->withoutGlobalScope("is_accepted")->findOrFail($pet);
+        $this->authorize("update", $pet);
 
-        $this->authorize("update", $petModel);
-
-        $petModel->update($request->validated());
+        $pet->update($request->validated());
 
         return back()->with("success", "Pet updated successfully.");
     }
 
-    public function destroy(int $pet): RedirectResponse
+    public function destroy(Pet $pet): RedirectResponse
     {
-        $petModel = Pet::query()->withoutGlobalScope("is_accepted")->findOrFail($pet);
+        $this->authorize("delete", $pet);
 
-        $this->authorize("delete", $petModel);
-
-        $petModel->delete();
+        $pet->delete();
 
         return back()->with("success", "Pet deleted successfully.");
     }
