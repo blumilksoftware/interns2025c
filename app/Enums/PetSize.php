@@ -14,4 +14,9 @@ enum PetSize: string
     case Medium = "medium";
     case Large = "large";
     case Giant = "giant";
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), "value");
+    }
 }

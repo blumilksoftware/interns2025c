@@ -14,4 +14,9 @@ enum PetAdoptionStatus: string
     case WaitingForAdoption = "waiting for adoption";
     case Quarantined = "quarantined";
     case TemporaryHome = "in temporary home";
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), "value");
+    }
 }
