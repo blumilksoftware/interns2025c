@@ -1,0 +1,205 @@
+<script setup>
+import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
+
+const props = defineProps({
+  filterId: { type: String, default: 'location' },
+  label: { type: String, required: true },
+  modelValue: { type: String, default: '' },
+  open: { type: Boolean, default: false },
+  popularLocations: { type: Array, default: () => [] },
+  recentLocations: { type: Array, default: () => [] },
+  filteredLocations: { type: Array, default: () => [] },
+})
+
+const emit = defineEmits(['update:modelValue', 'update:open', 'use', 'clear', 'changed'])
+
+const valueProxy = computed({
+  get: () => props.modelValue,
+  set: (val) => {
+    emit('update:modelValue', val)
+    emit('changed', props.filterId)
+  }
+})
+
+const isOpen = computed({
+  get: () => props.open,
+  set: (val) => emit('update:open', val)
+})
+
+// Outside click to close
+const rootRef = ref(null)
+function handleClickOutside(e) {
+  if (!isOpen.value) return
+  const root = rootRef.value
+  if (root && !root.contains(e.target)) isOpen.value = false
+}
+onMounted(() => document.addEventListener('click', handleClickOutside, true))
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside, true))
+
+// Nominatim autocomplete state
+const loading = ref(false)
+const errorMsg = ref('')
+const remoteResults = ref([]) // { label, display, lat, lon, kind, importance }
+const cache = new Map() // key -> results
+let inFlight = null // AbortController
+
+let debounceTimer = null
+function debounceFetch(q) {
+  clearTimeout(debounceTimer)
+  if (!q || q.trim().length < 3) { remoteResults.value = []; loading.value = false; errorMsg.value = ''; return }
+  loading.value = true; errorMsg.value = ''
+  debounceTimer = setTimeout(() => fetchNominatim(q.trim()), 400)
+}
+
+function normalize(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() }
+
+function rankOf(kind) {
+  if (kind === 'city') return 3
+  if (kind === 'town') return 2
+  if (kind === 'village') return 1
+  return 0
+}
+
+function dedupeByCanonical(items) {
+  const pick = new Map()
+  for (const it of items) {
+    const key = normalize(`${it.main || ''}|${it.county || ''}|${it.state || ''}`)
+    const prev = pick.get(key)
+    if (!prev) { pick.set(key, it); continue }
+    const a = rankOf(it.kind) + (Number(it.importance) || 0)
+    const b = rankOf(prev.kind) + (Number(prev.importance) || 0)
+    if (a > b) pick.set(key, it)
+  }
+  // Also dedupe strictly by normalized label to ensure no visual duplicates
+  const seenLabel = new Set()
+  const out = []
+  for (const it of pick.values()) {
+    const lk = normalize(it.label)
+    if (seenLabel.has(lk)) continue
+    seenLabel.add(lk)
+    out.push(it)
+  }
+  return out
+}
+
+async function fetchNominatim(q) {
+  const nq = normalize(q)
+  if (cache.has(nq)) { remoteResults.value = cache.get(nq); loading.value = false; return }
+  // Cancel previous request
+  if (inFlight) inFlight.abort()
+  inFlight = new AbortController()
+  try {
+    const viewbox = '14.07,54.84,24.15,49.00'
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=pl&bounded=1&viewbox=${viewbox}&limit=25&q=${encodeURIComponent(q)}`
+    const res = await fetch(url, { headers: { 'Accept': 'application/json', 'Accept-Language': 'pl,en' }, signal: inFlight.signal })
+    if (!res.ok) throw new Error('HTTP')
+    const data = await res.json()
+    const raw = (Array.isArray(data) ? data : []).map(it => {
+      const a = it.address || {}
+      const main = a.city || a.town || a.village || a.hamlet || (it.display_name?.split(',')[0] || it.name) || ''
+      const county = a.county || a.municipality || ''
+      const state = a.state || ''
+      const admin = state || county
+      const label = [main, admin].filter(Boolean).join(', ')
+      const kind = a.city ? 'city' : a.town ? 'town' : a.village ? 'village' : 'other'
+      return { label: label || it.display_name, display: it.display_name, lat: it.lat, lon: it.lon, kind, importance: it.importance || 0, main, county, state }
+    })
+    const sorted = raw.sort((a,b) => {
+      const rk = rankOf(b.kind) - rankOf(a.kind)
+      if (rk !== 0) return rk
+      return (Number(b.importance)||0) - (Number(a.importance)||0)
+    })
+    const results = dedupeByCanonical(sorted).slice(0, 12)
+    cache.set(nq, results)
+    remoteResults.value = results
+    loading.value = false
+  } catch (e) {
+    if (e?.name === 'AbortError') return
+    loading.value = false
+    errorMsg.value = 'Błąd pobierania'
+    remoteResults.value = []
+  }
+}
+
+watch(() => valueProxy.value, (q) => { if (isOpen.value) debounceFetch(q) })
+
+// Simple virtualization for remote results
+const listRef = ref(null)
+const itemHeight = 36 // px
+const viewportHeight = 240 // px
+const scrollTop = ref(0)
+function onScroll() { scrollTop.value = listRef.value ? listRef.value.scrollTop : 0 }
+const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / itemHeight) - 3))
+const endIndex = computed(() => startIndex.value + Math.ceil(viewportHeight / itemHeight) + 6)
+const totalHeight = computed(() => (remoteResults.value.length * itemHeight))
+const visibleItems = computed(() => remoteResults.value.slice(startIndex.value, endIndex.value))
+const offsetTop = computed(() => startIndex.value * itemHeight)
+
+function pickRemote(item) { emit('use', item.label) }
+</script>
+
+<template>
+  <div class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }" ref="rootRef">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
+    <div class="relative z-30">
+      <input v-model="valueProxy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Miasto lub kod pocztowy">
+      <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
+        <!-- Remote autocomplete when query length >= 3 -->
+        <template v-if="(valueProxy || '').length >= 3">
+          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Sugestie</div>
+          <div :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" ref="listRef" @scroll="onScroll">
+            <div :style="{ height: totalHeight + 'px', position: 'relative' }">
+              <div :style="{ position: 'absolute', top: offsetTop + 'px', left: 0, right: 0 }">
+                <button type="button" v-for="it in visibleItems" :key="it.display + it.lat + it.lon" @click="pickRemote(it)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+                  {{ it.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-if="loading" class="flex items-center gap-2 px-2 py-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="animate-spin h-4 w-4 text-indigo-600" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+            </svg>
+            <span>Ładowanie…</span>
+          </div>
+          <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Brak wyników</div>
+        </template>
+
+        <!-- Local suggestions and lists as fallback / for short queries -->
+        <template v-else>
+          <div class="max-h-64 overflow-auto">
+            <template v-if="valueProxy && filteredLocations.length > 0">
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Wyniki</div>
+              <button type="button" v-for="loc in filteredLocations" :key="'f-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+                {{ loc }}
+              </button>
+            </template>
+            <template v-else-if="valueProxy">
+              <div class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Brak wyników. Użyj wpisanej lokalizacji.</div>
+            </template>
+            <div v-if="recentLocations.length > 0" class="mt-2">
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Ostatnio wybierane</div>
+              <button type="button" v-for="loc in recentLocations" :key="'r-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+                {{ loc }}
+              </button>
+            </div>
+            <div class="mt-2">
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Popularne lokalizacje</div>
+              <button type="button" v-for="loc in popularLocations" :key="'p-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+                {{ loc }}
+              </button>
+            </div>
+          </div>
+        </template>
+
+        <div class="mt-2 flex justify-between gap-2">
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="$emit('clear')">Wyczyść</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">Użyj tego</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
