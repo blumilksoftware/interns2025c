@@ -48,7 +48,7 @@ const mobileMenuOpen = ref(false)
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">
       <div class="fixed inset-0 z-50">
         <DialogPanel class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-4 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div class="flex  sticky top-0 bg-white pb-4">
+          <div class="flex justify-between sticky top-0 bg-white pb-4">
             <Link :href="routes.home()" class="-m-1.5 p-1.5">
               <span class="sr-only">ŁapGo</span>
               <img class="w-1/4" :src="logo.Logo300x300" alt="App logo" loading="lazy" decoding="async">
