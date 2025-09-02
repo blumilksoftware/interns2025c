@@ -13,9 +13,12 @@ import {
 } from '@heroicons/vue/24/outline'
 import NavLink from './NavLink.vue'
 import { routes } from '@/routes'
+import { logo } from '@/helpers/mappers/logo'
 
 const { t } = useI18n()
 const mobileMenuOpen = ref(false)
+
+const srcLogo = logo.Logo300x300
 
 </script>
 
@@ -25,7 +28,7 @@ const mobileMenuOpen = ref(false)
       <div class="flex lg:flex-1">
         <Link :href="routes.home()" class="-m-1.5 p-1.5">
           <span class="sr-only">{{ t('navigation.goToHomepage') }}</span>
-          <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="LapGo app logo" height="32" loading="lazy" decoding="async">
+          <img class="" :src="srcLogo" width="100"  alt="LapGo app logo" loading="lazy" decoding="async">
         </Link>
       </div>
       <div class="flex lg:hidden">
@@ -50,7 +53,7 @@ const mobileMenuOpen = ref(false)
           <div class="flex items-center justify-between sticky top-0 bg-white pb-4">
             <Link :href="routes.home()" class="-m-1.5 p-1.5">
               <span class="sr-only">ŁapGo</span>
-              <img class="h-8 w-auto" src="/Images/cat-dog.png" alt="App logo" height="32" loading="lazy" decoding="async">
+              <img class="h-8 w-auto" :src="srcLogo" alt="App logo" height="32" loading="lazy" decoding="async">
             </Link>
             <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 z-10" @click="mobileMenuOpen = false">
               <span class="sr-only">{{ t('navigation.closeMenu') }}</span>
