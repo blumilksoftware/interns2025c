@@ -41,6 +41,7 @@ const submit = () => {
 
 <template>
   <Head :title="t('titles.login')" />
+  
   <AuthenticationCard>
     <template #logo>
       <AuthenticationCardLogo />

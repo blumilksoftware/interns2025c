@@ -18,8 +18,6 @@ import { logo } from '@/helpers/mappers/logo'
 const { t } = useI18n()
 const mobileMenuOpen = ref(false)
 
-const srcLogo = logo.Logo300x300
-
 </script>
 
 <template>
@@ -28,7 +26,7 @@ const srcLogo = logo.Logo300x300
       <div class="flex lg:flex-1">
         <Link :href="routes.home()" class="-m-1.5 p-1.5">
           <span class="sr-only">{{ t('navigation.goToHomepage') }}</span>
-          <img class="" :src="srcLogo" width="100"  alt="LapGo app logo" loading="lazy" decoding="async">
+          <img class="w-1/3" :src="logo.Logo300x300" alt="LapGo app logo" loading="lazy" decoding="async">
         </Link>
       </div>
       <div class="flex lg:hidden">
@@ -50,10 +48,10 @@ const srcLogo = logo.Logo300x300
     <Dialog class="lg:hidden" :open="mobileMenuOpen" @close="mobileMenuOpen = false">
       <div class="fixed inset-0 z-50">
         <DialogPanel class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-4 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div class="flex items-center justify-between sticky top-0 bg-white pb-4">
+          <div class="flex  sticky top-0 bg-white pb-4">
             <Link :href="routes.home()" class="-m-1.5 p-1.5">
               <span class="sr-only">ŁapGo</span>
-              <img class="h-8 w-auto" :src="srcLogo" alt="App logo" height="32" loading="lazy" decoding="async">
+              <img class="w-1/4" :src="logo.Logo300x300" alt="App logo" loading="lazy" decoding="async">
             </Link>
             <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 z-10" @click="mobileMenuOpen = false">
               <span class="sr-only">{{ t('navigation.closeMenu') }}</span>
