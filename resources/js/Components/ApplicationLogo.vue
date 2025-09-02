@@ -7,6 +7,6 @@ import { logo } from '@/helpers/mappers/logo'
 
 <template>
   <Link :href="routes.dashboard()">
-    <img :src="logo.Logo300x300" alt="Logo" class="size-10">
+    <img :src="logo.Logo" alt="Logo" class="size-10">
   </Link>
 </template>
