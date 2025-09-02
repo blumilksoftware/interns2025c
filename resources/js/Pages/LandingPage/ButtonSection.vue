@@ -7,7 +7,7 @@ const { t } = useI18n()
 
 <template>
   <div class="relative isolate overflow-hidden py-20 bg-[#fefae0]/50 backdrop-blur-sm " style="mask: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);">
-    <PawPrints mode="scatter" />
+    <PawPrints mode="scatter"/>
     
     <div class="h-1/2 px-6 py-36 sm:px-6 sm:py-16 lg:px-8 text-section">
       <div class="mx-auto bg-[#fffcef] rounded-full py-6  max-w-2xl text-center responsive-mask">
