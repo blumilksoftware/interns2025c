@@ -24,6 +24,7 @@ class PetMatchingTest extends TestCase
     public function testPetsAreReturnedWithMatch(): void
     {
         $user = User::factory()->create();
+
         Preference::factory()->for($user)->create([
             "preferences" => [
                 "species" => [["value" => "dog", "weight" => 1]],
@@ -42,11 +43,12 @@ class PetMatchingTest extends TestCase
         $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $response->assertInertia(
-            fn(Assert $page) => $page->component("Dashboard/Dashboard")
+            fn(Assert $page) => $page
+                ->component("Dashboard/Dashboard")
                 ->has("pets", 2)
-                ->where("pets.0.pet.id", $dog->id)
+                ->where("pets.0.pet.data.id", $dog->id)
                 ->where("pets.0.match", 100)
-                ->where("pets.1.pet.id", $cat->id)
+                ->where("pets.1.pet.data.id", $cat->id)
                 ->where("pets.1.match", 0),
         );
     }
@@ -54,6 +56,7 @@ class PetMatchingTest extends TestCase
     public function testPetsAreSortedByMatchDescending(): void
     {
         $user = User::factory()->create();
+
         Preference::factory()->for($user)->create([
             "preferences" => [
                 "species" => [["value" => "dog", "weight" => 1]],
@@ -64,18 +67,15 @@ class PetMatchingTest extends TestCase
         $dog1 = Pet::factory()->create(["species" => "dog"]);
         $dog2 = Pet::factory()->create(["species" => "dog"]);
 
-        $catTag = Tag::factory()->create();
-        $dogTag1 = Tag::factory()->create();
-        $dogTag2 = Tag::factory()->create();
-
-        $cat->tags()->syncWithoutDetaching([$catTag->id]);
-        $dog1->tags()->syncWithoutDetaching([$dogTag1->id]);
-        $dog2->tags()->syncWithoutDetaching([$dogTag2->id]);
+        $cat->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
+        $dog1->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
+        $dog2->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
 
         $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $response->assertInertia(
-            fn(Assert $page) => $page->component("Dashboard/Dashboard")
+            fn(Assert $page) => $page
+                ->component("Dashboard/Dashboard")
                 ->has("pets", 3),
         );
 
@@ -90,35 +90,33 @@ class PetMatchingTest extends TestCase
     public function testNoPreferenceReturnsZeroMatch(): void
     {
         $user = User::factory()->create();
-        $pet1 = Pet::factory()->create();
-        $pet2 = Pet::factory()->create();
-        $pet3 = Pet::factory()->create();
 
-        $tag1 = Tag::factory()->create();
-        $tag2 = Tag::factory()->create();
-        $tag3 = Tag::factory()->create();
+        $pets = Pet::factory()->count(3)->create();
+        $tags = Tag::factory()->count(3)->create();
 
-        $pet1->tags()->syncWithoutDetaching([$tag1->id]);
-        $pet2->tags()->syncWithoutDetaching([$tag2->id]);
-        $pet3->tags()->syncWithoutDetaching([$tag3->id]);
+        foreach ($pets as $index => $pet) {
+            $pet->tags()->syncWithoutDetaching([$tags[$index]->id]);
+        }
 
         $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $response->assertInertia(
-            fn(Assert $page) => $page->component("Dashboard/Dashboard")
+            fn(Assert $page) => $page
+                ->component("Dashboard/Dashboard")
                 ->has("pets", 3),
         );
 
         $petsData = $response->inertiaProps()["pets"];
 
-        foreach ($petsData as $pet) {
-            $this->assertSame(0, $pet["match"]);
+        foreach ($petsData as $petMatch) {
+            $this->assertSame(0, $petMatch["match"]);
         }
     }
 
     public function testTagPreferenceAffectsMatch(): void
     {
         $user = User::factory()->create();
+
         Preference::factory()->for($user)->create([
             "preferences" => [
                 "tags" => [["value" => "friendly", "weight" => 1]],
@@ -137,9 +135,8 @@ class PetMatchingTest extends TestCase
         $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $petsData = $response->inertiaProps()["pets"];
-
         $matches = collect($petsData)->pluck("match")->all();
 
-        $this->assertGreaterThan($matches[1], $matches[0]);
+        $this->assertGreaterThan($matches[1], $matches[0], "Pet with matching tag should have higher match");
     }
 }

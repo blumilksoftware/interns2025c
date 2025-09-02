@@ -8,16 +8,19 @@ class PetMatcher
 {
     public function match(array $petData, array $preferences): float
     {
-        $score = 0;
-        $maxScore = 0;
+        $score = 0.0;
+        $maxScore = 0.0;
 
         foreach ($preferences as $field => $prefValues) {
             foreach ($prefValues as $pref) {
-                $weight = $pref["weight"] ?? 1;
+                $weight = (float)($pref["weight"] ?? 1);
                 $maxScore += $weight;
 
-                if ($field === "tags" && isset($petData["tags"])) {
-                    $tagValues = array_map(fn($tag) => $tag["name"] ?? $tag["id"], $petData["tags"]);
+                if ($field === "tags" && isset($petData["tags"]) && is_array($petData["tags"])) {
+                    $tagValues = array_map(
+                        fn(array $tag): string|int => $tag["name"] ?? $tag["id"],
+                        $petData["tags"],
+                    );
 
                     if (in_array($pref["value"], $tagValues, true)) {
                         $score += $weight;
@@ -28,6 +31,6 @@ class PetMatcher
             }
         }
 
-        return $maxScore > 0 ? round(($score / $maxScore) * 100, 2) : 0;
+        return $maxScore > 0.0 ? round(($score / $maxScore) * 100, 2) : 0.0;
     }
 }

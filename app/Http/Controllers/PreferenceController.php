@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PreferenceRequest;
+use App\Http\Resources\PetMatchResource;
 use App\Models\Pet;
 use App\Models\Preference;
 use App\Services\PetMatcher;
@@ -19,25 +20,23 @@ class PreferenceController extends Controller
         $user = request()->user();
         $preference = $user->preferences()->first();
 
-        $pets = Pet::with("tags")->get()->map(function (Pet $pet) use ($preference, $matcher) {
-            $petData = $pet->toArray();
-            $petData["tags"] = $pet->tags->map(fn($tag) => [
-                "id" => $tag->id,
-                "name" => $tag->name,
-            ])->toArray();
+        $pets = Pet::with("tags")
+            ->get()
+            ->map(function (Pet $pet) use ($preference, $matcher) {
+                $matchPercentage = $preference
+                    ? $matcher->match($pet->toArray(), $preference->preferences)
+                    : 0;
 
-            $matchPercentage = $preference
-                ? $matcher->match($petData, $preference->preferences)
-                : 0;
-
-            return [
-                "pet" => $pet,
-                "match" => $matchPercentage,
-            ];
-        })->sortByDesc("match")->values();
+                return [
+                    "pet" => $pet,
+                    "match" => $matchPercentage,
+                ];
+            })
+            ->sortByDesc("match")
+            ->values();
 
         return Inertia::render("Dashboard/Dashboard", [
-            "pets" => $pets,
+            "pets" => PetMatchResource::collection($pets)->resolve(),
         ]);
     }
 
