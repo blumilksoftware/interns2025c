@@ -144,7 +144,7 @@ class PetTest extends TestCase
             $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
             $response->assertStatus(302);
 
-            $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+            $this->assertSoftDeleted("pets", ["id" => $pet->id]);
         }
     }
 
@@ -161,7 +161,7 @@ class PetTest extends TestCase
         $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
         $response->assertStatus(302);
         $this->assertSoftDeleted("pets", ["id" => $pet->id]);
-      
+
         foreach ($tags as $tag) {
             $this->assertDatabaseMissing("pet_tag", [
                 "pet_id" => $pet->id,
@@ -177,7 +177,7 @@ class PetTest extends TestCase
 
         $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
         $response->assertStatus(403);
-        $this->assertDatabaseHas("pets", ["id" => $pet->id]);
+        $this->assertNotSoftDeleted("pets", ["id" => $pet->id]);
     }
 
     public function testShowingExistingPetReturnsSuccess(): void
@@ -189,7 +189,6 @@ class PetTest extends TestCase
 
     public function testShowingPetIncludesTags(): void
     {
-
         $pet = Pet::factory()->create(
             ["is_accepted" => true],
         );

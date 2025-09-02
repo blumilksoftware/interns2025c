@@ -53,13 +53,12 @@ class PetController extends Controller
         $petData = $request->except("tags");
 
         $pet->update($petData);
-      
+
         if (!empty($tags)) {
             $pet->tags()->sync($tags);
         }
 
         return back()->with("success", "Pet updated successfully.");
-
     }
 
     public function destroy(Pet $pet): RedirectResponse
