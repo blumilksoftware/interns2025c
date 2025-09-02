@@ -12,66 +12,7 @@ type PawPrint = {
 
 const pawPrints = ref<PawPrint[]>([])
 
-const props = defineProps<{ mode?: 'trails' | 'grid' | 'scatter' }>()
-
-function generateTrails(options?: {
-  trails?: number
-  stepsPerTrail?: number
-  stepDistance?: number
-  jitter?: number
-  pairOffset?: number
-}) {
-  const {
-    trails = 3,
-    stepsPerTrail = 18,
-    stepDistance = 4.5,
-    jitter = 8,
-    pairOffset = 1.8,
-  } = options || {}
-
-  const prints: PawPrint[] = []
-
-  for (let t = 0; t < trails; t++) {
-    let x = 6 + Math.random() * 18 + t * 18
-    let y = 72 + Math.random() * 20
-    let theta = (-Math.PI / 3) + Math.random() * (Math.PI / 7) + (Math.random() - 0.5) * 0.15
-
-    let left = true
-
-    for (let s = 0; s < stepsPerTrail; s++) {
-      const dTheta = ((Math.random() - 0.5) * jitter) * (Math.PI / 180)
-      theta += dTheta
-
-      const dx = Math.cos(theta) * stepDistance
-      const dy = Math.sin(theta) * stepDistance
-      x += dx
-      y += dy
-
-      x = Math.max(5, Math.min(95, x))
-      y = Math.max(5, Math.min(95, y))
-
-      const perp = theta + Math.PI / 2
-      const lat = (left ? 1 : -1) * pairOffset
-      const px = x + Math.cos(perp) * lat
-      const py = y + Math.sin(perp) * lat
-
-      const rot = (theta * 180) / Math.PI + (left ? -10 : 10) + (Math.random() - 0.5) * 6
-
-      prints.push({
-        x: px,
-        y: py,
-        size: 0.85 + Math.random() * 0.35,
-        rotation: rot,
-        opacity: 0.22 + Math.random() * 0.18,
-        delay: (s + t * 0.5) * 0.035,
-      })
-
-      left = !left
-    }
-  }
-
-  return prints
-}
+const props = defineProps<{ mode?: 'grid' | 'scatter' }>()
 
 onMounted(() => {
   if (props.mode === 'grid') {
@@ -99,7 +40,8 @@ onMounted(() => {
       }
     }
     pawPrints.value = items
-  } else if (props.mode === 'scatter') {
+  } else {
+    // scatter (default)
     const count = 90
     const minDist = 6.5
     const minDist2 = minDist * minDist
@@ -127,14 +69,6 @@ onMounted(() => {
       })
     }
     pawPrints.value = items
-  } else {
-    pawPrints.value = generateTrails({
-      trails: 5,
-      stepsPerTrail: 24,
-      stepDistance: 5.2,
-      jitter: 7,
-      pairOffset: 3.0,
-    })
   }
 })
 </script>
