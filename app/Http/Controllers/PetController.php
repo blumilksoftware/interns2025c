@@ -25,6 +25,8 @@ class PetController extends Controller
 
     public function show(Pet $pet): Response
     {
+        $pet->load("tags");
+
         return Inertia::render("Pets/Show", [
             "pet" => new PetShowResource($pet),
         ]);
@@ -34,7 +36,11 @@ class PetController extends Controller
     {
         $this->authorize("store", Pet::class);
 
-        Pet::query()->create($request->validated());
+        $pet = Pet::query()->create($request->validated());
+
+        if ($request->has("tags")) {
+            $pet->tags()->sync($request->input("tags"));
+        }
 
         return back()->with("success", "Pet created successfully.");
     }
@@ -43,9 +49,17 @@ class PetController extends Controller
     {
         $this->authorize("update", $pet);
 
-        $pet->update($request->validated());
+        $tags = $request->input("tags", []);
+        $petData = $request->except("tags");
+
+        $pet->update($petData);
+      
+        if (!empty($tags)) {
+            $pet->tags()->sync($tags);
+        }
 
         return back()->with("success", "Pet updated successfully.");
+
     }
 
     public function destroy(Pet $pet): RedirectResponse

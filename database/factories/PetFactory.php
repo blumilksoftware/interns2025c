@@ -9,6 +9,7 @@ use App\Enums\PetSex;
 use App\Enums\PetSpecies;
 use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PetFactory extends Factory
@@ -51,5 +52,16 @@ class PetFactory extends Factory
             "shelter_id" => PetShelter::factory(),
             "is_accepted" => $this->faker->boolean(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Pet $pet): void {
+            $tags = Tag::inRandomOrder()->take(rand(1, 3))->pluck("id");
+
+            if ($tags->isNotEmpty()) {
+                $pet->tags()->attach($tags);
+            }
+        });
     }
 }

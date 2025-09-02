@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Pet;
+use App\Models\Tag;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PetShowResource extends JsonResource
@@ -46,6 +47,10 @@ class PetShowResource extends JsonResource
             "quarantine_end_date" => $pet->quarantine_end_date ? $pet->quarantine_end_date->toDateString() : null,
             "found_location" => $pet->found_location,
             "adoption_status" => $pet->adoption_status,
+            "tags" => $pet->tags->map(fn(Tag $tag): array => [
+                "id" => $tag->id,
+                "name" => $tag->name,
+            ])->toArray(),
         ];
     }
 }

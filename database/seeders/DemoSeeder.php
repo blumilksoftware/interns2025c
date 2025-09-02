@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Enums\Role;
 use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -17,19 +18,18 @@ class DemoSeeder extends Seeder
 {
     public const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public const NUMBER_OF_USERS_TO_CREATE = 100;
-    public const NUMBER_OF_TAGS_TO_CREATE = 20;
     public const NUMBER_OF_PETS_TO_CREATE = 100;
+    public const NUMBER_OF_TAGS_TO_CREATE = 20; 
+    public const NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE = 20;
+    public const NUMBER_OF_TAGS_PER_PREFERENCE = 3;
+    public const NUMBER_OF_TAGS_PER_PET = 3;
 
     public function run(): void
     {
         Tag::factory()
             ->count(self::NUMBER_OF_TAGS_TO_CREATE)
             ->make()
-            ->each(function ($tag): void {
-                Tag::firstOrCreate(
-                    ["name" => $tag->name],
-                );
-            });
+            ->each(fn(Tag $tag): Tag => Tag::firstOrCreate(["name" => $tag->name]));
 
         User::factory()->create([
             "email" => "user@example.com",
@@ -70,9 +70,29 @@ class DemoSeeder extends Seeder
             }
         }
 
-        $pets->each(function (Pet $pet) use ($petShelters): void {
-            $pet->shelter()->associate($petShelters->random());
-            $pet->save();
+        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($petShelters->random())->save());
+
+        $tags = Tag::all();
+
+        foreach ($users as $user) {
+            Preference::factory()
+                ->count(self::NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE)
+                ->for($user)
+                ->create()
+                ->each(function (Preference $preference) use ($tags): void {
+                    $preferenceData = $preference->preferences;
+                    $preferenceData["tags"] = $tags
+                        ->random(self::NUMBER_OF_TAGS_PER_PREFERENCE)
+                        ->pluck("name")
+                        ->toArray();
+                    $preference->update(["preferences" => $preferenceData]);
+                });
+        }
+
+        $pets->each(function (Pet $pet) use ($tags): void {
+            $pet->tags()->attach(
+                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->toArray(),
+            );
         });
     }
 }

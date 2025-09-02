@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\PetShelterAddressController;
 use App\Http\Controllers\PetShelterController;
+use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -29,6 +30,7 @@ Route::middleware([
     Route::put("/users/{user}", [UserController::class, "update"])->name("users.update");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+    Route::resource("preferences", PreferenceController::class)->only(["index", "store", "update", "destroy"]);
 });
 
 Route::middleware([

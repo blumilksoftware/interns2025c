@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum PetAttitude: string
+enum PetAge: string
 {
-    case VeryLow = "very low";
-    case Low = "low";
-    case Medium = "medium";
-    case High = "high";
-    case VeryHigh = "very high";
+    case Juvenile = "juvenile";
+    case Adult = "adult";
+    case Senior = "senior";
     case Unknown = "unknown";
 
     public static function values(): array
