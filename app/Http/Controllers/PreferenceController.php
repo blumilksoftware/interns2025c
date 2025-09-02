@@ -22,7 +22,7 @@ class PreferenceController extends Controller
 
         $pets = Pet::with("tags")
             ->get()
-            ->map(function (Pet $pet) use ($preference, $matcher) {
+            ->map(function (Pet $pet) use ($preference, $matcher): array {
                 $matchPercentage = $preference
                     ? $matcher->match($pet->toArray(), $preference->preferences)
                     : 0;
