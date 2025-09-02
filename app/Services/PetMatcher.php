@@ -13,15 +13,16 @@ class PetMatcher
 
         foreach ($preferences as $field => $prefValues) {
             foreach ($prefValues as $pref) {
-                $weight = $pref['weight'] ?? 1;
+                $weight = $pref["weight"] ?? 1;
                 $maxScore += $weight;
 
-                if ($field === 'tags' && isset($petData['tags'])) {
-                    $tagValues = array_map(fn($tag) => $tag['name'] ?? $tag['id'], $petData['tags']);
-                    if (in_array($pref['value'], $tagValues, true)) {
+                if ($field === "tags" && isset($petData["tags"])) {
+                    $tagValues = array_map(fn($tag) => $tag["name"] ?? $tag["id"], $petData["tags"]);
+
+                    if (in_array($pref["value"], $tagValues, true)) {
                         $score += $weight;
                     }
-                } elseif (isset($petData[$field]) && $petData[$field] === $pref['value']) {
+                } elseif (isset($petData[$field]) && $petData[$field] === $pref["value"]) {
                     $score += $weight;
                 }
             }
@@ -29,5 +30,4 @@ class PetMatcher
 
         return $maxScore > 0 ? round(($score / $maxScore) * 100, 2) : 0;
     }
-    
 }
