@@ -5,7 +5,7 @@ import { Step1Basic, Step2Health, Step3Location, Step4Attitudes, Step5ActivityTa
 import TopFilters from './TopFilters.vue'
 import ScrollToTop from './ScrollToTop.vue'
 import PawPrints from '@/Components/PawPrints.vue'
-import { useFormState } from '@/composables/useFormState'
+import { usePreferencesStore } from '@/stores/preferences'
 import { useLocation } from '@/composables/useLocation'
 import { useBreeds } from '@/composables/useBreeds'
 import { useTopFilters } from '@/composables/useTopFilters'
@@ -17,7 +17,12 @@ const { t } = useI18n()
 
 const currentStep = ref(1)
 
-const { form, resetForm, applyPreferences } = useFormState()
+const prefs = usePreferencesStore()
+const form = computed({
+  get: () => prefs.form,
+  set: (v) => prefs.setForm(v || {}),
+})
+
 const { locationOpen, popularLocations, recentLocations, filteredLocations, selectLocation, clearLocation, handleLocationChange, loadRecentLocations, radiusOptions } = useLocation(form)
 const { dogBreedsAvailable, catBreedsAvailable } = useBreeds(form)
 const { moveFilterById } = useTopFilters()
@@ -61,7 +66,7 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-orange-200/40 via-pink-100/40 to-blue-200/40 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900 relative">
-    <PawPrints mode="scatter" />
+    <PawPrints/>
 
     <ScrollToTop />
 
@@ -154,10 +159,10 @@ onMounted(() => {
         </div>
 
         <div class="flex items-center gap-3">
-          <button type="button" @click="applyPreferences" class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <button type="button" @click="prefs.apply()" class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             {{ t('preferences.actions.apply') }}
           </button>
-          <button type="button" @click="resetForm" class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+          <button type="button" @click="prefs.reset()" class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
             {{ t('preferences.actions.reset') }}
           </button>
         </div>
@@ -167,13 +172,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.filter-item {
-  transition: all 0.2s ease;
-}
-.filter-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+.filter-item { transition: all 0.2s ease; }
+.filter-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 button { transition: all 0.15s ease; }
 button:hover { transform: translateY(-1px); }
 input, select { transition: all 0.15s ease; }

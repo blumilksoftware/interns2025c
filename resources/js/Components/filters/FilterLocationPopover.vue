@@ -201,5 +201,3 @@ function pickRemote(item) { emit('use', item.label) }
     </div>
   </div>
 </template>
-
-

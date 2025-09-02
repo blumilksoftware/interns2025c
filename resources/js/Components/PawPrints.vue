@@ -12,36 +12,7 @@ type PawPrint = {
 
 const pawPrints = ref<PawPrint[]>([])
 
-const props = defineProps<{ mode?: 'grid' | 'scatter' }>()
-
 onMounted(() => {
-  if (props.mode === 'grid') {
-    const rows = 7
-    const cols = 11
-    const jitter = 3.5
-    const baseSize = 0.95
-    const items: PawPrint[] = []
-    let left = true
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = (c + 0.5) * (100 / cols) + (Math.random() - 0.5) * jitter
-        const y = (r + 0.5) * (100 / rows) + (Math.random() - 0.5) * jitter
-        const rotation = (left ? -12 : 12) + (Math.random() - 0.5) * 10
-        const size = baseSize + (Math.random() - 0.5) * 0.25
-        items.push({
-          x: Math.max(4, Math.min(96, x)),
-          y: Math.max(4, Math.min(96, y)),
-          size,
-          rotation,
-          opacity: 0.22 + Math.random() * 0.2,
-          delay: (r * cols + c) * 0.015,
-        })
-        left = !left
-      }
-    }
-    pawPrints.value = items
-  } else {
-    // scatter (default)
     const count = 90
     const minDist = 6.5
     const minDist2 = minDist * minDist
@@ -58,7 +29,7 @@ onMounted(() => {
         const dy = items[i].y - y
         if (dx * dx + dy * dy < minDist2) { ok = false; break }
       }
-      if (!ok) continue
+      if (!ok) continue;
       items.push({
         x,
         y,
@@ -69,7 +40,6 @@ onMounted(() => {
       })
     }
     pawPrints.value = items
-  }
 })
 </script>
 
