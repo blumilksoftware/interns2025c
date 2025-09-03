@@ -39,6 +39,7 @@ import {
   IconRun,
   IconBolt,
   IconFlame,
+  IconLoader,
 } from '@tabler/icons-vue'
 
 const props = defineProps({
@@ -51,7 +52,7 @@ const props = defineProps({
       'close', 'edit', 'delete', 'plus', 'search', 'warning',
       'desktop', 'mobile', 'mood-kid', 'man', 'old', 'horse',
       'weight', 'dog', 'mood-sad', 'mood-neutral', 'mood-smile', 'heart', 'mood-empty',
-      'zzz', 'walk', 'run', 'bolt', 'flame',
+      'zzz', 'walk', 'run', 'bolt', 'flame','loading',
     ].includes(value),
   },
 })
@@ -91,6 +92,7 @@ const map = {
   'run': { comp: IconRun },
   'bolt': { comp: IconBolt },
   'flame': { comp: IconFlame },
+  'loading': { comp: IconLoader },
 }
 
 const component = computed(() => map[props.name].comp)

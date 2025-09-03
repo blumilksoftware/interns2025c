@@ -10,6 +10,8 @@ use App\Enums\PetSpecies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -43,11 +45,13 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon $admission_date
  * @property ?string $found_location
  * @property ?string $adoption_status
+ * @property bool $is_accepted
  * @property int $shelter_id
  */
 class Pet extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = [];
     protected $casts = [
@@ -58,5 +62,10 @@ class Pet extends Model
     public function shelter(): BelongsTo
     {
         return $this->belongsTo(PetShelter::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }
