@@ -96,7 +96,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                 </DisclosurePanel>
               </Disclosure>
             </li>
-          </ul> <!-- crudsNavigation -->
+          </ul>
           <ul role="list" class="-mx-2 space-y-1">
             <li v-for="item in incomingRequestsNavigation" :key="item.name">
               <a v-if="!item.children" :href="item.href" :class="[item.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block rounded-md py-2 pr-2 pl-10 text-sm/6 font-semibold text-gray-700']">{{ item.name }}</a>
@@ -120,7 +120,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                 </DisclosurePanel>
               </Disclosure>
             </li>
-          </ul> <!-- incomingRequestsNavigation -->
+          </ul>
         </li>
       </ul>
     </nav>
@@ -166,7 +166,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                     </DisclosurePanel>
                   </Disclosure>
                 </li>
-              </ul><!-- crudsNavigation -->
+              </ul>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in incomingRequestsNavigation" :key="item.name">
                   <a v-if="!item.children" :href="item.href" :class="[item.current ? 'bg-gray-50' : 'hover:bg-gray-50', 'block rounded-md py-2 pr-2 pl-10 text-sm/6 font-semibold text-gray-700']">{{ item.name }}</a>
@@ -190,7 +190,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                     </DisclosurePanel>
                   </Disclosure>
                 </li>
-              </ul> <!-- incomingRequestsNavigation -->
+              </ul>
             </li>
           </ul>
         </nav>
