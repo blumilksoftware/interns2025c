@@ -50,6 +50,7 @@ class PetFactory extends Factory
             "found_location" => $this->faker->optional()->city(),
             "adoption_status" => $this->faker->optional()->randomElement(["available", "adopted", "pending", "fostered"]),
             "shelter_id" => PetShelter::factory(),
+            "is_accepted" => $this->faker->boolean(),
         ];
     }
 

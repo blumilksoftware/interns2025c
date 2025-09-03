@@ -1,0 +1,110 @@
+import { autoFieldTypes } from './types.js'
+import { petsConfig, petsFieldOrder } from './pets.js'
+import { incomingPetsRequestsConfig, incomingPetsRequestsFieldOrder } from './incomingPetsRequests.js'
+import { usersConfig, usersFieldOrder } from './users.js'
+import { sheltersConfig, sheltersFieldOrder } from './shelters.js'
+import { logsConfig, logsFieldOrder } from './logs.js'
+
+export const columnConfig = {
+  pets: petsConfig,
+  incomingPetsRequests: incomingPetsRequestsConfig,
+  users: usersConfig,
+  shelters: sheltersConfig,
+  logs: logsConfig,
+}
+
+export const fieldOrder = {
+  pets: petsFieldOrder,
+  incomingPetsRequests: incomingPetsRequestsFieldOrder,
+  users: usersFieldOrder,
+  shelters: sheltersFieldOrder,
+  logs: logsFieldOrder,
+}
+
+export function getFieldOrder(dataSetType) {
+  return fieldOrder[dataSetType] || []
+}
+
+export function sortFieldsByOrder(dataSetType, fields) {
+  const order = getFieldOrder(dataSetType)
+  const orderedFields = []
+  const unorderedFields = []
+  
+  for (const fieldName of order) {
+    if (fields.includes(fieldName)) {
+      orderedFields.push(fieldName)
+    }
+  }
+  
+  for (const field of fields) {
+    if (!order.includes(field)) {
+      unorderedFields.push(field)
+    }
+  }
+  
+  return [...orderedFields, ...unorderedFields]
+}
+
+export function getColumnConfig(dataSetType, fieldName) {
+  return columnConfig[dataSetType]?.[fieldName] || null
+}
+
+export function getColumnType(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  if (config) return config.type
+  
+  for (const [type, fields] of Object.entries(autoFieldTypes)) {
+    if (fields.includes(fieldName) || fields.some(f => fieldName.includes(f))) {
+      if (type === 'datetime') return 'datetime-local'
+      return type
+    }
+  }
+  return 'text'
+}
+
+export function getColumnOptions(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  return config?.options || []
+}
+
+export function getColumnAttributes(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  if (config) {
+    return {
+      min: config.min,
+      max: config.max,
+      step: config.step,
+    }
+  }
+  
+  if (getColumnType(dataSetType, fieldName) === 'number') {
+    return {
+      min: 0,
+      step: 1,
+    }
+  }
+  
+  return {}
+}
+
+export function getColumnLabel(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  if (config?.label) return config.label
+  
+  return fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/_/g, ' ')
+}
+
+export function isColumnEditable(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  return config?.editable !== false
+}
+
+export function getColumnRenderer(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  return config?.renderer || 'text'
+}
+
+export function isColumnRequired(dataSetType, fieldName) {
+  const config = getColumnConfig(dataSetType, fieldName)
+  return config?.required === true
+}

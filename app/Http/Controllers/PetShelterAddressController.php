@@ -16,7 +16,7 @@ class PetShelterAddressController extends Controller
 
         $petShelterAddress->update($request->validated());
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Pet shelter address updated successfully.");
     }
 
@@ -30,7 +30,7 @@ class PetShelterAddressController extends Controller
             "postal_code" => null,
         ]);
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Pet shelter address deleted successfully.");
     }
 }
