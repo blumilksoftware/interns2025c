@@ -24,16 +24,23 @@ function toggle(value) {
   }
 }
 
-// Ensure Tailwind sees concrete class names; map common cases
+// Ensure Tailwind sees concrete class names; return static class strings.
+// For dense sets (>=4 options), use fewer columns on small screens to avoid label overflow.
 const gridClasses = computed(() => {
   const cols = props.columns ?? 3
   switch (cols) {
-  case 1: return 'grid grid-cols-1 gap-3'
-  case 2: return 'grid grid-cols-2 gap-3'
-  case 3: return 'grid grid-cols-3 gap-3'
-  case 4: return 'grid grid-cols-4 gap-3'
-  case 5: return 'grid grid-cols-5 gap-3'
-  default: return 'grid grid-cols-3 gap-3'
+  case 1:
+    return 'grid grid-cols-1 gap-3'
+  case 2:
+    return 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3'
+  case 3:
+    return 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3'
+  case 4:
+    return 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3'
+  case 5:
+    return 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3'
+  default:
+    return 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3'
   }
 })
 </script>
@@ -52,7 +59,7 @@ const gridClasses = computed(() => {
           <div class="icon-container">
             <CommonIcons v-if="opt.icon" :name="opt.icon" :class="opt.iconClass || 'w-5 h-5'" />
           </div>
-          <span class="text-xs font-medium">
+          <span class="text-[11px] sm:text-xs font-medium">
             <div class="label-container">
               <slot name="label" :option="opt">
                 {{ opt.label || opt.labelKey }}

@@ -27,7 +27,6 @@
     .heading-xl { @apply text-xl font-semibold text-gray-900 mb-3; }
     .heading-lg { @apply text-3xl sm:text-4xl font-bold text-gray-900; }
 
-    /* Disclosure */
     .disclosure { @apply overflow-hidden bg-white dark:bg-[#0b1220]; }
     .disclosure[open] { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
     .disclosure-summary::-webkit-details-marker { display: none; }
@@ -35,13 +34,12 @@
     .chevron { @apply transition-transform duration-200 ease-linear; }
     .disclosure[open] .chevron { @apply rotate-180; }
 
-    /* Badge */
     .badge-selected { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs bg-indigo-50 text-indigo-900 border-indigo-200 dark:bg-indigo-500/25 dark:text-indigo-100 dark:border-indigo-500/45; }
 
-    /* Choice tiles */
     .tile-checkbox { @apply cursor-pointer transition-all; }
-    .checkbox-content { @apply flex flex-col items-center gap-2 p-4 text-center min-h-[100px] rounded-lg border-2 border-gray-200 bg-white transition; }
+    .checkbox-content { @apply flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 text-center min-h-[90px] sm:min-h-[100px] rounded-lg border-2 border-gray-200 bg-white transition; }
     .tile-checkbox:hover .checkbox-content { @apply -translate-y-0.5 shadow-[0_8px_25px_rgba(0,0,0,0.15)]; }
     .tile-checkbox input:checked + .checkbox-content { @apply -translate-y-0.5 shadow-[0_8px_25px_rgba(99,102,241,0.3)] border-indigo-500 bg-gradient-to-br from-indigo-500 to-violet-500 text-white; }
-    .icon-container { @apply flex items-center justify-center h-10 w-full; }
+    .icon-container { @apply flex items-center justify-center h-8 sm:h-10 w-full; }
+    .label-container { @apply break-words whitespace-normal leading-snug; }
 }

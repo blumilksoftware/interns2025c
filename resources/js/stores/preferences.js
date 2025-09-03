@@ -9,7 +9,7 @@ const defaultForm = () => ({
   sizeIndex: [],
   weightState: [],
   location: '',
-  radiusKm: null,
+  radiusKm: 5,
   tags: [],
 })
 

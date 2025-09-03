@@ -39,6 +39,9 @@ export function useLocation(form) {
 
   function selectLocation(loc) {
     form.value.location = loc
+    if (!form.value.radiusKm || form.value.radiusKm <= 0) {
+      form.value.radiusKm = 5
+    }
     const idx = recentLocations.value.indexOf(loc)
     if (idx !== -1) recentLocations.value.splice(idx, 1)
     recentLocations.value.unshift(loc)
@@ -68,6 +71,7 @@ export function useLocation(form) {
     { value: 50, label: '50 km' },
     { value: 75, label: '75 km' },
     { value: 100, label: '100 km' },
+    { value: 200, label: '200 km' },
   ]
 
   return { locationOpen, popularLocations, recentLocations, filteredLocations, selectLocation, clearLocation, handleLocationChange, loadRecentLocations, radiusOptions }

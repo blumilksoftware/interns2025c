@@ -141,9 +141,9 @@ function pickRemote(item) { emit('use', item.label) }
 <template>
   <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
-    <div class="relative z-30">
+    <div class="sm:relative z-[3000]">
       <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
-      <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
+      <div v-if="isOpen" class="mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-2 sm:absolute sm:z-[4000] sm:shadow-lg">
         <!-- Remote autocomplete when query length >= 3 -->
         <template v-if="(valueProxy || '').length >= 3">
           <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Sugestie</div>

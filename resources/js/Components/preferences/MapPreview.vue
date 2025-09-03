@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
 const props = defineProps({
   query: { type: String, default: '' },
@@ -67,6 +67,7 @@ async function fetchPolandGeoJSON() {
 }
 
 function renderCenter(center) {
+  if (!mapInstance) return
   // Update marker
   if (!marker) marker = L.marker(center).addTo(mapInstance)
   else marker.setLatLng(center)
@@ -87,6 +88,11 @@ let debounceTimer = null
 
 async function render() {
   await ensureLeafletLoaded()
+  // Ensure container is mounted
+  if (!containerRef.value) {
+    await nextTick()
+    if (!containerRef.value) return
+  }
   const qRaw = (props.query || '')
   const q = qRaw.trim()
 
@@ -95,10 +101,11 @@ async function render() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(mapInstance)
   }
 
-  if (polygon) { mapInstance.removeLayer(polygon); polygon = null }
+  if (mapInstance && polygon) { mapInstance.removeLayer(polygon); polygon = null }
 
   if (isWholeCountry(q) || q === '') {
     const geo = await fetchPolandGeoJSON()
+    if (!mapInstance) return
     if (geo) {
       polygon = L.geoJSON(geo, { style: { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 } }).addTo(mapInstance)
       try { mapInstance.fitBounds(polygon.getBounds(), { padding: [10, 10] }) } catch { mapInstance.fitBounds(POLAND_BOUNDS, { padding: [10, 10] }) }
@@ -106,8 +113,8 @@ async function render() {
       polygon = L.rectangle(POLAND_BOUNDS, { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 }).addTo(mapInstance)
       mapInstance.fitBounds(POLAND_BOUNDS, { padding: [10, 10] })
     }
-    if (marker) { mapInstance.removeLayer(marker); marker = null }
-    if (circle) { mapInstance.removeLayer(circle); circle = null }
+    if (mapInstance && marker) { mapInstance.removeLayer(marker); marker = null }
+    if (mapInstance && circle) { mapInstance.removeLayer(circle); circle = null }
     return
   }
 
@@ -130,14 +137,16 @@ async function render() {
 }
 
 let stopWatch = null
-onMounted(() => {
-  render()
+onMounted(async () => {
+  await nextTick()
+  await render()
   stopWatch = watch(() => [props.query, props.radiusKm], () => { render() }, { deep: false })
 })
 
 onBeforeUnmount(() => {
   if (stopWatch) stopWatch()
   if (inFlight) inFlight.abort()
+  if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null }
   if (mapInstance) { mapInstance.remove(); mapInstance = null }
   marker = null; circle = null; polygon = null
 })

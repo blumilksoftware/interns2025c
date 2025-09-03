@@ -77,21 +77,17 @@ onMounted(() => {
       </div>
 
       <div class="bg-white/70 dark:bg-gray-800/20 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-6 space-y-6 shadow-lg preferences-form-container">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex items-center gap-1 sm:gap-2 max-w-full min-w-0 justify-between sm:justify-start">
             <template v-for="s in 5" :key="s">
-              <button type="button" class="size-8 rounded-full flex items-center justify-center text-sm"
+              <button type="button" class="size-8 rounded-full flex items-center justify-center text-sm shrink-0"
                       :class="s === currentStep ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'"
                       @click="currentStep = s"
               >
                 {{ s }}
               </button>
-              <span v-if="s < 5" class="w-6 h-0.5 bg-gray-300 dark:bg-gray-600" />
+              <span v-if="s < 5" class="hidden sm:block w-6 h-0.5 bg-gray-300 dark:bg-gray-600 shrink-0" />
             </template>
-          </div>
-          <div class="flex items-center gap-2">
-            <button type="button" class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
-            <button type="button" class="px-3 py-1 rounded-md bg-indigo-600 text-white" :disabled="currentStep===5" @click="currentStep++">{{ t('common.next') || 'Dalej' }}</button>
           </div>
         </div>
 
@@ -158,14 +154,19 @@ onMounted(() => {
             :toggle-tag="toggleTag"
           />
         </div>
-
-        <div class="flex items-center gap-3">
-          <button type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="prefs.apply()">
-            {{ t('preferences.actions.apply') }}
-          </button>
-          <button type="button" class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300" @click="prefs.reset()">
-            {{ t('preferences.actions.reset') }}
-          </button>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="w-full sm:w-auto">
+            <button type="button" class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-3 py-1 text-xs sm:text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300" @click="prefs.reset()">
+              {{ t('preferences.actions.reset') }}
+            </button>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button type="button" class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs sm:text-sm" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
+            <button v-if="currentStep < 5" type="button" class="px-3 py-1 rounded-md bg-indigo-600 text-white text-xs sm:text-sm" :disabled="currentStep===5" @click="currentStep++">{{ t('common.next') || 'Dalej' }}</button>
+            <button v-else type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1 text-xs sm:text-sm text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="prefs.apply()">
+              {{ t('preferences.actions.apply') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
