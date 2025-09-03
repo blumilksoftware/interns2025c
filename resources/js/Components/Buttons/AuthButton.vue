@@ -13,5 +13,3 @@ defineProps({
     <slot />
   </button>
 </template>
-
-
