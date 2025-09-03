@@ -5,7 +5,7 @@ import { usePage } from '@inertiajs/vue3'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronRightIcon, XMarkIcon } from '@heroicons/vue/20/solid'
 import UserProfileModal from './UserProfileModal.vue'
-
+import { logo } from '@/helpers/mappers/logo'
 const { t } = useI18n()
 const emit = defineEmits(['data-set-change', 'close'])
 
@@ -67,7 +67,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
         class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
         @click="openUserProfile"
       >
-        <img class="size-8 rounded-full" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
+        <img class="size-8 rounded-full" src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
         <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
         
         <span aria-hidden="true">{{ user?.name }}</span>
@@ -135,10 +135,11 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
             class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
             @click="openUserProfile"
           >
-            <img class="size-8 rounded-full bg-gray-50" src="/Images/cat-dog.png" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
+            <img class="size-8 rounded-full bg-gray-50" src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
             <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
             <span aria-hidden="true">{{ user.name }}</span>
           </button>
+          <img class="h-8 w-auto" :src="logo.Logo" alt="LapGo app logo" height="32" loading="lazy" decoding="async">
           <button class="text-gray-700 hover:text-gray-900 p-2 rounded focus:outline-none" @click="$emit('close')">
             <XMarkIcon class="size-6" />
           </button>
@@ -197,7 +198,6 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
       </div>
     </div>
   </transition>
-  
   <UserProfileModal 
     :is-open="isUserProfileOpen"
     :user="user"
