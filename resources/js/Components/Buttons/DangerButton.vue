@@ -4,11 +4,19 @@ defineProps({
     type: String,
     default: 'button',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
 <template>
-  <button :type="type" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+  <button 
+    :type="type" 
+    :disabled="disabled"
+    class="inline-flex items-center justify-center px-6 py-3 border-2 border-red-500 bg-white text-red-600 font-semibold text-sm rounded-md shadow-sm transition-all duration-300 ease-out hover:bg-red-500 hover:text-white focus:bg-red-500 focus:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-red-600"
+  >
     <slot />
   </button>
 </template>

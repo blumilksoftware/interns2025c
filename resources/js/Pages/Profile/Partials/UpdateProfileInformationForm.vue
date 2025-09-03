@@ -5,9 +5,9 @@ import ActionMessage from '@/Components/ActionMessage.vue'
 import FormSection from '@/Components/FormSection.vue'
 import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
-import AuthButton from '@/Components/Buttons/AuthButton.vue'
+import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Buttons/SecondaryButton.vue'
-import AuthTextInput from '@/Components/AuthTextInput.vue'
+import TextInput from '@/Components/TextInput.vue'
 import { routes } from '@/routes'
 
 const props = defineProps({
@@ -130,7 +130,7 @@ const clearPhotoFileInput = () => {
 
       <div class="col-span-6 sm:col-span-4">
         <InputLabel for="name" value="Name" />
-        <AuthTextInput
+        <TextInput
           id="name"
           v-model="form.name"
           type="text"
@@ -143,7 +143,7 @@ const clearPhotoFileInput = () => {
 
       <div class="col-span-6 sm:col-span-4">
         <InputLabel for="email" value="Email" />
-        <AuthTextInput
+        <TextInput
           id="email"
           v-model="form.email"
           type="email"
@@ -180,9 +180,9 @@ const clearPhotoFileInput = () => {
         Saved.
       </ActionMessage>
 
-      <AuthButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+      <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
         Save
-      </AuthButton>
+      </PrimaryButton>
     </template>
   </FormSection>
 </template>

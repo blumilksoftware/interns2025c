@@ -16,7 +16,7 @@ import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 import { routes } from '@/routes'
 import { logo } from '@/helpers/mappers/logo'
-
+import { IconMenu2 } from '@tabler/icons-vue'
 const { t } = useI18n()
 const mobileMenuOpen = ref(false)
 
@@ -51,11 +51,9 @@ const mobileMenuOpen = ref(false)
               </button>
 
               <span v-else class="inline-flex rounded-md">
-                <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-semibold rounded-md text-gray-900 bg-white/80 hover:bg-white transition ease-in-out duration-150 shadow-sm">
+                <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-semibold rounded-md text-gray-900  hover:bg-white transition ease-in-out duration-150">
                   {{ $page.props.auth.user.name }}
-                  <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
+                  <IconMenu2 class="size-6" />
                 </button>
               </span>
             </template>
