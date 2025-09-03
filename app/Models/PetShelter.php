@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PetShelter extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         "name",
@@ -29,7 +31,7 @@ class PetShelter extends Model
 
     public function pets(): HasMany
     {
-        return $this->hasMany(Pet::class);
+        return $this->hasMany(Pet::class, "shelter_id");
     }
 
     public function address(): HasOne

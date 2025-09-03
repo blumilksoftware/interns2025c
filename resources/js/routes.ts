@@ -52,6 +52,15 @@ export const routes = {
     update: (id: number | string) => `/pet-shelter-addresses/${id}`,
     destroy: (id: number | string) => `/pet-shelter-addresses/${id}`,
   },
+  users: {
+    show: (id: number | string) => `/users/${id}`,
+    update: (id: number | string) => `/users/${id}`,
+    destroy: (id: number | string) => `/users/${id}`,
+  },
+  admin: {
+    acceptPet: (id: number | string) => `/admin/pets/${id}/accept`,
+    rejectPet: (id: number | string) => `/admin/pets/${id}/reject`,
+  },
 } as const
 
 export function isActive(currentUrl: string, path: string): boolean {

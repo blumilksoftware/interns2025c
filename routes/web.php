@@ -9,7 +9,6 @@ use App\Http\Controllers\PetShelterController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,10 +25,9 @@ Route::middleware([
     config("jetstream.auth_session"),
     "verified",
 ])->group(function (): void {
-    Route::get("/admin", fn() => Inertia::render("AdminPanel/AdminPanel"))->name("admin");
-
     Route::get("/users/{user}", [UserController::class, "show"])->name("users.show");
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
+    Route::put("/users/{user}", [UserController::class, "update"])->name("users.update");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
     Route::resource("preferences", PreferenceController::class)->only(["index", "store", "update", "destroy"]);
@@ -39,9 +37,11 @@ Route::middleware([
     "auth:sanctum",
     config("jetstream.auth_session"),
     "verified",
-    AdminMiddleware::class,
+    "admin",
 ])->group(function (): void {
     Route::get("/admin", [AdminController::class, "index"])->name("admin");
+    Route::post("/admin/pets/{pet}/accept", [AdminController::class, "acceptPet"])->name("pets.accept");
+    Route::delete("/admin/pets/{pet}/reject", [AdminController::class, "rejectPet"])->name("pets.reject");
 });
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)

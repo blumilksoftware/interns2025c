@@ -4,7 +4,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import AuthenticationCard from '@/Components/AuthenticationCard.vue'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
+import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
 import { routes } from '@/routes'
 
 const { t } = useI18n()

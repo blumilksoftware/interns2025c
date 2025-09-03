@@ -2,10 +2,10 @@
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import ActionSection from '@/Components/ActionSection.vue'
-import DangerButton from '@/Components/DangerButton.vue'
+import DangerButton from '@/Components/Buttons/DangerButton.vue'
 import DialogModal from '@/Components/DialogModal.vue'
 import InputError from '@/Components/InputError.vue'
-import SecondaryButton from '@/Components/SecondaryButton.vue'
+import SecondaryButton from '@/Components/Buttons/SecondaryButton.vue'
 import TextInput from '@/Components/TextInput.vue'
 import { routes } from '@/routes'
 

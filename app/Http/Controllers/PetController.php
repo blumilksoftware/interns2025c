@@ -42,7 +42,7 @@ class PetController extends Controller
             $pet->tags()->sync($request->input("tags"));
         }
 
-        return redirect()->route("pets.index")->with("success", "Pet created successfully.");
+        return back()->with("success", "Pet created successfully.");
     }
 
     public function update(PetRequest $request, Pet $pet): RedirectResponse
@@ -58,8 +58,7 @@ class PetController extends Controller
             $pet->tags()->sync($tags);
         }
 
-        return redirect()->route("pets.index")
-            ->with("success", "Pet updated successfully.");
+        return back()->with("success", "Pet updated successfully.");
     }
 
     public function destroy(Pet $pet): RedirectResponse
@@ -68,7 +67,6 @@ class PetController extends Controller
 
         $pet->delete();
 
-        return redirect()->route("pets.index")
-            ->with("success", "Pet deleted successfully.");
+        return back()->with("success", "Pet deleted successfully.");
     }
 }

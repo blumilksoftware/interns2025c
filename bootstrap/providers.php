@@ -7,6 +7,7 @@ use App\Providers\AuthServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use App\Providers\JetstreamServiceProvider;
 use App\Providers\ObserverServiceProvider;
+use App\Providers\RouteServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -14,4 +15,5 @@ return [
     FortifyServiceProvider::class,
     JetstreamServiceProvider::class,
     ObserverServiceProvider::class,
+    RouteServiceProvider::class,
 ];
