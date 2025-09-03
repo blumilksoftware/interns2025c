@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -29,6 +30,15 @@ class UserController extends Controller
         return Inertia::render("Profile/Show", [
             "user" => new UserResource($user),
         ]);
+    }
+
+    public function update(UserRequest $request, User $user): RedirectResponse
+    {
+        $this->authorize("update", $user);
+
+        $user->update($request->validated());
+
+        return back()->with("success", "User updated successfully.");
     }
 
     public function destroy(Request $request, User $user): RedirectResponse

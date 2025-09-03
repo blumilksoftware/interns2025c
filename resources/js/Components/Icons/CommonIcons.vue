@@ -23,6 +23,7 @@ import {
   IconAlertTriangle,
   IconDeviceDesktop,
   IconDeviceMobile,
+  IconLoader,
 } from '@tabler/icons-vue'
 
 const props = defineProps({
@@ -33,7 +34,7 @@ const props = defineProps({
       'arrow-left', 'location', 'phone', 'email', 'external-link',
       'chevron-left', 'chevron-right', 'user', 'settings', 'logout',
       'close', 'edit', 'delete', 'plus', 'search', 'warning',
-      'desktop', 'mobile',
+      'desktop', 'mobile', 'loading',
     ].includes(value),
   },
 })
@@ -57,6 +58,7 @@ const map = {
   'warning': { comp: IconAlertTriangle },
   'desktop': { comp: IconDeviceDesktop },
   'mobile': { comp: IconDeviceMobile },
+  'loading': { comp: IconLoader },
 }
 
 const component = computed(() => map[props.name].comp)
