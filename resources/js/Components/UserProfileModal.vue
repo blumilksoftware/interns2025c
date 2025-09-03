@@ -1,7 +1,7 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
-
+import { logo } from '@/helpers/mappers/logo'
 const { t } = useI18n()
 
 const props = defineProps({
@@ -67,7 +67,7 @@ const logout = () => {
               <div class="flex flex-col items-center sm:items-start space-y-4">
                 <div class="shrink-0 relative">
                   <img 
-                    :src="user.avatar || '/Images/cat-dog.png'" 
+                    :src="user.avatar || logo.Logo" 
                     :alt="user.name"
                     class="size-24 rounded-full object-cover border-4 border-gray-200"
                     width="96"

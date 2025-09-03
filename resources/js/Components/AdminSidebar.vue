@@ -67,7 +67,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
         class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
         @click="openUserProfile"
       >
-        <img class="size-8 rounded-full" src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
+        <img class="size-8 rounded-full" :src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
         <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
         
         <span aria-hidden="true">{{ user?.name }}</span>
@@ -135,7 +135,7 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
             class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
             @click="openUserProfile"
           >
-            <img class="size-8 rounded-full bg-gray-50" src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
+            <img class="size-8 rounded-full bg-gray-50" :src="logo.Logo" alt="Your profile" width="32" height="32" loading="lazy" decoding="async">
             <span class="sr-only">{{ t('admin.sidebar.goToProfile') }}</span>
             <span aria-hidden="true">{{ user.name }}</span>
           </button>
