@@ -36,7 +36,12 @@ createInertiaApp({
     app.use(pinia)
 
     // Preload preferences from storage
-    try { const prefs = usePreferencesStore(); prefs.load() } catch {}
+    try { 
+      const prefs = usePreferencesStore()
+      prefs.load() 
+    } catch (error) {
+      console.warn('Failed to initialize preferences store:', error)
+    }
 
     return app.mount(el)
   },

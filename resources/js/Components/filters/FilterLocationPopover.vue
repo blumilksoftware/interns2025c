@@ -18,12 +18,12 @@ const valueProxy = computed({
   set: (val) => {
     emit('update:modelValue', val)
     emit('changed', props.filterId)
-  }
+  },
 })
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val)
+  set: (val) => emit('update:open', val),
 })
 
 // Outside click to close
@@ -139,27 +139,27 @@ function pickRemote(item) { emit('use', item.label) }
 </script>
 
 <template>
-  <div class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }" ref="rootRef">
+  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
     <div class="relative z-30">
-      <input v-model="valueProxy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Miasto lub kod pocztowy">
+      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
       <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
         <!-- Remote autocomplete when query length >= 3 -->
         <template v-if="(valueProxy || '').length >= 3">
           <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Sugestie</div>
-          <div :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" ref="listRef" @scroll="onScroll">
+          <div ref="listRef" :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" @scroll="onScroll">
             <div :style="{ height: totalHeight + 'px', position: 'relative' }">
               <div :style="{ position: 'absolute', top: offsetTop + 'px', left: 0, right: 0 }">
-                <button type="button" v-for="it in visibleItems" :key="it.display + it.lat + it.lon" @click="pickRemote(it)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+                <button v-for="it in visibleItems" :key="it.display + it.lat + it.lon" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="pickRemote(it)">
                   {{ it.label }}
                 </button>
               </div>
             </div>
           </div>
-          <div v-if="loading" class="flex items-center gap-2 px-2 py-2 text-xs text-gray-500 dark:text-gray-400">
-            <svg class="animate-spin h-4 w-4 text-indigo-600" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+          <div v-if="loading" class="flex items-center gap-2 p-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="animate-spin size-4 text-indigo-600" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
             <span>Ładowanie…</span>
           </div>
@@ -171,7 +171,7 @@ function pickRemote(item) { emit('use', item.label) }
           <div class="max-h-64 overflow-auto">
             <template v-if="valueProxy && filteredLocations.length > 0">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Wyniki</div>
-              <button type="button" v-for="loc in filteredLocations" :key="'f-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+              <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </template>
@@ -180,13 +180,13 @@ function pickRemote(item) { emit('use', item.label) }
             </template>
             <div v-if="recentLocations.length > 0" class="mt-2">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Ostatnio wybierane</div>
-              <button type="button" v-for="loc in recentLocations" :key="'r-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+              <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </div>
             <div class="mt-2">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Popularne lokalizacje</div>
-              <button type="button" v-for="loc in popularLocations" :key="'p-'+loc" @click="$emit('use', loc)" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200">
+              <button v-for="loc in popularLocations" :key="'p-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </div>

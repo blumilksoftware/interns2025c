@@ -10,7 +10,7 @@ const props = defineProps({
   open: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update:modelValue', 'update:open'])
+const emit = defineEmits(['update:modelValue', 'update:open', 'changed'])
 
 const { t } = useI18n()
 
@@ -19,12 +19,12 @@ const valueProxy = computed({
   set: (val) => {
     emit('update:modelValue', val)
     emit('changed', props.filterId)
-  }
+  },
 })
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val)
+  set: (val) => emit('update:open', val),
 })
 
 const summary = computed(() => {
@@ -53,19 +53,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }" ref="rootRef">
+  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
     <div class="relative z-30">
-      <button type="button" @click="isOpen = !isOpen" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
-        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <svg class="size-4 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
         </svg>
       </button>
       <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
         <div class="max-h-60 overflow-auto">
           <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-            <input type="radio" :name="filterId" :value="opt.value" v-model="valueProxy" class="border-gray-300 dark:border-gray-700" />
+            <input v-model="valueProxy" type="radio" :name="filterId" :value="opt.value" class="border-gray-300 dark:border-gray-700">
             <span>{{ opt.labelKey ? t(opt.labelKey) : (opt.label || opt.value) }}</span>
           </label>
         </div>

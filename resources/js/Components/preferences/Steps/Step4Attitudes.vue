@@ -1,14 +1,17 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ChoiceTiles from '@/Components/ChoiceTiles.vue'
+import { usePreferencesStore } from '@/stores/preferences'
 
 const props = defineProps({
-  form: { type: Object, required: true },
   selectorConfigs: { type: Object, required: true },
-  moveFilterById: { type: Function, required: true }
+  moveFilterById: { type: Function, required: true },
 })
 
 const { t } = useI18n()
+const prefs = usePreferencesStore()
+const form = computed({ get: () => prefs.form, set: (v) => prefs.setForm(v || {}) })
 </script>
 
 <template>
@@ -20,33 +23,33 @@ const { t } = useI18n()
       <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20 filter-item" data-filter-id="attitude-dogs">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToDogs') }}</span>
-          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToDogs = null; moveFilterById('attitude-dogs')">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToDogs = null; props.moveFilterById('attitude-dogs')">{{ t('preferences.placeholders.any') }}</button>
         </div>
-        <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToDogs" @update:modelValue="val => { form.attitudeToDogs = val; moveFilterById('attitude-dogs') }" />
+        <ChoiceTiles :columns="props.selectorConfigs.attitudes.columns" :options="props.selectorConfigs.attitudes.options" :model-value="form.attitudeToDogs" @update:model-value="val => { form.attitudeToDogs = val; props.moveFilterById('attitude-dogs') }" />
       </div>
 
       <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20 filter-item" data-filter-id="attitude-cats">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToCats') }}</span>
-          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToCats = null; moveFilterById('attitude-cats')">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToCats = null; props.moveFilterById('attitude-cats')">{{ t('preferences.placeholders.any') }}</button>
         </div>
-        <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToCats" @update:modelValue="val => { form.attitudeToCats = val; moveFilterById('attitude-cats') }" />
+        <ChoiceTiles :columns="props.selectorConfigs.attitudes.columns" :options="props.selectorConfigs.attitudes.options" :model-value="form.attitudeToCats" @update:model-value="val => { form.attitudeToCats = val; props.moveFilterById('attitude-cats') }" />
       </div>
 
       <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20 filter-item" data-filter-id="attitude-children">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToChildren') }}</span>
-          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToChildren = null; moveFilterById('attitude-children')">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToChildren = null; props.moveFilterById('attitude-children')">{{ t('preferences.placeholders.any') }}</button>
         </div>
-        <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToChildren" @update:modelValue="val => { form.attitudeToChildren = val; moveFilterById('attitude-children') }" />
+        <ChoiceTiles :columns="props.selectorConfigs.attitudes.columns" :options="props.selectorConfigs.attitudes.options" :model-value="form.attitudeToChildren" @update:model-value="val => { form.attitudeToChildren = val; props.moveFilterById('attitude-children') }" />
       </div>
 
       <div class="h-full border border-gray-200/70 dark:border-gray-700/60 rounded-lg p-3 bg-white/60 dark:bg-gray-800/20 filter-item" data-filter-id="attitude-adults">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ t('preferences.labels.attitudeToAdults') }}</span>
-          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToAdults = null; moveFilterById('attitude-adults')">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-[11px] px-2 py-0.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.attitudeToAdults = null; props.moveFilterById('attitude-adults')">{{ t('preferences.placeholders.any') }}</button>
         </div>
-        <ChoiceTiles :columns="selectorConfigs.attitudes.columns" :options="selectorConfigs.attitudes.options" :model-value="form.attitudeToAdults" @update:modelValue="val => { form.attitudeToAdults = val; moveFilterById('attitude-adults') }" />
+        <ChoiceTiles :columns="props.selectorConfigs.attitudes.columns" :options="props.selectorConfigs.attitudes.options" :model-value="form.attitudeToAdults" @update:model-value="val => { form.attitudeToAdults = val; props.moveFilterById('attitude-adults') }" />
       </div>
     </div>
   </div>

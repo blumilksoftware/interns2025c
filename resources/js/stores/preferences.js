@@ -44,13 +44,23 @@ export const usePreferencesStore = defineStore('preferences', {
       this.save()
     },
     load() {
-      try {
-        const raw = localStorage.getItem('preferencesForm')
-        if (raw) this.form = Object.assign(defaultForm(), JSON.parse(raw))
-      } catch {}
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('preferencesForm')
+          if (raw) this.form = Object.assign(defaultForm(), JSON.parse(raw))
+        } catch (error) {
+          console.warn('Failed to load preferences from localStorage:', error)
+        }
+      }
     },
     save() {
-      try { localStorage.setItem('preferencesForm', JSON.stringify(this.form)) } catch {}
+      if (typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem('preferencesForm', JSON.stringify(this.form))
+        } catch (error) {
+          console.warn('Failed to save preferences to localStorage:', error)
+        }
+      }
     },
     apply() {
       // Placeholder: hook for triggering search or analytics
