@@ -14,7 +14,7 @@ class PreferenceController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render("Dashboard/Dashboard");
+        return Inertia::render("Preferences/Preferences");
     }
 
     public function store(PreferenceRequest $request): RedirectResponse

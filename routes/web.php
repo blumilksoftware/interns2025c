@@ -44,7 +44,7 @@ Route::middleware([
     Route::delete("/admin/pets/{pet}/reject", [AdminController::class, "rejectPet"])->name("pets.reject");
 });
 
-Route::get("/preferences", fn() => Inertia::render("Preferences/Preferences"))->name("preferences");
+Route::get("/preferences", [PreferenceController::class, "index"])->name("preferences");
 
 Route::resource("pet-shelter-addresses", PetShelterAddressController::class)
     ->only("store", "update", "destroy");

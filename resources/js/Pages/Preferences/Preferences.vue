@@ -16,5 +16,3 @@ const { t } = useI18n()
     <PreferencesForm />
   </div>
 </template>
-
-
