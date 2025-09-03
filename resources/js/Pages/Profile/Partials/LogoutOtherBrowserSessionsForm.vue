@@ -5,9 +5,9 @@ import ActionMessage from '@/Components/ActionMessage.vue'
 import ActionSection from '@/Components/ActionSection.vue'
 import DialogModal from '@/Components/DialogModal.vue'
 import InputError from '@/Components/InputError.vue'
-import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
+import AuthButton from '@/Components/Buttons/AuthButton.vue'
 import SecondaryButton from '@/Components/Buttons/SecondaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import AuthTextInput from '@/Components/AuthTextInput.vue'
 import { routes } from '@/routes'
 
 defineProps({
@@ -49,15 +49,15 @@ const closeModal = () => {
 <template>
   <ActionSection>
     <template #title>
-      Browser Sessions
+      <span class="text-gray-900 text-sm transition-all duration-150 ease-out font-semibold">Browser Sessions</span>
     </template>
 
     <template #description>
-      Manage and log out your active sessions on other browsers and devices.
+      <span class="text-gray-400 text-sm transition-all duration-150 ease-out font-semibold">Manage and log out your active sessions on other browsers and devices.</span>
     </template>
 
     <template #content>
-      <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
+      <div class="max-w-xl text-gray-400 text-sm transition-all duration-150 ease-out font-semibold">
         If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
       </div>
 
@@ -74,7 +74,7 @@ const closeModal = () => {
           </div>
 
           <div class="ms-3">
-            <div class="text-sm text-gray-600 dark:text-gray-400">
+            <div class="text-gray-400 text-sm transition-all duration-150 ease-out font-semibold">
               {{ session.agent.platform ? session.agent.platform : 'Unknown' }} - {{ session.agent.browser ? session.agent.browser : 'Unknown' }}
             </div>
 
@@ -91,9 +91,9 @@ const closeModal = () => {
       </div>
 
       <div class="flex items-center mt-5">
-        <PrimaryButton @click="confirmLogout">
+        <AuthButton @click="confirmLogout">
           Log Out Other Browser Sessions
-        </PrimaryButton>
+        </AuthButton>
 
         <ActionMessage :on="form.recentlySuccessful" class="ms-3">
           Done.
@@ -109,7 +109,7 @@ const closeModal = () => {
           Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
 
           <div class="mt-4">
-            <TextInput
+            <AuthTextInput
               ref="passwordInput"
               v-model="form.password"
               type="password"
@@ -128,14 +128,14 @@ const closeModal = () => {
             Cancel
           </SecondaryButton>
 
-          <PrimaryButton
+          <AuthButton
             class="ms-3"
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
             @click="logoutOtherBrowserSessions"
           >
             Log Out Other Browser Sessions
-          </PrimaryButton>
+          </AuthButton>
         </template>
       </DialogModal>
     </template>

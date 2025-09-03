@@ -5,8 +5,8 @@ import ActionMessage from '@/Components/ActionMessage.vue'
 import FormSection from '@/Components/FormSection.vue'
 import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import AuthButton from '@/Components/Buttons/AuthButton.vue'
+import AuthTextInput from '@/Components/AuthTextInput.vue'
 import { routes } from '@/routes'
 
 const passwordInput = ref(null)
@@ -41,17 +41,17 @@ const updatePassword = () => {
 <template>
   <FormSection @submitted="updatePassword">
     <template #title>
-      Update Password
+      <span class="text-gray-900 text-sm transition-all duration-150 ease-out font-semibold">Update Password</span>
     </template>
 
     <template #description>
-      Ensure your account is using a long, random password to stay secure.
+      <span class="text-gray-400 text-sm transition-all duration-150 ease-out font-semibold">Ensure your account is using a long, random password to stay secure.</span>
     </template>
 
     <template #form>
       <div class="col-span-6 sm:col-span-4">
         <InputLabel for="current_password" value="Current Password" />
-        <TextInput
+        <AuthTextInput
           id="current_password"
           ref="currentPasswordInput"
           v-model="form.current_password"
@@ -64,7 +64,7 @@ const updatePassword = () => {
 
       <div class="col-span-6 sm:col-span-4">
         <InputLabel for="password" value="New Password" />
-        <TextInput
+        <AuthTextInput
           id="password"
           ref="passwordInput"
           v-model="form.password"
@@ -77,7 +77,7 @@ const updatePassword = () => {
 
       <div class="col-span-6 sm:col-span-4">
         <InputLabel for="password_confirmation" value="Confirm Password" />
-        <TextInput
+        <AuthTextInput
           id="password_confirmation"
           v-model="form.password_confirmation"
           type="password"
@@ -93,9 +93,9 @@ const updatePassword = () => {
         Saved.
       </ActionMessage>
 
-      <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+      <AuthButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
         Save
-      </PrimaryButton>
+      </AuthButton>
     </template>
   </FormSection>
 </template>

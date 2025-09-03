@@ -6,9 +6,10 @@ import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 import Checkbox from '@/Components/Checkbox.vue'
 import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import AuthButton from '@/Components/Buttons/AuthButton.vue'
+import AuthTextInput from '@/Components/AuthTextInput.vue'
 import { routes } from '@/routes'
+import AuthLayout from '@/Pages/Auth/AuthLayout.vue'
 
 const { t } = useI18n()
 const form = useForm({
@@ -29,93 +30,91 @@ const submit = () => {
 <template>
   <Head :title="t('titles.register')" />
 
-  <AuthenticationCard>
-    <template #logo>
-      <AuthenticationCardLogo />
-    </template>
+  <AuthLayout>
+    <AuthenticationCard>
+      <template #logo>
+        <AuthenticationCardLogo />
+      </template>
 
-    <form @submit.prevent="submit">
-      <div>
-        <InputLabel for="name" :value="t('auth.name')" />
-        <TextInput
-          id="name"
-          v-model="form.name"
-          type="text"
-          class="mt-1 block w-full"
-          required
-          autofocus
-          autocomplete="name"
-        />
-        <InputError class="mt-2" :message="form.errors.name" />
-      </div>
+      <form @submit.prevent="submit">
+        <div>
+          <InputLabel for="name" :value="t('auth.name')" />
+          <AuthTextInput
+            id="name"
+            v-model="form.name"
+            type="text"
+            class="mt-1 block w-full"
+            required
+            autofocus
+            autocomplete="name"
+          />
+          <InputError class="mt-2" :message="form.errors.name" />
+        </div>
 
-      <div class="mt-4">
-        <InputLabel for="email" :value="t('auth.email')" />
-        <TextInput
-          id="email"
-          v-model="form.email"
-          type="email"
-          class="mt-1 block w-full"
-          required
-          autocomplete="username"
-        />
-        <InputError class="mt-2" :message="form.errors.email" />
-      </div>
+        <div class="mt-4">
+          <InputLabel for="email" :value="t('auth.email')" />
+          <AuthTextInput
+            id="email"
+            v-model="form.email"
+            type="email"
+            class="mt-1 block w-full"
+            required
+            autocomplete="username"
+          />
+          <InputError class="mt-2" :message="form.errors.email" />
+        </div>
 
-      <div class="mt-4">
-        <InputLabel for="password" :value="t('auth.password')" />
-        <TextInput
-          id="password"
-          v-model="form.password"
-          type="password"
-          class="mt-1 block w-full"
-          required
-          autocomplete="new-password"
-        />
-        <InputError class="mt-2" :message="form.errors.password" />
-      </div>
+        <div class="mt-4">
+          <InputLabel for="password" :value="t('auth.password')" />
+          <AuthTextInput
+            id="password"
+            v-model="form.password"
+            type="password"
+            class="mt-1 block w-full"
+            required
+            autocomplete="new-password"
+          />
+          <InputError class="mt-2" :message="form.errors.password" />
+        </div>
 
-      <div class="mt-4">
-        <InputLabel for="password_confirmation" :value="t('auth.confirmPassword')" />
-        <TextInput
-          id="password_confirmation"
-          v-model="form.password_confirmation"
-          type="password"
-          class="mt-1 block w-full"
-          required
-          autocomplete="new-password"
-        />
-        <InputError class="mt-2" :message="form.errors.password_confirmation" />
-      </div>
+        <div class="mt-4">
+          <InputLabel for="password_confirmation" :value="t('auth.confirmPassword')" />
+          <AuthTextInput
+            id="password_confirmation"
+            v-model="form.password_confirmation"
+            type="password"
+            class="mt-1 block w-full"
+            required
+            autocomplete="new-password"
+          />
+          <InputError class="mt-2" :message="form.errors.password_confirmation" />
+        </div>
 
-      <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
-        <InputLabel for="terms">
-          <div class="flex items-center">
-            <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
-            <div class="ms-2">
-              {{ t('terms.agreement') }}
+        <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
+          <InputLabel for="terms">
+            <div class="flex items-center">
+              <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
+              <div class="ms-2">
+                {{ t('terms.agreement') }}
+              </div>
             </div>
-          </div>
-        </InputLabel>
-        <InputError class="mt-2" :message="form.errors.terms" />
-      </div>
+          </InputLabel>
+          <InputError class="mt-2" :message="form.errors.terms" />
+        </div>
 
-      <div class="flex items-center justify-end mt-4">
-        <Link
-          :href="routes.login()"
-          class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-        >
-          {{ t('auth.alreadyRegistered') }}
-        </Link>
+        <div class="flex flex-col items-center justify-center mt-8">
+          <Link
+            :href="routes.login()"
+            class="text-gray-400  text-sm transition-all duration-150 ease-out hover:text-gray-900 font-semibold mb-4"
+          >
+            {{ t('auth.alreadyRegistered') }}
+          </Link>
 
-        <PrimaryButton
-          class="ms-4"
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
-        >
-          {{ t('auth.register') }}
-        </PrimaryButton>
-      </div>
-    </form>
-  </AuthenticationCard>
+          <AuthButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            {{ t('auth.register') }}
+          </AuthButton>
+        </div>
+      </form>
+    </AuthenticationCard>
+  </AuthLayout>
 </template>

@@ -6,8 +6,9 @@ import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
 import Checkbox from '@/Components/Checkbox.vue'
 import InputError from '@/Components/InputError.vue'
 import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import AuthLayout from '@/Pages/Auth/AuthLayout.vue'
+import AuthTextInput from '@/Components/AuthTextInput.vue'
+import AuthButton from '@/Components/Buttons/AuthButton.vue'
 import { routes } from '@/routes'
 
 defineProps({
@@ -41,65 +42,67 @@ const submit = () => {
 
 <template>
   <Head :title="t('titles.login')" />
+  <AuthLayout>
+    <AuthenticationCard>
+      <template #logo>
+        <AuthenticationCardLogo />
+      </template>
 
-  <AuthenticationCard>
-    <template #logo>
-      <AuthenticationCardLogo />
-    </template>
-
-    <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-      {{ t(status) }}
-    </div>
-
-    <form @submit.prevent="submit">
-      <div>
-        <InputLabel for="email" :value="t('auth.email')" />
-        <TextInput
-          id="email"
-          v-model="form.email"
-          type="email"
-          class="mt-1 block w-full"
-          required
-          autofocus
-          autocomplete="username"
-        />
-        <InputError class="mt-2" :message="form.errors.email" />
+      <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
+        {{ t(status) }}
       </div>
 
-      <div class="mt-4">
-        <InputLabel for="password" :value="t('auth.password')" />
-        <TextInput
-          id="password"
-          v-model="form.password"
-          type="password"
-          class="mt-1 block w-full"
-          required
-          autocomplete="current-password"
-        />
-        <InputError class="mt-2" :message="form.errors.password" />
-      </div>
-
-      <div class="block mt-4">
-        <label class="flex items-center">
-          <Checkbox v-model:checked="form.remember" name="remember" />
-          <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"> {{ t('auth.remember_me') }} </span>
-        </label>
-      </div>
-      <div class="flex items-center justify-between mt-4">
-        <div class="flex flex-col justify-between gap-2 mt-4">
-          <Link v-if="canResetPassword" :href="routes.password.request()" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-            {{ t('auth.forgotPassword') }}
-          </Link>
-          <Link v-if="canResetPassword" :href="routes.register()" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-            {{ t('auth.register') }}
-          </Link>
+      <form @submit.prevent="submit">
+        <div>
+          <InputLabel for="email" :value="t('auth.email')" />
+          <AuthTextInput
+            id="email"
+            v-model="form.email"
+            type="email"
+            class="mt-1 block w-full"
+            required
+            autofocus
+            autocomplete="username"
+          />
+          <InputError class="mt-2" :message="form.errors.email" />
         </div>
-        <div class="flex items-center justify-end mt-4">
-          <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-            {{ t('auth.login') }}
-          </PrimaryButton>
+
+        <div class="mt-4">
+          <InputLabel for="password" :value="t('auth.password')" />
+          <AuthTextInput
+            id="password"
+            v-model="form.password"
+            type="password"
+            class="mt-1 block w-full"
+            required
+            autocomplete="current-password"
+          />
+          <InputError class="mt-2" :message="form.errors.password" />
         </div>
-      </div>
-    </form>
-  </AuthenticationCard>
+
+        <div class="block mt-4 font-sans">
+          <label class="flex items-center">
+            <Checkbox v-model:checked="form.remember" name="remember" />
+            <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold"> {{ t('auth.remember_me') }} </span>
+          </label>
+        </div>
+        <div class="mt-8">
+          <div class="flex justify-center gap-8 mb-8 ">
+            <Link v-if="canResetPassword" :href="routes.password.request()" class="text-gray-400 text-sm transition-all duration-150 ease-out hover:text-gray-900 font-semibold">
+              {{ t('auth.forgotPassword') }}
+            </Link>
+            <Link v-if="canResetPassword" :href="routes.register()" class="text-gray-400 text-sm transition-all duration-150 ease-out hover:text-gray-900 font-semibold">
+              {{ t('auth.register') }}
+            </Link>
+          </div>
+
+          <div>
+            <AuthButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+              {{ t('auth.login') }}
+            </AuthButton>
+          </div>
+        </div>
+      </form>
+    </AuthenticationCard>
+  </AuthLayout>
 </template>

@@ -1,0 +1,204 @@
+{
+"auth": {
+    "name": "Imię",
+    "email": "E-mail",
+    "password": "Hasło",
+    "remember": "Zapamiętaj mnie",
+    "login": "Zaloguj się",
+    "logout": "Wyloguj się",
+    "register": "Zarejestruj się",
+    "alreadyRegistered": "Masz już konto?",
+    "confirmPassword": "Potwierdź hasło",
+    "failed": "Podane dane są nieprawidłowe.",
+    "remember_me": "Zapamiętaj mnie",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "resetPassword": "Zresetuj hasło",
+    "resetPasswordLink": "Wyślij link do resetowania hasła",
+    "code": "Kod",
+    "recoveryCode": "Kod zapasowy",
+    "useRecoveryCode": "Użyj kodu zapasowego",
+    "useAuthenticationCode": "Użyj kodu autoryzacyjnego",
+    "emailVerification": "Potwierdź swój e-mail klikając w link, który Ci wysłaliśmy.",
+    "emailVerificationSent": "E-mail potwierdzający został wysłany!",
+    "resendVerificationEmail": "Wyślij ponownie e-mail potwierdzający",
+    "editProfile": "Edytuj profil",
+    "logOut": "Wyloguj"
+  },
+  "passwords": {
+    "resetLink": "Wyślij link do resetowania hasła",
+    "forgot": "Nie pamiętasz hasła?",
+    "instruction": "Nie ma problemu. Podaj swój adres e-mail, a wyślemy Ci link do zresetowania hasła.",
+    "sent": "Wysłaliśmy link do resetowania hasła!"
+  },
+  "verification": {
+    "resend": "Wyślij ponownie e-mail weryfikacyjny",
+    "checkEmail": "Zanim przejdziesz dalej, proszę potwierdź swój adres e-mail klikając w link, który Ci wysłaliśmy."
+  },
+  "profile": {
+    "edit": "Edytuj profil"
+  },
+  "terms": {
+    "agreement": "Zgadzam się na Regulamin i Politykę Prywatności"
+  },
+  "validation": {
+    "min": {
+      "string": "Hasło musi mieć co najmniej 8 znaków"
+    },
+    "confirmed": "Hasła muszą być takie same",
+    "confirm": "Potwierdź"
+  },
+  "title": {
+    "secure": "Chroniony obszar",
+    "register": "Zarejestruj się",
+    "forgotPassword": "Zapomniałem hasła",
+    "login": "Logowanie",
+    "resetPassword": "Zresetuj hasło",
+    "emailVerification": "Potwierdź swój e-mail",
+    "landingPage": "Po prostu",
+    "adminPanel": "Panel administracyjny",
+    "dashboard": "Panel główny",
+    "userProfile": "Profil"
+  },
+  "navigation": {
+    "dashboard": "Panel główny",
+    "manageAccount": "Zarządzaj kontem",
+    "profile": "Profil",
+    "apiTokens": "Tokeny API",
+    "logOut": "Wyloguj się",
+    "goToHomepage": "Przejdź do strony głównej",
+    "openMainMenu": "Otwórz menu główne",
+    "closeMenu": "Zamknij menu"
+  },
+  "admin": {
+    "currentlyViewing": "Aktualnie przeglądasz:",
+    "records": "rekordów",
+    "searchInAllFields": "Szukaj we wszystkich polach",
+    "searchPlaceholder": "Szukaj we wszystkich polach...",
+    "sidebar": {
+      "cruds": "CRUDy",
+      "pets": "Zwierzęta",
+      "users": "Użytkownicy",
+      "shelters": "Schroniska",
+      "logs": "Logi",
+      "goToProfile": "Przejdź do swojego profilu"
+    },
+    "table": {
+      "title": "Dynamiczna tabela danych",
+      "subtitle": "Automatycznie dostosowuje się do danych z bazy",
+      "filters": "Filtry",
+      "clearAll": "Wyczyść wszystko",
+      "actions": "Akcje",
+      "edit": "Edytuj",
+      "all": "Wszystkie",
+      "filterPlaceholder": "Filtruj {field}..."
+    },
+    "modal": {
+      "edit": "Edytuj {type}",
+      "saveChanges": "Zapisz zmiany",
+      "cancel": "Anuluj",
+      "select": "Wybierz {field}"
+    },
+    "pagination": {
+      "previous": "Poprzednia",
+      "next": "Następna",
+      "first": "Pierwsza",
+      "last": "Ostatnia",
+      "showing": "Pokazuję",
+      "to": "do",
+      "of": "z",
+      "results": "wyników",
+      "emptyTable": "Pusta tabela",
+      "noDataAvailable": "brak dostępnych danych"
+    },
+    "profile": {
+      "administrator": "Administrator",
+      "changePicture": "Zmień zdjęcie",
+      "changePassword": "Zmień hasło",
+      "logout": "Wyloguj się"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Daj kochający dom futrzastemu przyjacielowi już dziś",
+      "subtitle": "Każde zwierzę zasługuje na drugą szansę. Znajdź swojego idealnego towarzysza i zmień jego życie.",
+      "adoptButton": "Adoptuj teraz",
+      "donateButton": "Wesprzyj nas"
+    },
+    "mvp": {
+      "featuredPet": "Polecany zwierzak",
+      "meetPet": "Poznaj",
+      "personalityTraits": "Cechy charakteru",
+      "characteristics": "Charakterystyka",
+      "adoptPet": "Adoptuj",
+      "friendly": "Przyjazny i otwarty",
+      "goodWithChildren": "Świetny z dziećmi",
+      "intelligent": "Wysoko inteligentny",
+      "lovesOutdoor": "Uwielbia aktywności na świeżym powietrzu",
+      "familyCompanion": "Świetny towarzysz rodziny",
+      "wellTrained": "Dobrze wyszkolony i posłuszny",
+      "age": "lat",
+      "yearsOld": "lat",
+      "breed": "Rasa",
+      "status": "Status",
+      "availableForAdoption": "Dostępny do adopcji",
+      "location": "Lokalizacja",
+      "health": "Zdrowie",
+      "vaccinated": "Zaszczepiony i zdrowy",
+      "temperament": "Temperament",
+      "gentle": "Łagodny i cierpliwy",
+      "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać."
+    },
+    "navigation": {
+      "home": "Strona główna",
+      "about": "O nas",
+      "pets": "Zwierzęta",
+      "contact": "Kontakt",
+      "login": "Zaloguj się",
+      "register": "Zarejestruj się"
+    },
+    "footer": {
+      "copyright": "Wszystkie prawa zastrzeżone",
+      "privacy": "Polityka prywatności",
+      "terms": "Regulamin",
+      "contact": "Kontakt"
+    },
+    "imageSection": {
+      "title": "Nasi futrzani przyjaciele czekają na adopcję",
+      "subtitle": "Poznaj nasze wspaniałe zwierzęta szukające swojego domu na zawsze. Każde ma unikalną historię i osobowość.",
+      "pets": {
+        "max": {
+          "description": "Max to 2-letni kocur. Jest bardzo energiczny i uwielbia eksplorować. Lubi wspinaczki i obserwowanie ptaków z okna."
+        },
+        "sophie": {
+          "description": "Sophie to 3-letnia kotka. Jest bardzo łagodna i uwielbia się przytulać. Ma piękne długie futro i lubi być czesana."
+        },
+        "oliver": {
+          "description": "Oliver to 1,5-letni kocur. Jest bardzo zabawowy i uwielbia interaktywne zabawki. Ma ciekawską osobowość i lubi wszystko badać."
+        },
+        "buddy": {
+          "description": "Buddy to 3-letni Golden Retriever. Jest bardzo przyjazny i uwielbia bawić się w aportowanie. Lubi pływać i chodzić na długie spacery."
+        },
+        "luna": {
+          "description": "Luna to 2-letnia Husky. Jest bardzo energiczna i uwielbia biegać. Ma piękne niebieskie oczy i lubi bawić się na śniegu."
+        },
+        "rocky": {
+          "description": "Rocky to 4-letni Owczarek Niemiecki. Jest bardzo lojalny i opiekuńczy. Uwielbia treningi i lubi być wśród swojej rodziny."
+        }
+      }
+    },
+    "petTags": {
+      "friendly": "Przyjazny",
+      "gentle": "Łagodny",
+      "energetic": "Energiczny",
+      "playful": "Skory do zabawy",
+      "calm": "Spokojny",
+      "loyal": "Lojalny",
+      "smart": "Inteligentny",
+      "protective": "Opiekuńczy",
+      "social": "Towarzyski",
+      "active": "Aktywny"
+    }
+  },
+  "The provided password was incorrect.": "Podane hasło jest nieprawidłowe.",
+  "The password is incorrect." : "Podane hasło jest nieprawidłowe."
+}

@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <div v-if="message">
-    <p class="text-sm text-red-600 dark:text-red-400">
+    <p class="text-sm text-red-600 dark:text-red-400 font-semibold transition-all duration-150 ease-out">
       {{ t(message) || message }}
     </p>
   </div>
