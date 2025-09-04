@@ -3,7 +3,11 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CellContent from './CellContent.vue'
 import Pagination from './Pagination.vue'
-import { getColumnLabel, getColumnRenderer, getColumnType, getColumnOptions } from '@/data/columnConfig.js'
+import { getColumnLabel, getColumnOptions, getColumnRenderer, getColumnType } from '@/data/columns/index'
+import { router } from '@inertiajs/vue3'
+import { routes } from '@/routes'
+import OptionButton from '@/Components/Buttons/OptionButton.vue'
+import { ArchiveBoxXMarkIcon, CheckCircleIcon, PencilSquareIcon } from '@heroicons/vue/20/solid'
 
 const { t } = useI18n()
 
@@ -90,6 +94,14 @@ const handleEdit = (item) => {
   emit('edit-item', item)
 }
 
+const handleAcceptPet = (item) => {
+  router.post(routes.admin.acceptPet(item.id))
+}
+
+const handleRejectPet = (item) => {
+  router.delete(routes.admin.rejectPet(item.id))
+}
+
 const filteredData = computed(() => {
   let result = [...props.data]
   
@@ -171,7 +183,7 @@ const filteredData = computed(() => {
       if (aValue === null || aValue === undefined) return 1
       if (bValue === null || bValue === undefined) return -1
       
-      let comparison = 0
+      let comparison
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         comparison = aValue - bValue
       } else {
@@ -232,9 +244,7 @@ const clearFilters = () => {
 const handleNativeDateChange = (columnKey, date) => {
   if (date) {
     const parts = date.split('-')
-    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`
-    
-    filters.value[columnKey] = formattedDate
+    filters.value[columnKey] = `${parts[2]}-${parts[1]}-${parts[0]}`
   }
 }
 </script>
@@ -336,7 +346,11 @@ const handleNativeDateChange = (columnKey, date) => {
               </div>
             </td>
             <td class="p-2 sm:px-4 text-sm text-gray-900">
-              <button class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" @click="handleEdit(row)">{{ t('admin.table.edit') }}</button>
+              <div class="flex flex-col items-stretch gap-2 ">
+                <OptionButton :icon="PencilSquareIcon" :text="t('admin.table.edit')" :class="'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'" @click="handleEdit(row)" />
+                <OptionButton v-if="props.dataSetType === 'incomingPetsRequests'" :icon="CheckCircleIcon" :text="t('admin.table.accept')" :class="'bg-lime-600 hover:bg-lime-500 focus-visible:outline-lime-600'" @click="handleAcceptPet(row)" />
+                <OptionButton v-if="props.dataSetType === 'incomingPetsRequests'" :icon="ArchiveBoxXMarkIcon" :text="t('admin.table.reject')" :class="'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600'" @click="handleRejectPet(row)" />
+              </div>
             </td>
           </tr>
         </tbody>

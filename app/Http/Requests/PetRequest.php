@@ -10,6 +10,7 @@ use App\Enums\PetSex;
 use App\Enums\PetSpecies;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class PetRequest extends FormRequest
 {
@@ -27,13 +28,13 @@ class PetRequest extends FormRequest
             "species" => [
                 "required",
                 "string",
-                Rule::in(array_column(PetSpecies::cases(), "value")),
+                new Enum(PetSpecies::class),
             ],
             "breed" => ["nullable", "string", "max:255"],
             "sex" => [
                 "required",
                 "string",
-                Rule::in(array_column(PetSex::cases(), "value")),
+                new Enum(PetSex::class),
             ],
             "age" => ["nullable", "string", "max:255"],
             "size" => ["nullable", "string", "max:255"],
@@ -44,7 +45,7 @@ class PetRequest extends FormRequest
             "health_status" => [
                 "nullable",
                 "string",
-                Rule::in(array_column(PetHealthStatus::cases(), "value")),
+                new Enum(PetHealthStatus::class),
                 "max:500",
             ],
             "current_treatment" => ["nullable", "string", "max:1024"],
@@ -76,6 +77,8 @@ class PetRequest extends FormRequest
                 "integer",
                 "exists:pet_shelters,id",
             ],
+            "tags" => ["nullable", "array"],
+            "tags.*" => ["integer", "exists:tags,id"],
         ];
     }
 }

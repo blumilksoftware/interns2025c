@@ -31,7 +31,7 @@ class PetShelterController extends Controller
 
         $createPetShelterAction->execute($data);
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Pet shelter created successfully.");
     }
 
@@ -41,7 +41,7 @@ class PetShelterController extends Controller
 
         $petShelter->update($request->validated());
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Pet shelter updated successfully.");
     }
 
@@ -51,7 +51,7 @@ class PetShelterController extends Controller
 
         $petShelter->delete();
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Pet shelter deleted successfully.");
     }
 }

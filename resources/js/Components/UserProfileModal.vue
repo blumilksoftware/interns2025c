@@ -1,7 +1,7 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
-
+import { logo } from '@/helpers/mappers/logo'
 const { t } = useI18n()
 
 const props = defineProps({
@@ -11,12 +11,7 @@ const props = defineProps({
   },
   user: {
     type: Object,
-    default: () => ({
-      name: 'Tomasz Rebizant',
-      email: 'tomasz.rebizant@example.com',
-      phone: '+48 123 456 789',
-      avatar: '/Images/cat-dog.png',
-    }),
+    required: true,
   },
 })
 
@@ -70,10 +65,9 @@ const logout = () => {
               </div>
               
               <div class="flex flex-col items-center sm:items-start space-y-4">
-                <!-- User Avatar -->
                 <div class="shrink-0 relative">
                   <img 
-                    :src="user.avatar" 
+                    :src="user.avatar || logo.Logo" 
                     :alt="user.name"
                     class="size-24 rounded-full object-cover border-4 border-gray-200"
                     width="96"
@@ -105,13 +99,6 @@ const logout = () => {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                       <span class="text-sm text-gray-700">{{ user.email }}</span>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3">
-                      <svg class="size-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                      <span class="text-sm text-gray-700">{{ user.phone }}</span>
                     </div>
                   </div>
                 </div>

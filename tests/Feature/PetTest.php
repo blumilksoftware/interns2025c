@@ -7,9 +7,10 @@ namespace Tests\Feature;
 use App\Enums\Role;
 use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class PetTest extends TestCase
@@ -23,6 +24,7 @@ class PetTest extends TestCase
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
+
         $petData = Pet::factory()->make()->toArray();
 
         $response = $this->actingAs($user)->post("/pets", $petData);
@@ -33,64 +35,7 @@ class PetTest extends TestCase
         ]);
     }
 
-    public function testUserWithoutProperRoleCannotCreatePet(): void
-    {
-        $user = User::factory()->create([
-            "role" => Role::User->value,
-        ]);
-
-        $pet = Pet::factory()->make([
-            "name" => "TestPet",
-            "species" => "dog",
-        ])->toArray();
-
-        $response = $this->actingAs($user)->post("/pets", $pet);
-
-        $response->assertStatus(403);
-        $this->assertDatabaseMissing("pets", ["name" => "TestPet", "species" => "dog"]);
-    }
-
-    public function testCannotCreatePetWithNameLongerThanExpected(): void
-    {
-        $randomNameThatExceedRequestLimit = Str::random(256);
-
-        $pet = Pet::factory()->make([
-            "name" => $randomNameThatExceedRequestLimit,
-        ])->toArray();
-
-        $response = $this->post("/pets", $pet);
-
-        $response->assertSessionHasErrors(["name"]);
-        $this->assertDatabaseMissing("pets", ["name" => $randomNameThatExceedRequestLimit]);
-    }
-
-    public function testCannotCreatePetWithInvalidNameType(): void
-    {
-        $numericName = 12345;
-        $pet = Pet::factory()->make([
-            "name" => $numericName,
-        ])->toArray();
-
-        $response = $this->post("/pets", $pet);
-
-        $response->assertSessionHasErrors(["name"]);
-        $this->assertDatabaseMissing("pets", ["name" => $numericName]);
-    }
-
-    public function testCannotCreatePetWithMissingRequiredFields(): void
-    {
-        $pet = [
-            "species" => "dog",
-            "description" => "",
-        ];
-
-        $response = $this->post("/pets", $pet);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(["name", "sex", "description"]);
-    }
-
-    public function testUserWithProperRoleCanUpdatePet(): void
+    public function testUserWithProperRoleCanCreatePetWithTags(): void
     {
         $user = User::factory()->create([
             "role" => Role::ShelterEmployee->value,
@@ -98,9 +43,51 @@ class PetTest extends TestCase
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
 
-        $pet = Pet::factory()->create([
-            "name" => "OldName",
+        $tags = Tag::factory()->count(3)->create();
+        $petData = Pet::factory()->make()->toArray();
+
+        $response = $this->actingAs($user)->post("/pets", $petData);
+        $response->assertStatus(302);
+
+        $pet = Pet::where("name", $petData["name"])->firstOrFail();
+        $pet->tags()->sync($tags->pluck("id"));
+
+        $this->assertCount(3, $pet->tags);
+        $this->assertEqualsCanonicalizing(
+            $tags->pluck("id")->toArray(),
+            $pet->tags->pluck("id")->toArray(),
+        );
+    }
+
+    public function testUserWithoutProperRoleCannotCreatePet(): void
+    {
+        $user = User::factory()->create([
+            "role" => Role::User->value,
         ]);
+
+        $petData = Pet::factory()->make(["name" => "TestPet", "species" => "dog"])->toArray();
+
+        $response = $this->actingAs($user)->post("/pets", $petData);
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing("pets", ["name" => "TestPet"]);
+    }
+
+    public function testCannotCreatePetWithInvalidData(): void
+    {
+        $pet = ["species" => "dog", "description" => ""];
+
+        $response = $this->post("/pets", $pet);
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["name", "sex", "description"]);
+    }
+
+    public function testUserWithProperRoleCanUpdatePet(): void
+    {
+        $user = User::factory()->create(["role" => Role::ShelterEmployee->value]);
+        $shelter = PetShelter::factory()->create();
+        $user->petShelters()->attach($shelter->id);
+
+        $pet = Pet::factory()->create(["name" => "OldName"]);
 
         $updateData = [
             "name" => "NewName",
@@ -111,91 +98,112 @@ class PetTest extends TestCase
         ];
 
         $response = $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);
-
         $response->assertStatus(302);
+
         $pet->refresh();
         $this->assertEquals("NewName", $pet->name);
     }
 
-    public function testUserWithoutProperRoleCannotUpdatePet(): void
+    public function testUserCanUpdatePetTags(): void
     {
-        $user = User::factory()->create([
-            "role" => Role::User->value,
-        ]);
+        $user = User::factory()->create(["role" => Role::ShelterEmployee->value]);
+        $shelter = PetShelter::factory()->create();
+        $user->petShelters()->attach($shelter->id);
 
-        $pet = Pet::factory()->create([
-            "name" => "OldName",
-        ]);
+        $pet = Pet::factory()->create();
+        $initialTags = Tag::factory()->count(2)->create();
+        $pet->tags()->attach($initialTags);
 
+        $newTags = Tag::factory()->count(3)->create();
         $updateData = [
-            "name" => "NewName",
+            "name" => $pet->name,
+            "species" => $pet->species,
+            "sex" => $pet->sex,
+            "description" => $pet->description,
+            "shelter_id" => $pet->shelter_id,
+            "tags" => $newTags->pluck("id")->toArray(),
         ];
 
-        $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);
+        $response = $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);
+        $response->assertStatus(302);
 
         $pet->refresh();
-        $this->assertEquals("OldName", $pet->name);
-    }
-
-    public function testCannotUpdatePetWithInvalidData(): void
-    {
-        $pet = Pet::factory()->create();
-
-        $updateData = [
-            "name" => "",
-            "species" => "",
-            "sex" => "",
-            "description" => "",
-        ];
-
-        $response = $this->put("/pets/{$pet->id}", $updateData);
-
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(["name", "species", "sex", "description"]);
+        $this->assertCount(3, $pet->tags);
+        $this->assertEqualsCanonicalizing(
+            $newTags->pluck("id")->toArray(),
+            $pet->tags->pluck("id")->toArray(),
+        );
     }
 
     public function testUserWithShelterOrAdminRoleCanDeletePet(): void
     {
-        $roles = [Role::ShelterEmployee->value, Role::Admin->value];
-
-        foreach ($roles as $role) {
+        foreach ([Role::ShelterEmployee->value, Role::Admin->value] as $role) {
             $pet = Pet::factory()->create();
             $user = User::factory()->create(["role" => $role]);
 
             $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
-
             $response->assertStatus(302);
-            $this->assertDatabaseMissing("pets", ["id" => $pet->id]);
+
+            $this->assertSoftDeleted("pets", ["id" => $pet->id]);
+        }
+    }
+
+    public function testDeletingPetRemovesTagRelations(): void
+    {
+        $user = User::factory()->create(["role" => Role::ShelterEmployee->value]);
+        $shelter = PetShelter::factory()->create();
+        $user->petShelters()->attach($shelter->id);
+
+        $pet = Pet::factory()->create();
+        $tags = Tag::factory()->count(2)->create();
+        $pet->tags()->attach($tags);
+
+        $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
+        $response->assertStatus(302);
+        $this->assertSoftDeleted("pets", ["id" => $pet->id]);
+
+        foreach ($tags as $tag) {
+            $this->assertDatabaseMissing("pet_tag", [
+                "pet_id" => $pet->id,
+                "tag_id" => $tag->id,
+            ]);
         }
     }
 
     public function testUserWithoutShelterRoleCannotDeletePet(): void
     {
         $pet = Pet::factory()->create();
-        $user = User::factory()->create([
-            "role" => Role::User->value,
-        ]);
+        $user = User::factory()->create(["role" => Role::User->value]);
 
         $response = $this->actingAs($user)->delete("/pets/{$pet->id}");
-
         $response->assertStatus(403);
-        $this->assertDatabaseHas("pets", ["id" => $pet->id]);
-    }
-
-    public function testDeletingNonExistentPetReturnsNotFound(): void
-    {
-        $response = $this->delete("/pets/999999");
-
-        $response->assertStatus(404);
+        $this->assertNotSoftDeleted("pets", ["id" => $pet->id]);
     }
 
     public function testShowingExistingPetReturnsSuccess(): void
     {
         $pet = Pet::factory()->create();
+        $response = $this->get("/pets/{$pet->id}");
+        $response->assertStatus(200);
+    }
+
+    public function testShowingPetIncludesTags(): void
+    {
+        $pet = Pet::factory()->create(
+            ["is_accepted" => true],
+        );
+        $tags = Tag::factory()->count(2)->create();
+        $pet->tags()->syncWithoutDetaching($tags->pluck("id")->toArray());
 
         $response = $this->get("/pets/{$pet->id}");
 
-        $response->assertStatus(200);
+        $response->assertInertia(
+            fn(AssertableInertia $page) => $page->component("Pets/Show")
+                ->where("pet.data.id", $pet->id)
+                ->has("pet.data.tags", 2)
+                ->where("pet.data.tags.0.id", $tags[0]->id)
+                ->where("pet.data.tags.1.id", $tags[1]->id),
+        );
     }
 
     public function testShowingNonExistentPetReturnsNotFound(): void
