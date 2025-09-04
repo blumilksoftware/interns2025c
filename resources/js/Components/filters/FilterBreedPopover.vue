@@ -14,15 +14,15 @@ const emit = defineEmits(['update:modelValue', 'update:open', 'changed'])
 
 const selected = computed({
   get: () => Array.isArray(props.modelValue) ? props.modelValue : [],
-  set: (val) => {
-    emit('update:modelValue', val)
+  set: (newValue) => {
+    emit('update:modelValue', newValue)
     emit('changed', props.filterId)
   },
 })
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val),
+  set: (newValue) => emit('update:open', newValue),
 })
 
 const summary = computed(() => {
@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
+  <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
     <div class="relative">
       <button type="button" :disabled="(dogBreeds.length + catBreeds.length) === 0" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50" @click="isOpen = !isOpen">
@@ -66,16 +66,16 @@ onBeforeUnmount(() => {
         <div class="max-h-64 overflow-auto space-y-2">
           <div v-if="dogBreeds.length > 0">
             <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Psy</div>
-            <label v-for="b in dogBreeds" :key="'dog-'+b" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-              <input v-model="selected" type="checkbox" :value="b" class="rounded border-gray-300 dark:border-gray-700">
-              <span>{{ b }}</span>
+            <label v-for="dogBreed in dogBreeds" :key="'dog-'+dogBreed" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
+              <input v-model="selected" type="checkbox" :value="dogBreed" class="rounded border-gray-300 dark:border-gray-700">
+              <span>{{ dogBreed }}</span>
             </label>
           </div>
           <div v-if="catBreeds.length > 0">
             <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Koty</div>
-            <label v-for="b in catBreeds" :key="'cat-'+b" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-              <input v-model="selected" type="checkbox" :value="b" class="rounded border-gray-300 dark:border-gray-700">
-              <span>{{ b }}</span>
+            <label v-for="catBreed in catBreeds" :key="'cat-'+catBreed" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
+              <input v-model="selected" type="checkbox" :value="catBreed" class="rounded border-gray-300 dark:border-gray-700">
+              <span>{{ catBreed }}</span>
             </label>
           </div>
         </div>

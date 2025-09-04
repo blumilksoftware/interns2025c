@@ -11,9 +11,8 @@ let mapInstance = null
 let marker = null
 let circle = null
 let polygon = null
-let L = null
+let leaflet = null
 
-// Caches
 let polandGeo = null
 const geoCache = new Map()
 
@@ -22,15 +21,15 @@ const POLAND_BOUNDS = [
   [54.84, 24.15],
 ]
 
-function isWholeCountry(q) {
-  const s = (q || '').trim().toLowerCase()
-  return s === 'polska' || s === 'cała polska' || s === 'cala polska'
+function isWholeCountry(query) {
+  const normalizedQuery = (query || '').trim().toLowerCase()
+  return normalizedQuery === 'polska' || normalizedQuery === 'cała polska' || normalizedQuery === 'cala polska'
 }
-function normalize(s) { return (s || '').toLowerCase().trim() }
+function normalizeString(text) { return (text || '').toLowerCase().trim() }
 
 async function ensureLeafletLoaded() {
-  if (L) return
-  L = await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js')
+  if (leaflet) return
+  leaflet = await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js')
   if (!document.getElementById('leaflet-css')) {
     const link = document.createElement('link')
     link.id = 'leaflet-css'
@@ -40,9 +39,9 @@ async function ensureLeafletLoaded() {
   }
 }
 
-async function geocodeNominatim(q, signal) {
+async function geocodeNominatim(query, signal) {
   const viewbox = '14.07,54.84,24.15,49.00'
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&bounded=1&viewbox=${viewbox}&q=${encodeURIComponent(q)}`
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&bounded=1&viewbox=${viewbox}&q=${encodeURIComponent(query)}`
   const res = await fetch(url, { headers: { 'Accept': 'application/json', 'Accept-Language': 'pl,en' }, signal })
   if (!res.ok) throw new Error('nom http')
   const data = await res.json()
@@ -58,7 +57,7 @@ async function fetchPolandGeoJSON() {
     const res = await fetch(url, { headers: { 'Accept': 'application/json' } })
     if (!res.ok) throw new Error('geojson http')
     const data = await res.json()
-    const item = Array.isArray(data) ? data.find(it => it?.geojson) : null
+    const item = Array.isArray(data) ? data.find(entry => entry?.geojson) : null
     if (item?.geojson) { polandGeo = item.geojson; return polandGeo }
     throw new Error('geojson empty')
   } catch {
@@ -68,13 +67,11 @@ async function fetchPolandGeoJSON() {
 
 function renderCenter(center) {
   if (!mapInstance) return
-  // Update marker
-  if (!marker) marker = L.marker(center).addTo(mapInstance)
+  if (!marker) marker = leaflet.marker(center).addTo(mapInstance)
   else marker.setLatLng(center)
-  // Update radius
   const radiusMeters = (props.radiusKm ? Number(props.radiusKm) : 0) * 1000
   if (radiusMeters > 0) {
-    if (!circle) circle = L.circle(center, { radius: radiusMeters, color: '#4f46e5', fillColor: '#6366f1', fillOpacity: 0.15 }).addTo(mapInstance)
+    if (!circle) circle = leaflet.circle(center, { radius: radiusMeters, color: '#4f46e5', fillColor: '#6366f1', fillOpacity: 0.15 }).addTo(mapInstance)
     else { circle.setLatLng(center); circle.setRadius(radiusMeters) }
     try { mapInstance.fitBounds(circle.getBounds(), { padding: [20, 20] }) } catch { mapInstance.setView(center, 11) }
   } else {
@@ -93,24 +90,24 @@ async function render() {
     await nextTick()
     if (!containerRef.value) return
   }
-  const qRaw = (props.query || '')
-  const q = qRaw.trim()
+  const searchQueryRaw = (props.query || '')
+  const searchQuery = searchQueryRaw.trim()
 
   if (!mapInstance) {
-    mapInstance = L.map(containerRef.value, { scrollWheelZoom: false, attributionControl: true })
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(mapInstance)
+    mapInstance = leaflet.map(containerRef.value, { scrollWheelZoom: false, attributionControl: true })
+    leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(mapInstance)
   }
 
   if (mapInstance && polygon) { mapInstance.removeLayer(polygon); polygon = null }
 
-  if (isWholeCountry(q) || q === '') {
+  if (isWholeCountry(searchQuery) || searchQuery === '') {
     const geo = await fetchPolandGeoJSON()
     if (!mapInstance) return
     if (geo) {
-      polygon = L.geoJSON(geo, { style: { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 } }).addTo(mapInstance)
+      polygon = leaflet.geoJSON(geo, { style: { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 } }).addTo(mapInstance)
       try { mapInstance.fitBounds(polygon.getBounds(), { padding: [10, 10] }) } catch { mapInstance.fitBounds(POLAND_BOUNDS, { padding: [10, 10] }) }
     } else {
-      polygon = L.rectangle(POLAND_BOUNDS, { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 }).addTo(mapInstance)
+      polygon = leaflet.rectangle(POLAND_BOUNDS, { color: '#4f46e5', weight: 1, fillColor: '#6366f1', fillOpacity: 0.15 }).addTo(mapInstance)
       mapInstance.fitBounds(POLAND_BOUNDS, { padding: [10, 10] })
     }
     if (mapInstance && marker) { mapInstance.removeLayer(marker); marker = null }
@@ -118,21 +115,20 @@ async function render() {
     return
   }
 
-  const key = normalize(q)
-  const cached = geoCache.get(key)
+  const cacheKey = normalizeString(searchQuery)
+  const cached = geoCache.get(cacheKey)
   if (cached) {
     renderCenter(cached)
   }
 
-  // Debounced fresh geocode with cancel
   clearTimeout(debounceTimer)
   if (inFlight) inFlight.abort()
   inFlight = new AbortController()
   debounceTimer = setTimeout(async () => {
     try {
-      const center = await geocodeNominatim(q, inFlight.signal)
-      if (center) { geoCache.set(key, center); renderCenter(center) }
-    } catch (e) { /* ignore abort/errors */ }
+      const center = await geocodeNominatim(searchQuery, inFlight.signal)
+      if (center) { geoCache.set(cacheKey, center); renderCenter(center) }
+    } catch (error) { /* ignore abort/errors */ }
   }, 300)
 }
 

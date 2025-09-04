@@ -16,15 +16,15 @@ const { t } = useI18n()
 
 const selected = computed({
   get: () => Array.isArray(props.modelValue) ? props.modelValue : [],
-  set: (val) => {
-    emit('update:modelValue', val)
+  set: (newValue) => {
+    emit('update:modelValue', newValue)
     emit('changed', props.filterId)
   },
 })
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val),
+  set: (newValue) => emit('update:open', newValue),
 })
 
 const summary = computed(() => {
@@ -52,10 +52,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
+  <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
     <div class="relative z-30">
-      <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="isOpen = !isOpen">
+      <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
         <div class="flex items-center gap-2">
           <span v-if="selected.length > 0" class="bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">{{ selected.length }}</span>
@@ -67,13 +67,13 @@ onBeforeUnmount(() => {
       <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
         <div class="max-h-60 overflow-auto">
           <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-            <input v-model="selected" type="checkbox" :value="opt.value" class="rounded border-gray-300 dark:border-gray-700">
+            <input v-model="selected" type="checkbox" :value="opt.value" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105">
             <span>{{ opt.labelKey ? t(opt.labelKey) : (opt.label || opt.value) }}</span>
           </label>
         </div>
         <div class="mt-2 flex justify-end gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="selected = [];">{{ t('preferences.placeholders.any') }}</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="isOpen = false">OK</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="selected = [];">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = false">OK</button>
         </div>
       </div>
     </div>

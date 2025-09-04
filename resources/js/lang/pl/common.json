@@ -41,7 +41,9 @@
   ,
   "common": {
     "next": "Dalej",
-    "prev": "Wstecz"
+    "prev": "Wstecz",
+    "ok": "OK"
   }
+  
 }
 

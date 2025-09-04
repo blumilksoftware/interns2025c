@@ -6,7 +6,6 @@ const props = defineProps({
   label: { type: String, required: true },
   modelValue: { type: String, default: '' },
   open: { type: Boolean, default: false },
-  popularLocations: { type: Array, default: () => [] },
   recentLocations: { type: Array, default: () => [] },
   filteredLocations: { type: Array, default: () => [] },
 })
@@ -15,18 +14,17 @@ const emit = defineEmits(['update:modelValue', 'update:open', 'use', 'clear', 'c
 
 const valueProxy = computed({
   get: () => props.modelValue,
-  set: (val) => {
-    emit('update:modelValue', val)
+  set: (newValue) => {
+    emit('update:modelValue', newValue)
     emit('changed', props.filterId)
   },
 })
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val),
+  set: (newValue) => emit('update:open', newValue),
 })
 
-// Outside click to close
 const rootRef = ref(null)
 function handleClickOutside(e) {
   if (!isOpen.value) return
@@ -36,12 +34,11 @@ function handleClickOutside(e) {
 onMounted(() => document.addEventListener('click', handleClickOutside, true))
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside, true))
 
-// Nominatim autocomplete state
 const loading = ref(false)
 const errorMsg = ref('')
 const remoteResults = ref([]) // { label, display, lat, lon, kind, importance }
-const cache = new Map() // key -> results
-let inFlight = null // AbortController
+const cache = new Map()
+let inFlight = null
 
 let debounceTimer = null
 function debounceFetch(q) {
@@ -70,7 +67,6 @@ function dedupeByCanonical(items) {
     const b = rankOf(prev.kind) + (Number(prev.importance) || 0)
     if (a > b) pick.set(key, it)
   }
-  // Also dedupe strictly by normalized label to ensure no visual duplicates
   const seenLabel = new Set()
   const out = []
   for (const it of pick.values()) {
@@ -85,7 +81,6 @@ function dedupeByCanonical(items) {
 async function fetchNominatim(q) {
   const nq = normalize(q)
   if (cache.has(nq)) { remoteResults.value = cache.get(nq); loading.value = false; return }
-  // Cancel previous request
   if (inFlight) inFlight.abort()
   inFlight = new AbortController()
   try {
@@ -123,7 +118,6 @@ async function fetchNominatim(q) {
 
 watch(() => valueProxy.value, (q) => { if (isOpen.value) debounceFetch(q) })
 
-// Simple virtualization for remote results
 const listRef = ref(null)
 const itemHeight = 36 // px
 const viewportHeight = 240 // px
@@ -139,10 +133,10 @@ function pickRemote(item) { emit('use', item.label) }
 </script>
 
 <template>
-  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
+  <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
     <div class="sm:relative z-[3000]">
-      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
+      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
       <div v-if="isOpen" class="mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-2 sm:absolute sm:z-[4000] sm:shadow-lg">
         <template v-if="(valueProxy || '').length >= 3">
           <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Sugestie</div>
@@ -165,7 +159,6 @@ function pickRemote(item) { emit('use', item.label) }
           <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Brak wyników</div>
         </template>
 
-        <!-- Local suggestions and lists as fallback / for short queries -->
         <template v-else>
           <div class="max-h-64 overflow-auto">
             <template v-if="valueProxy && filteredLocations.length > 0">
@@ -180,12 +173,6 @@ function pickRemote(item) { emit('use', item.label) }
             <div v-if="recentLocations.length > 0" class="mt-2">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Ostatnio wybierane</div>
               <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
-                {{ loc }}
-              </button>
-            </div>
-            <div class="mt-2">
-              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Popularne lokalizacje</div>
-              <button v-for="loc in popularLocations" :key="'p-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </div>

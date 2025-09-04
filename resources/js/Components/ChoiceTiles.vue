@@ -24,8 +24,6 @@ function toggle(value) {
   }
 }
 
-// Ensure Tailwind sees concrete class names; return static class strings.
-// For dense sets (>=4 options), use fewer columns on small screens to avoid label overflow.
 const gridClasses = computed(() => {
   const cols = props.columns ?? 3
   switch (cols) {
@@ -74,5 +72,3 @@ const gridClasses = computed(() => {
 
 <style scoped>
 </style>
-
-

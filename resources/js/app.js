@@ -35,7 +35,6 @@ createInertiaApp({
     const pinia = createPinia()
     app.use(pinia)
 
-    // Preload preferences from storage
     try { 
       const prefs = usePreferencesStore()
       prefs.load() 

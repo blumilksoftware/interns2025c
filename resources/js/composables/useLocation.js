@@ -2,11 +2,6 @@ import { ref, computed } from 'vue'
 
 export function useLocation(form) {
   const locationOpen = ref(false)
-  const popularLocations = [
-    'Cała Polska',
-    'Warszawa', 'Kraków', 'Wrocław', 'Gdańsk', 'Poznań', 'Łódź',
-    'Katowice', 'Lublin', 'Szczecin', 'Białystok','Legnica','Zielona Góra','Złotoryja',
-  ]
   const recentLocations = ref([])
 
   function loadRecentLocations() {
@@ -29,22 +24,22 @@ export function useLocation(form) {
     }
   }
 
-  function normalized(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
+  function normalized(searchString) { return searchString.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
   const filteredLocations = computed(() => {
-    const q = (form.value.location || '').trim()
-    if (!q) return []
-    const base = Array.from(new Set([...popularLocations, ...recentLocations.value]))
-    return base.filter(l => normalized(l).includes(normalized(q))).slice(0, 20)
+    const query = (form.value.location || '').trim()
+    if (!query) return []
+    const base = Array.from(new Set([...recentLocations.value]))
+    return base.filter(location => normalized(location).includes(normalized(query))).slice(0, 20)
   })
 
-  function selectLocation(loc) {
-    form.value.location = loc
+  function selectLocation(location) {
+    form.value.location = location
     if (!form.value.radiusKm || form.value.radiusKm <= 0) {
       form.value.radiusKm = 5
     }
-    const idx = recentLocations.value.indexOf(loc)
-    if (idx !== -1) recentLocations.value.splice(idx, 1)
-    recentLocations.value.unshift(loc)
+    const locationIndex = recentLocations.value.indexOf(location)
+    if (locationIndex !== -1) recentLocations.value.splice(locationIndex, 1)
+    recentLocations.value.unshift(location)
     saveRecentLocations()
     locationOpen.value = false
   }
@@ -52,10 +47,6 @@ export function useLocation(form) {
   function clearLocation() {
     form.value.location = ''
     locationOpen.value = false
-  }
-
-  function handleLocationChange() {
-    // no-op here; a placeholder for external UI update
   }
 
   const radiusOptions = [
@@ -74,7 +65,5 @@ export function useLocation(form) {
     { value: 200, label: '200 km' },
   ]
 
-  return { locationOpen, popularLocations, recentLocations, filteredLocations, selectLocation, clearLocation, handleLocationChange, loadRecentLocations, radiusOptions }
+  return { locationOpen, recentLocations, filteredLocations, selectLocation, clearLocation  , loadRecentLocations, radiusOptions }
 }
-
-

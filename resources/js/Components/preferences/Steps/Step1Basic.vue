@@ -25,13 +25,13 @@ const emit = defineEmits(['update:speciesOpen','update:breedOpen','update:sexOpe
 
 const { t } = useI18n()
 
-const speciesOpenModel = computed({ get: () => props.speciesOpen, set: (v) => emit('update:speciesOpen', v) })
-const breedOpenModel = computed({ get: () => props.breedOpen, set: (v) => emit('update:breedOpen', v) })
-const sexOpenModel = computed({ get: () => props.sexOpen, set: (v) => emit('update:sexOpen', v) })
-const colorOpenModel = computed({ get: () => props.colorOpen, set: (v) => emit('update:colorOpen', v) })
+const speciesOpenModel = computed({ get: () => props.speciesOpen, set: (value) => emit('update:speciesOpen', value) })
+const breedOpenModel = computed({ get: () => props.breedOpen, set: (value) => emit('update:breedOpen', value) })
+const sexOpenModel = computed({ get: () => props.sexOpen, set: (value) => emit('update:sexOpen', value) })
+const colorOpenModel = computed({ get: () => props.colorOpen, set: (value) => emit('update:colorOpen', value) })
 
 const prefs = usePreferencesStore()
-const form = computed({ get: () => prefs.form, set: (v) => prefs.setForm(v || {}) })
+const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(value || {}) })
 </script>
 
 <template>
@@ -73,39 +73,40 @@ const form = computed({ get: () => prefs.form, set: (v) => prefs.setForm(v || {}
       @changed="() => moveFilterById('color')"
     />
 
-    <div class="filter-item" data-filter-id="age">
+    <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="age">
       <div class="flex items-center justify-between mb-3">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.age') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.ageIndex = []; moveFilterById('age')">{{ t('preferences.placeholders.any') }}</button>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.ageIndex = []; moveFilterById('age')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
-      <ChoiceTiles :columns="props.selectorConfigs.age.columns" :options="props.selectorConfigs.age.options" :model-value="form.ageIndex" :multiple="true" @update:model-value="val => { form.ageIndex = val; moveFilterById('age') }">
+      <ChoiceTiles :columns="props.selectorConfigs.age.columns" :options="props.selectorConfigs.age.options" :model-value="form.ageIndex" :multiple="true" @update:model-value="value => { form.ageIndex = value; moveFilterById('age') }">
         <template #label="{ option }">
           <span class="text-sm font-medium">{{ option.labelKey ? t(option.labelKey) : option.label }}</span>
         </template>
       </ChoiceTiles>
     </div>
 
-    <div class="filter-item" data-filter-id="size">
+    <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="size">
       <div class="flex items-center justify-between mb-3">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.size') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.sizeIndex = []; moveFilterById('size')">{{ t('preferences.placeholders.any') }}</button>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.sizeIndex = []; moveFilterById('size')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
-      <ChoiceTiles :columns="props.selectorConfigs.size.columns" :options="props.selectorConfigs.size.options" :model-value="form.sizeIndex" :multiple="true" @update:model-value="val => { form.sizeIndex = val; moveFilterById('size') }">
+      <ChoiceTiles :columns="props.selectorConfigs.size.columns" :options="props.selectorConfigs.size.options" :model-value="form.sizeIndex" :multiple="true" @update:model-value="value => { form.sizeIndex = value; moveFilterById('size') }">
         <template #label="{ option }">
           <span class="text-sm font-medium">{{ option.labelKey ? t(option.labelKey) : option.label }}</span>
         </template>
       </ChoiceTiles>
     </div>
 
-    <div class="filter-item" data-filter-id="weight">
+    <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="weight">
       <div class="flex items-center justify-between mb-3">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.weightKg') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.weightState = []; moveFilterById('weight')">{{ t('preferences.placeholders.any') }}</button>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.weightState = []; moveFilterById('weight')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
-      <ChoiceTiles :columns="props.selectorConfigs.weight.columns" :options="props.selectorConfigs.weight.options" :model-value="form.weightState" :multiple="true" @update:model-value="val => { form.weightState = val; moveFilterById('weight') }" />
+      <ChoiceTiles :columns="props.selectorConfigs.weight.columns" :options="props.selectorConfigs.weight.options" :model-value="form.weightState" :multiple="true" @update:model-value="value => { form.weightState = value; moveFilterById('weight') }">
+        <template #label="{ option }">
+          <span class="text-sm font-medium">{{ option.labelKey ? t(option.labelKey) : option.label }}</span>
+        </template>
+      </ChoiceTiles>
     </div>
   </div>
 </template>
-
-
-

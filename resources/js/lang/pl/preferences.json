@@ -23,6 +23,7 @@
       "tags": "Cechy"
     },
     "placeholders": {
+      "noActiveFilters": "Brak aktywnych filtrów.",
       "any": "Dowolne",
       "cityOrZip": "Miasto lub kod pocztowy"
     },
@@ -45,12 +46,24 @@
       "medium": "Średni",
       "large": "Duży"
     },
+    "weight": {
+      "thin": "Chudy",
+      "medium": "Średni",
+      "fat": "Gruby"
+    },
     "level": {
       "veryLow": "Bardzo niski",
       "low": "Niski",
       "medium": "Średni",
       "high": "Wysoki",
       "veryHigh": "Bardzo wysoki"
+    },
+    "attitude": {
+      "hostile": "Wrogi",
+      "cautious": "Ostrożny",
+      "neutral": "Obojętny",
+      "friendly": "Przyjazny",
+      "veryFriendly": "Bardzo przyjazny"
     },
     "colors": {
       "black": "Czarny",
@@ -82,9 +95,10 @@
     },
     "actions": {
       "apply": "Zastosuj",
-      "reset": "Wyczyść"
-    }
+      "reset": "Wyczyść",
+      "collapse": "Zwiń"
+    },
+    "attitudes": "Stosunki",
+    "summary": "Podsumowanie filtrów"
   }
 }
-
-

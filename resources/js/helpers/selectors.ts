@@ -33,31 +33,31 @@ export const selectorConfigs = {
   weight: {
     columns: 3,
     options: [
-      { value: 0, icon: 'weight', iconClass: 'w-5 h-5', label: 'chudy' },
-      { value: 1, icon: 'weight', iconClass: 'w-6 h-6', label: 'średni' },
-      { value: 2, icon: 'weight', iconClass: 'w-7 h-7', label: 'gruby' },
+      { value: 0, icon: 'weight', iconClass: 'w-5 h-5', labelKey: 'preferences.weight.thin' },
+      { value: 1, icon: 'weight', iconClass: 'w-6 h-6', labelKey: 'preferences.weight.medium' },
+      { value: 2, icon: 'weight', iconClass: 'w-7 h-7', labelKey: 'preferences.weight.fat' },
     ],
   } as ChoiceConfig,
 
   attitudes: {
     columns: 5,
     options: [
-      { value: 0, icon: 'mood-sad',   iconClass: 'w-6 h-10', label: 'wrogi' },
-      { value: 1, icon: 'warning',    iconClass: 'w-6 h-7', label: 'ostrożny' },
-      { value: 2, icon: 'mood-empty', iconClass: 'w-6 h-7', label: 'obojętny' },
-      { value: 3, icon: 'mood-smile', iconClass: 'w-6 h-7', label: 'przyjazny' },
-      { value: 4, icon: 'heart',      iconClass: 'w-6 h-7', label: 'bardzo przyjazny' },
+      { value: 0, icon: 'mood-sad',   iconClass: 'w-6 h-10', labelKey: 'preferences.attitude.hostile' },
+      { value: 1, icon: 'warning',    iconClass: 'w-6 h-7', labelKey: 'preferences.attitude.cautious' },
+      { value: 2, icon: 'mood-empty', iconClass: 'w-6 h-7', labelKey: 'preferences.attitude.neutral' },
+      { value: 3, icon: 'mood-smile', iconClass: 'w-6 h-7', labelKey: 'preferences.attitude.friendly' },
+      { value: 4, icon: 'heart',      iconClass: 'w-6 h-7', labelKey: 'preferences.attitude.veryFriendly' },
     ],
   } as ChoiceConfig,
 
   activity: {
     columns: 5,
     options: [
-      { value: 0, icon: 'zzz',  iconClass: 'w-5 h-5', label: 'bardzo niski' },
-      { value: 1, icon: 'walk', iconClass: 'w-5 h-5', label: 'niski' },
-      { value: 2, icon: 'run',  iconClass: 'w-5 h-5', label: 'średni' },
-      { value: 3, icon: 'bolt', iconClass: 'w-5 h-5', label: 'wysoki' },
-      { value: 4, icon: 'flame',iconClass: 'w-5 h-5', label: 'bardzo wysoki' },
+      { value: 0, icon: 'zzz',  iconClass: 'w-5 h-5', labelKey: 'preferences.level.veryLow' },
+      { value: 1, icon: 'walk', iconClass: 'w-5 h-5', labelKey: 'preferences.level.low' },
+      { value: 2, icon: 'run',  iconClass: 'w-5 h-5', labelKey: 'preferences.level.medium' },
+      { value: 3, icon: 'bolt', iconClass: 'w-5 h-5', labelKey: 'preferences.level.high' },
+      { value: 4, icon: 'flame',iconClass: 'w-5 h-5', labelKey: 'preferences.level.veryHigh' },
     ],
   } as ChoiceConfig,
 }

@@ -17,12 +17,12 @@ const emit = defineEmits(['update:healthOpen','update:adoptionOpen','update:heal
 
 const { t } = useI18n()
 
-const healthOpenModel = computed({ get: () => props.healthOpen, set: (v) => emit('update:healthOpen', v) })
-const adoptionOpenModel = computed({ get: () => props.adoptionOpen, set: (v) => emit('update:adoptionOpen', v) })
-const healthChecksOpenModel = computed({ get: () => props.healthChecksOpen, set: (v) => emit('update:healthChecksOpen', v) })
+const healthOpenModel = computed({ get: () => props.healthOpen, set: (value) => emit('update:healthOpen', value) })
+const adoptionOpenModel = computed({ get: () => props.adoptionOpen, set: (value) => emit('update:adoptionOpen', value) })
+const healthChecksOpenModel = computed({ get: () => props.healthChecksOpen, set: (value) => emit('update:healthChecksOpen', value) })
 
 const prefs = usePreferencesStore()
-const form = computed({ get: () => prefs.form, set: (v) => prefs.setForm(v || {}) })
+const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(value || {}) })
 
 const healthChecksCount = computed(() =>
   (form.value.vaccinated ? 1 : 0) +
@@ -66,10 +66,10 @@ const healthChecksSummary = computed(() => {
       />
     </div>
 
-    <div class="filter-item" data-filter-id="health-checks" :style="{ zIndex: healthChecksOpenModel ? 1000 : 'auto' }">
+    <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="health-checks" :style="{ zIndex: healthChecksOpenModel ? 1000 : 'auto' }">
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ t('preferences.labels.healthChecks') }}</label>
       <div class="relative z-30">
-        <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="healthChecksOpenModel = !healthChecksOpenModel">
+        <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="healthChecksOpenModel = !healthChecksOpenModel">
           <span>{{ healthChecksSummary }}</span>
           <div class="flex items-center gap-2">
             <span v-if="healthChecksCount > 0" class="bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">{{ healthChecksCount }}</span>
@@ -81,24 +81,24 @@ const healthChecksSummary = computed(() => {
         <div v-if="healthChecksOpenModel" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <input v-model="form.vaccinated" type="checkbox" class="rounded border-gray-300 dark:border-gray-700" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.vaccinated') }}
+              <input v-model="form.vaccinated" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.vaccinated') }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <input v-model="form.sterilized" type="checkbox" class="rounded border-gray-300 dark:border-gray-700" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.sterilized') }}
+              <input v-model="form.sterilized" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.sterilized') }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <input v-model="form.microchipped" type="checkbox" class="rounded border-gray-300 dark:border-gray-700" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.microchipped') }}
+              <input v-model="form.microchipped" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.microchipped') }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <input v-model="form.dewormed" type="checkbox" class="rounded border-gray-300 dark:border-gray-700" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.dewormed') }}
+              <input v-model="form.dewormed" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.dewormed') }}
             </label>
             <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <input v-model="form.defleaTreated" type="checkbox" class="rounded border-gray-300 dark:border-gray-700" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.defleaTreated') }}
+              <input v-model="form.defleaTreated" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105" @change="moveFilterById('health-checks')"> {{ t('preferences.checks.defleaTreated') }}
             </label>
           </div>
           <div class="mt-3 flex justify-end gap-2">
-            <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="form.vaccinated=false;form.sterilized=false;form.microchipped=false;form.dewormed=false;form.defleaTreated=false; moveFilterById('health-checks')">{{ t('preferences.placeholders.any') }}</button>
-            <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="healthChecksOpenModel = false">OK</button>
+            <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.vaccinated=false;form.sterilized=false;form.microchipped=false;form.dewormed=false;form.defleaTreated=false; moveFilterById('health-checks')">{{ t('preferences.placeholders.any') }}</button>
+            <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="healthChecksOpenModel = false">{{ t('common.ok') || 'OK' }}</button>
           </div>
         </div>
       </div>
