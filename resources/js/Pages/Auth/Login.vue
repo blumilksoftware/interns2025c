@@ -81,8 +81,11 @@ const submit = () => {
         </div>
 
         <div class="block mt-4">
-          <Checkbox v-model:checked="form.remember" name="remember" />
-          <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold"> {{ t('auth.remember_me') }} </span>
+          <label class="flex items-center mt-4 cursor-pointer select-none">
+            <Checkbox v-model:checked="form.remember" name="remember" />
+            <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold">{{ t('auth.remember_me') }}</span>
+          </label>
+
         </div>
         <div class="mt-8">
           <div class="flex justify-center gap-8 mb-8 ">
