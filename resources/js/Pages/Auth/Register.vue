@@ -31,7 +31,7 @@ const submit = () => {
   <Head :title="t('titles.register')" />
 
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.register')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>

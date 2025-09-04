@@ -30,7 +30,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
   <Head :title="t('titles.emailVerification')" />
 
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.emailVerification')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>

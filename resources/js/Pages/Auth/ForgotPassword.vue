@@ -32,7 +32,7 @@ const submit = () => {
   <Head :title="t('titles.forgotPassword')" />
 
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.forgotPassword')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>

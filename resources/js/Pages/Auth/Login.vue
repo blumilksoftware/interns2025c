@@ -43,7 +43,7 @@ const submit = () => {
 <template>
   <Head :title="t('titles.login')" />
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.login')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>
@@ -81,10 +81,8 @@ const submit = () => {
         </div>
 
         <div class="block mt-4">
-          <label class="flex items-center" for="remember">
-            <Checkbox v-model:checked="form.remember" name="remember" />
-            <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold"> {{ t('auth.remember_me') }} </span>
-          </label>
+          <Checkbox v-model:checked="form.remember" name="remember" />
+          <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold"> {{ t('auth.remember_me') }} </span>
         </div>
         <div class="mt-8">
           <div class="flex justify-center gap-8 mb-8 ">

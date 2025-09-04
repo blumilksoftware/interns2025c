@@ -34,7 +34,7 @@ const submit = () => {
   <Head :title="t('titles.confirmPassword')" />
 
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.confirmPassword')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>

@@ -41,7 +41,7 @@ const submit = () => {
   <Head :title="t('titles.resetPassword')" />
 
   <AuthLayout>
-    <AuthenticationCard>
+    <AuthenticationCard :heading="t('titles.resetPassword')">
       <template #logo>
         <AuthenticationCardLogo />
       </template>
