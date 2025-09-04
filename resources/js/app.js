@@ -19,7 +19,7 @@ const i18n = createI18n({
   messages: { pl },
 })
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
+const appName = import.meta.env.VITE_APP_NAME || 'ŁapGo'
 
 createInertiaApp({
   title: (title) => `${title} - ${appName}`,
