@@ -52,11 +52,23 @@ RUN apt-get update \
         zip \
         libzip-dev \
         libpq-dev \
+        zlib1g-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libwebp-dev \
+        libfreetype6-dev \
         supervisor \
         cron \
+        jpegoptim \
+        optipng \
+        pngquant \
     && pie install \
-        phpredis/phpredis:${PHPREDIS_VERSION} \
+            phpredis/phpredis:${PHPREDIS_VERSION} \
+    && docker-php-ext-configure gd \
+        --with-jpeg \
+        --with-webp \
     && docker-php-ext-install \
+        gd \
         zip \
         pdo_pgsql
 
