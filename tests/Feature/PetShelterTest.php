@@ -26,7 +26,7 @@ class PetShelterTest extends TestCase
             "description" => "A very nice place for pets.",
         ]);
 
-        $response->assertRedirect("/admin");
+        $response->assertRedirectBack();
         $this->assertDatabaseHas("pet_shelters", [
             "name" => "Happy Paws",
             "phone" => "+123 456 7890",
@@ -79,7 +79,7 @@ class PetShelterTest extends TestCase
             "description" => "Updated description.",
         ]);
 
-        $response->assertRedirect("/admin");
+        $response->assertRedirectBack();
         $this->assertDatabaseHas("pet_shelters", [
             "id" => $shelter->id,
             "name" => "New Name Shelter",
@@ -132,8 +132,8 @@ class PetShelterTest extends TestCase
 
         $response = $this->delete("/pet-shelters/{$shelter->id}");
 
-        $response->assertRedirect("/admin");
-        $this->assertDatabaseMissing("pet_shelters", ["id" => $shelter->id]);
+        $response->assertRedirectBack();
+        $this->assertSoftDeleted("pet_shelters", ["id" => $shelter->id]);
     }
 
     public function testDeletePetShelterUnauthorized(): void
@@ -162,7 +162,7 @@ class PetShelterTest extends TestCase
             "postal_code" => "98765-432",
         ]);
 
-        $response->assertRedirect("/admin");
+        $response->assertRedirectBack();
         $this->assertDatabaseHas("pet_shelter_addresses", [
             "id" => $address->id,
             "pet_shelter_id" => $shelter->id,
@@ -209,7 +209,7 @@ class PetShelterTest extends TestCase
         $this->assertDatabaseHas("pet_shelters", ["id" => $shelter->id]);
     }
 
-    public function testDeletingShelterCascadesOnAddress(): void
+    public function testDeletingShelterDoesNotDeleteAddress(): void
     {
         $user = User::factory()->create(["role" => "admin"]);
         $this->actingAs($user);
@@ -219,8 +219,8 @@ class PetShelterTest extends TestCase
 
         $this->delete("/pet-shelters/{$shelter->id}");
 
-        $this->assertDatabaseMissing("pet_shelters", ["id" => $shelter->id]);
-        $this->assertDatabaseMissing("pet_shelter_addresses", ["id" => $address->id]);
+        $this->assertSoftDeleted("pet_shelters", ["id" => $shelter->id]);
+        $this->assertDatabaseHas("pet_shelter_addresses", ["id" => $address->id]);
     }
 
     public function testThatNewShelterAutomaticallyCreatesAddress(): void
@@ -238,7 +238,7 @@ class PetShelterTest extends TestCase
             "postal_code" => "12345",
         ]);
 
-        $response->assertRedirect("/admin");
+        $response->assertRedirectBack();
 
         $this->assertDatabaseHas("pet_shelter_addresses", [
             "address" => "123 Main St",
