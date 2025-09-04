@@ -45,9 +45,9 @@ Behavioral notes: extract one-word descriptive traits explicitly mentioned, lowe
 Dates: convert to Laravel Carbon format ('d-m-Y') if present.
 Breed: use specific common breed name; if unknown, use "mieszaniec".
 Multiple animals: pick the most complete one.
-Do not infer missing data. Only extract what is explicitly present.
+Do not infer missing data, only infer data if you are sure e.g. deduct sex from name or other attribute.
 Return fully structured JSON.
 admission_date: take from text; year only → 01-01-YEAR.
-health_status: healthy / sick / recovering / critical / unknown.
 current_treatment: list surgeries or treatments (e.g. "tail amputation").
 If field contains null, don't include it in the JSON.
+If fields like species, name, sex are missing, set contains_animals to false.

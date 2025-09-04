@@ -33,22 +33,22 @@ class PetService
         foreach ($petData["animals"] ?? [] as $animal) {
             $identifyingAttributes = [
                 "name" => $animal["name"],
+                "shelter_id" => $shelterId,
+            ];
+
+            $attributes = [
                 "species" => $animal["species"],
                 "behavioral_notes" => $animal["behavioral_notes"] ?? null,
-                "shelter_id" => $shelterId,
                 "sex" => $animal["sex"],
                 "breed" => $animal["breed"] ?? null,
                 "weight" => $animal["weight"] ?? null,
                 "chip_number" => $animal["chip_number"] ?? null,
                 "found_location" => $animal["found_location"] ?? null,
-            ];
-
-            $attributes = [
                 "age" => $animal["age"] ?? null,
                 "size" => $animal["size"] ?? null,
                 "color" => $animal["color"] ?? null,
                 "sterilized" => $animal["sterilized"] ?? null,
-                "description" => $animal["description"],
+                "description" => $animal["description"] ?? "",
                 "health_status" => $animal["health_status"] ?? null,
                 "current_treatment" => $animal["current_treatment"] ?? null,
                 "vaccinated" => $animal["vaccinated"] ?? null,
@@ -65,6 +65,7 @@ class PetService
                 "admission_date" => isset($animal["admission_date"]) ? Carbon::parse($animal["admission_date"]) : null,
                 "has_chip" => $animal["has_chip"] ?? null,
                 "adoption_url" => $extractedPetAdoptionUrl,
+                "image_urls" => array_values($petData["image_urls"] ?? null),
             ];
 
             Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
