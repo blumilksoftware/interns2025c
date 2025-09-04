@@ -27,11 +27,16 @@ const proxyChecked = computed({
 
 
 <template>
-    <input
-      v-model="proxyChecked"
-      type="checkbox"
-      :value="value"
-      class="sr-only peer focus:outline-none"
-    >
-    <IconPawFilled class="size-8 text-gray-400 transition-all duration-150 ease-out hover:text-gray-600 hover:scale-110 focus:outline-none peer-checked:text-yellow-400 peer-checked:scale-110" />
+  <input
+    v-model="proxyChecked"
+    type="checkbox"
+    :value="value"
+    class="sr-only peer focus:outline-none"
+  >
+  <IconPawFilled
+    class="size-8 text-gray-400 transition-all duration-150 ease-out
+         hover:text-gray-600 hover:scale-110
+         peer-checked:text-yellow-400 peer-checked:scale-110
+         peer-focus:text-gray-600 peer-focus:scale-110" 
+  />
 </template>
