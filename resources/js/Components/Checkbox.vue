@@ -27,12 +27,13 @@ const proxyChecked = computed({
 
 
 <template>
-  <label class="inline-flex items-center cursor-pointer select-none focus:outline-none">
+  <label class="inline-flex items-center cursor-pointer select-none focus:outline-none" aria-label="Checkbox">
     <input
       v-model="proxyChecked"
       type="checkbox"
       :value="value"
       class="sr-only peer focus:outline-none"
+      aria-label="Checkbox"
     >
     <IconPawFilled class="size-8 text-gray-400 transition-all duration-150 ease-out hover:text-gray-600 hover:scale-110 focus:outline-none peer-checked:text-yellow-400 peer-checked:scale-110" />
   </label>

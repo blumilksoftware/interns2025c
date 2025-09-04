@@ -49,7 +49,7 @@ const submit = () => {
       </template>
 
       <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-        {{ t(status) }}
+        {{ status }}
       </div>
 
       <form @submit.prevent="submit">
@@ -80,8 +80,8 @@ const submit = () => {
           <InputError class="mt-2" :message="form.errors.password" />
         </div>
 
-        <div class="block mt-4 font-sans">
-          <label class="flex items-center">
+        <div class="block mt-4">
+          <label class="flex items-center" for="remember">
             <Checkbox v-model:checked="form.remember" name="remember" />
             <span class="ms-2 text-gray-900 text-sm transition-all duration-150 ease-out font-semibold"> {{ t('auth.remember_me') }} </span>
           </label>

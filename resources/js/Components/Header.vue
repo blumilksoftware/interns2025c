@@ -51,7 +51,7 @@ const mobileMenuOpen = ref(false)
               </button>
 
               <span v-else class="inline-flex rounded-md">
-                <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-semibold rounded-md text-gray-900  hover:bg-white transition ease-in-out duration-150">
+                <button type="button" aria-label="User menu" class="inline-flex items-center px-3 py-2 text-sm font-semibold rounded-md text-gray-900  hover:bg-white transition ease-in-out duration-150">
                   {{ $page.props.auth.user.name }}
                   <IconMenu2 class="size-6" />
                 </button>
@@ -99,6 +99,11 @@ const mobileMenuOpen = ref(false)
                 <NavLink :href="routes.dashboard()">{{ t('landing.navigation.pets') }}</NavLink>
                 <NavLink href="#">{{ t('landing.navigation.about') }}</NavLink>
                 <NavLink href="#">{{ t('landing.navigation.contact') }}</NavLink>
+                <form method="POST" :action="routes.logout()" @submit.prevent="$inertia.post(routes.logout())">
+                  <NavLink as="button">
+                    {{ t('navigation.logOut') }}
+                  </NavLink>
+                </form>
               </div>
               <div class="py-6">
                 <NavLink v-if="$page.props.auth.user" :href="routes.profile.show()">{{ t('navigation.profile') }}</NavLink>

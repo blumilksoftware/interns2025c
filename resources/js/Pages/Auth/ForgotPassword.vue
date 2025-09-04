@@ -42,7 +42,7 @@ const submit = () => {
       </div>
 
       <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-        {{ t(status) }}
+        {{ status }}
       </div>
 
       <form @submit.prevent="submit">

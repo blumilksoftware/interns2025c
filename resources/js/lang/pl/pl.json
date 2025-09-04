@@ -1,5 +1,5 @@
 {
-"auth": {
+  "auth": {
     "name": "Imię",
     "email": "E-mail",
     "password": "Hasło",
@@ -11,7 +11,7 @@
     "confirmPassword": "Potwierdź hasło",
     "failed": "Podane dane są nieprawidłowe.",
     "remember_me": "Zapamiętaj mnie",
-    "forgotPassword": "Zapomniałeś hasła?",
+    "forgotPassword": "Nie pamiętasz hasła?",
     "resetPassword": "Zresetuj hasło",
     "resetPasswordLink": "Wyślij link do resetowania hasła",
     "code": "Kod",
@@ -200,5 +200,5 @@
     }
   },
   "The provided password was incorrect.": "Podane hasło jest nieprawidłowe.",
-  "The password is incorrect." : "Podane hasło jest nieprawidłowe."
+  "The password is incorrect.": "Podane hasło jest nieprawidłowe."
 }
