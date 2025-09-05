@@ -9,7 +9,6 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
-use stdClass;
 
 class VerifyEmailNotification extends VerifyEmailBase
 {
@@ -19,7 +18,7 @@ class VerifyEmailNotification extends VerifyEmailBase
             ->subject(__("email.auth.verify_email.subject"))
             ->view("emails.auth.verify-email", [
                 "verificationUrl" => $url,
-                "user" => $this->getUser(),
+                "user" => request()->user(),
             ]);
     }
 
@@ -33,10 +32,5 @@ class VerifyEmailNotification extends VerifyEmailBase
                 "hash" => sha1($notifiable->getEmailForVerification()),
             ],
         );
-    }
-
-    private function getUser()
-    {
-        return request()->user() ?? new stdClass();
     }
 }

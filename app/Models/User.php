@@ -60,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
 
     public function preferredLocale(): string
     {
-        return $this->locale ?? "pl";
+        return $this->locale ?? config("app.locale");
     }
 
     public function petShelters(): BelongsToMany
