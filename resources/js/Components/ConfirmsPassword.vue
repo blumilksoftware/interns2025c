@@ -2,9 +2,9 @@
 import { ref, reactive, nextTick } from 'vue'
 import DialogModal from './DialogModal.vue'
 import InputError from './InputError.vue'
-import PrimaryButton from './Buttons/PrimaryButton.vue'
+import AuthButton from './Buttons/AuthButton.vue'
 import SecondaryButton from './Buttons/SecondaryButton.vue'
-import TextInput from './TextInput.vue'
+import AuthTextInput from './AuthTextInput.vue'
 import axios from 'axios'
 import { routes } from '@/routes'
 
@@ -92,7 +92,7 @@ const closeModal = () => {
         {{ content }}
 
         <div class="mt-4">
-          <TextInput
+          <AuthTextInput
             ref="passwordInput"
             v-model="form.password"
             type="password"
@@ -111,14 +111,14 @@ const closeModal = () => {
           Cancel
         </SecondaryButton>
 
-        <PrimaryButton
+        <AuthButton
           class="ms-3"
           :class="{ 'opacity-25': form.processing }"
           :disabled="form.processing"
           @click="confirmPassword"
         >
           {{ button }}
-        </PrimaryButton>
+        </AuthButton>
       </template>
     </DialogModal>
   </span>

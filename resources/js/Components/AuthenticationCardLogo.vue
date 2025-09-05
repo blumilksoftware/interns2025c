@@ -5,6 +5,6 @@ import { logo } from '@/helpers/mappers/logo'
 
 <template>
   <Link :href="'/'">
-    <img :src="logo.Logo" alt="Logo" class="mx-auto w-1/2">
+    <img :src="logo.Logo" alt="Logo ŁapGo" class="ml-auto w-1/4">
   </Link>
 </template>
