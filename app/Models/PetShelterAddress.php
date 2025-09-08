@@ -14,6 +14,8 @@ class PetShelterAddress extends Model
         "address",
         "city",
         "postal_code",
+        "latitude",
+        "longitude",
     ];
 
     public function petShelter(): BelongsTo

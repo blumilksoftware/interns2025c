@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Enums\Role;
 use App\Models\Pet;
 use App\Models\PetShelter;
+use App\Models\PetShelterAddress;
 use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
@@ -61,7 +62,17 @@ class DemoSeeder extends Seeder
             ]);
         });
 
-        $shelters = PetShelter::all();
+        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
+
+        $petShelters->each(fn(PetShelter $shelter) => 
+            $shelter->address()->save(PetShelterAddress::factory()->make())
+        );
+
+        $pets = Pet::factory()->count(self::NUMBER_OF_PETS_TO_CREATE)->create();
+
+        $pets->each(fn(Pet $pet) => $pet->shelter()->associate($petShelters->random())->save());
+
+        $tags = Tag::all();
 
         foreach ($users as $user) {
             $userHasExistingShelter = DB::table("pet_shelter_user")
@@ -73,10 +84,9 @@ class DemoSeeder extends Seeder
                 $randomShelter->users()->attach($user->id);
 
                 if (random_int(1, 100) <= 30) {
-                    $user->update(["role" => "shelter"]);
+                    $user->update(["role" => Role::ShelterEmployee]);
                 }
             }
-        }
 
         $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($shelters->random())->save());
 
@@ -99,7 +109,7 @@ class DemoSeeder extends Seeder
 
         $pets->each(function (Pet $pet) use ($tags): void {
             $pet->tags()->sync(
-                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray(),
+                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray()
             );
         });
     }

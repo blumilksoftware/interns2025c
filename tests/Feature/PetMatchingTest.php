@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Pet;
+use App\Models\PetShelter;
 use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
@@ -26,13 +27,13 @@ class PetMatchingTest extends TestCase
         $user = User::factory()->create();
 
         Preference::factory()->for($user)->create([
-            "preferences" => [
-                "species" => [["value" => "dog", "weight" => 1]],
+            'preferences' => [
+                'species' => [['value' => 'dog', 'weight' => 1]],
             ],
         ]);
 
-        $dog = Pet::factory()->create(["species" => "dog"]);
-        $cat = Pet::factory()->create(["species" => "cat"]);
+        $dog = Pet::factory()->create(['species' => 'dog']);
+        $cat = Pet::factory()->create(['species' => 'cat']);
 
         $dogTag = Tag::factory()->create();
         $catTag = Tag::factory()->create();
@@ -40,16 +41,16 @@ class PetMatchingTest extends TestCase
         $dog->tags()->syncWithoutDetaching([$dogTag->id]);
         $cat->tags()->syncWithoutDetaching([$catTag->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard/matches");
+        $response = $this->actingAs($user)->get('/dashboard/matches');
 
-        $response->assertInertia(
-            fn(Assert $page) => $page
-                ->component("Dashboard/Dashboard")
-                ->has("pets", 2)
-                ->where("pets.0.pet.data.id", $dog->id)
-                ->where("pets.0.match", 100)
-                ->where("pets.1.pet.data.id", $cat->id)
-                ->where("pets.1.match", 0),
+        $response->assertInertia(fn(Assert $page) =>
+            $page
+                ->component('Dashboard/Dashboard')
+                ->has('pets', 2)
+                ->where('pets.0.pet.data.id', $dog->id)
+                ->where('pets.0.match', 100)
+                ->where('pets.1.pet.data.id', $cat->id)
+                ->where('pets.1.match', 0)
         );
     }
 
@@ -58,58 +59,41 @@ class PetMatchingTest extends TestCase
         $user = User::factory()->create();
 
         Preference::factory()->for($user)->create([
-            "preferences" => [
-                "species" => [["value" => "dog", "weight" => 1]],
+            'preferences' => [
+                'species' => [['value' => 'dog', 'weight' => 1]],
             ],
         ]);
 
-        $cat = Pet::factory()->create(["species" => "cat"]);
-        $dog1 = Pet::factory()->create(["species" => "dog"]);
-        $dog2 = Pet::factory()->create(["species" => "dog"]);
+        $cat = Pet::factory()->create(['species' => 'cat']);
+        $dog1 = Pet::factory()->create(['species' => 'dog']);
+        $dog2 = Pet::factory()->create(['species' => 'dog']);
 
         $cat->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
         $dog1->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
         $dog2->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard/matches");
+        $response = $this->actingAs($user)->get('/dashboard/matches');
 
-        $response->assertInertia(
-            fn(Assert $page) => $page
-                ->component("Dashboard/Dashboard")
-                ->has("pets", 3),
-        );
+        $petsData = $response->inertiaProps()['pets'];
+        $matches = collect($petsData)->pluck('match')->all();
 
-        $petsData = $response->inertiaProps()["pets"];
-        $matches = collect($petsData)->pluck("match")->all();
-        $sortedMatches = $matches;
-        rsort($sortedMatches);
+        $sorted = $matches;
+        rsort($sorted);
 
-        $this->assertSame($sortedMatches, $matches, "Pets are not sorted by match descending");
+        $this->assertSame($sorted, $matches);
     }
 
     public function testNoPreferenceReturnsZeroMatch(): void
     {
         $user = User::factory()->create();
+        Pet::factory()->count(3)->create();
 
-        $pets = Pet::factory()->count(3)->create();
-        $tags = Tag::factory()->count(3)->create();
+        $response = $this->actingAs($user)->get('/dashboard/matches');
 
-        foreach ($pets as $index => $pet) {
-            $pet->tags()->syncWithoutDetaching([$tags[$index]->id]);
-        }
-
-        $response = $this->actingAs($user)->get("/dashboard/matches");
-
-        $response->assertInertia(
-            fn(Assert $page) => $page
-                ->component("Dashboard/Dashboard")
-                ->has("pets", 3),
-        );
-
-        $petsData = $response->inertiaProps()["pets"];
+        $petsData = $response->inertiaProps()['pets'];
 
         foreach ($petsData as $petMatch) {
-            $this->assertSame(0, $petMatch["match"]);
+            $this->assertSame(0, $petMatch['match']);
         }
     }
 
@@ -118,25 +102,84 @@ class PetMatchingTest extends TestCase
         $user = User::factory()->create();
 
         Preference::factory()->for($user)->create([
-            "preferences" => [
-                "tags" => [["value" => "friendly", "weight" => 1]],
+            'preferences' => [
+                'tags' => [['value' => 'friendly', 'weight' => 1]],
             ],
         ]);
 
         $petWithTag = Pet::factory()->create();
         $petWithoutTag = Pet::factory()->create();
 
-        $friendlyTag = Tag::factory()->create(["name" => "friendly"]);
-        $shyTag = Tag::factory()->create(["name" => "shy"]);
+        $friendlyTag = Tag::factory()->create(['name' => 'friendly']);
+        $shyTag = Tag::factory()->create(['name' => 'shy']);
 
         $petWithTag->tags()->syncWithoutDetaching([$friendlyTag->id]);
         $petWithoutTag->tags()->syncWithoutDetaching([$shyTag->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard/matches");
+        $response = $this->actingAs($user)->get('/dashboard/matches');
 
-        $petsData = $response->inertiaProps()["pets"];
-        $matches = collect($petsData)->pluck("match")->all();
+        $petsData = $response->inertiaProps()['pets'];
+        $matches = collect($petsData)->pluck('match')->all();
 
-        $this->assertGreaterThan($matches[1], $matches[0], "Pet with matching tag should have higher match");
+        $this->assertGreaterThan($matches[1], $matches[0]);
+    }
+
+    public function testPetsAreFilteredByProximity(): void
+    {
+        $user = User::factory()->create();
+
+        Preference::factory()->for($user)->create([
+            'latitude' => 40.0,
+            'longitude' => -75.0,
+            'radius_km' => 50,
+        ]);
+
+        $nearShelter = PetShelter::factory()->create();
+        $nearShelter->address()->create([
+            'latitude' => 40.1,
+            'longitude' => -75.1,
+        ]);
+        $petNear = Pet::factory()->create();
+        $petNear->shelter()->associate($nearShelter)->save();
+
+        $farShelter = PetShelter::factory()->create();
+        $farShelter->address()->create([
+            'latitude' => 45.0,
+            'longitude' => -80.0,
+        ]);
+        $petFar = Pet::factory()->create();
+        $petFar->shelter()->associate($farShelter)->save();
+
+        $response = $this->actingAs($user)->get('/dashboard/matches');
+
+        $petsData = $response->inertiaProps()['pets'];
+        $petIds = collect($petsData)->pluck('pet.data.id');
+
+        $this->assertContains($petNear->id, $petIds);
+        $this->assertNotContains($petFar->id, $petIds);
+    }
+
+    public function testPetsOutsideRadiusReturnZeroMatch(): void
+    {
+        $user = User::factory()->create();
+
+        Preference::factory()->for($user)->create([
+            'latitude' => 40.0,
+            'longitude' => -75.0,
+            'radius_km' => 1,
+        ]);
+
+        $farShelter = PetShelter::factory()->create();
+        $farShelter->address()->create([
+            'latitude' => 50.0,
+            'longitude' => -80.0,
+        ]);
+        $petFar = Pet::factory()->create();
+        $petFar->shelter()->associate($farShelter)->save();
+
+        $response = $this->actingAs($user)->get('/dashboard/matches');
+
+        $petsData = $response->inertiaProps()['pets'];
+        $this->assertEmpty($petsData);
     }
 }

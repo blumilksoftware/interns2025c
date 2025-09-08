@@ -6,18 +6,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PetShelterAddressRequest;
 use App\Models\PetShelterAddress;
+use App\Services\GeocodingService;
 use Illuminate\Http\RedirectResponse;
 
 class PetShelterAddressController extends Controller
 {
+    protected GeocodingService $geocodingService;
+
+    public function __construct(GeocodingService $geocodingService)
+    {
+        $this->geocodingService = $geocodingService;
+    }
+
     public function update(PetShelterAddressRequest $request, PetShelterAddress $petShelterAddress): RedirectResponse
     {
         $this->authorize("update", $petShelterAddress);
 
-        $petShelterAddress->update($request->validated());
+        $data = $request->validated();
 
-        return back()
-            ->with("success", "Pet shelter address updated successfully.");
+        $this->geocodingService->fillCoordinates($petShelterAddress, $data);
+
+        $petShelterAddress->update($data);
+
+        return back()->with("success", "Pet shelter address updated successfully.");
     }
 
     public function destroy(PetShelterAddress $petShelterAddress): RedirectResponse
@@ -25,12 +36,13 @@ class PetShelterAddressController extends Controller
         $this->authorize("delete", $petShelterAddress);
 
         $petShelterAddress->update([
-            "address" => null,
-            "city" => null,
+            "address"     => null,
+            "city"        => null,
             "postal_code" => null,
+            "latitude"    => null,
+            "longitude"   => null,
         ]);
 
-        return back()
-            ->with("success", "Pet shelter address deleted successfully.");
+        return back()->with("success", "Pet shelter address deleted successfully.");
     }
 }
