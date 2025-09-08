@@ -14,6 +14,8 @@ class PetShelterAddressRequest extends FormRequest
             "address" => ["nullable", "string", "max:500"],
             "city" => ["nullable", "string", "max:100"],
             "postal_code" => ["nullable", "string", "max:20", 'regex:/^[0-9A-Za-z\s\-]+$/'],
+            "latitude" => ["nullable", "numeric", "between:-90,90"],
+            "longitude" => ["nullable", "numeric", "between:-180,180"],
         ];
     }
 }

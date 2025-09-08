@@ -22,6 +22,10 @@ class PreferenceFactory extends Factory
 
     public function definition(): array
     {
+        $city = $this->faker->city;
+        $latitude = $this->faker->latitude(-90, 90);
+        $longitude = $this->faker->longitude(-180, 180);
+
         return [
             "user_id" => User::factory(),
             "preferences" => [
@@ -41,6 +45,10 @@ class PreferenceFactory extends Factory
                 "activity_level" => $this->generateWeightedEnumArray(PetActivityLevel::values()),
                 "tags" => $this->generateWeightedArray(["playful", "calm", "friendly"]),
             ],
+            "city" => $city,
+            "latitude" => $latitude,
+            "longitude" => $longitude,
+            "radius_km" => $this->faker->numberBetween(5, 50),
         ];
     }
 
