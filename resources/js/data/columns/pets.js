@@ -251,9 +251,9 @@ export const petsConfig = {
 
 export const petsFieldOrder = [
   'name', 'species', 'breed', 'sex', 'age', 'size', 'weight', 'color', 'description',
-  'health_status', 'current_treatment', 'sterilized', 'vaccinated', 
+  'health_status', 'current_treatment', 'sterilized', 'vaccinated',
   'has_chip', 'chip_number', 'dewormed', 'deflea_treated', 'medical_tests',
-  'food_type', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats', 
+  'food_type', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats',
   'attitude_to_children', 'activity_level', 'behavioral_notes',
   'adoption_url', 'admission_date', 'found_location', 'adoption_status', 
   'is_accepted', 'shelter_id', 'tags',
