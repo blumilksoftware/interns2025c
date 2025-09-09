@@ -1,5 +1,5 @@
 <template>
-  <component :is="component" />
+  <component :is="component" v-bind="$attrs" />
 </template>
 
 <script setup>
@@ -23,6 +23,22 @@ import {
   IconAlertTriangle,
   IconDeviceDesktop,
   IconDeviceMobile,
+  IconMoodKid,
+  IconMan,
+  IconOld,
+  IconHorse,
+  IconWeight,
+  IconDog,
+  IconMoodSad,
+  IconMoodNeutral,
+  IconMoodSmile,
+  IconHeart,
+  IconMoodEmpty,
+  IconZzz,
+  IconWalk,
+  IconRun,
+  IconBolt,
+  IconFlame,
   IconLoader,
 } from '@tabler/icons-vue'
 
@@ -34,7 +50,9 @@ const props = defineProps({
       'arrow-left', 'location', 'phone', 'email', 'external-link',
       'chevron-left', 'chevron-right', 'user', 'settings', 'logout',
       'close', 'edit', 'delete', 'plus', 'search', 'warning',
-      'desktop', 'mobile', 'loading',
+      'desktop', 'mobile', 'mood-kid', 'man', 'old', 'horse',
+      'weight', 'dog', 'mood-sad', 'mood-neutral', 'mood-smile', 'heart', 'mood-empty',
+      'zzz', 'walk', 'run', 'bolt', 'flame','loading',
     ].includes(value),
   },
 })
@@ -58,6 +76,22 @@ const map = {
   'warning': { comp: IconAlertTriangle },
   'desktop': { comp: IconDeviceDesktop },
   'mobile': { comp: IconDeviceMobile },
+  'mood-kid': { comp: IconMoodKid },
+  'man': { comp: IconMan },
+  'old': { comp: IconOld },
+  'horse': { comp: IconHorse },
+  'weight': { comp: IconWeight },
+  'dog': { comp: IconDog },
+  'mood-sad': { comp: IconMoodSad },
+  'mood-neutral': { comp: IconMoodNeutral },
+  'mood-smile': { comp: IconMoodSmile },
+  'heart': { comp: IconHeart },
+  'mood-empty': { comp: IconMoodEmpty },
+  'zzz': { comp: IconZzz },
+  'walk': { comp: IconWalk },
+  'run': { comp: IconRun },
+  'bolt': { comp: IconBolt },
+  'flame': { comp: IconFlame },
   'loading': { comp: IconLoader },
 }
 
