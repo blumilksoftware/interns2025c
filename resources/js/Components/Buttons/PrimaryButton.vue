@@ -4,11 +4,19 @@ defineProps({
     type: String,
     default: 'submit',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
 <template>
-  <button :type="type" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercae tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 transition ease-in-out duration-150 hover:cursor-pointer">
+  <button 
+    :type="type" 
+    :disabled="disabled"
+    class="inline-flex items-center justify-center px-6 py-3 border-2 border-light-brown bg-white text-gray-700 font-semibold text-sm rounded-md shadow-sm transition-all duration-300 ease-out hover:bg-light-brown hover:text-white focus:bg-light-brown focus:text-white focus:outline-none focus:ring-2 focus:ring-light-brown focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gray-700"
+  >
     <slot />
   </button>
 </template>

@@ -15,7 +15,7 @@
   "title": {
     "secure": "Chroniony obszar",
     "register": "Zarejestruj się",
-    "forgotPassword": "Zapomniałem hasła",
+    "forgotPassword": "Nie pamiętasz hasła?",
     "login": "Logowanie",
     "resetPassword": "Zresetuj hasło",
     "emailVerification": "Potwierdź swój e-mail",
@@ -46,4 +46,3 @@
   }
   
 }
-

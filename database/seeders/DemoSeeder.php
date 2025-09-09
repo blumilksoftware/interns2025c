@@ -95,7 +95,7 @@ class DemoSeeder extends Seeder
 
         $pets->each(function (Pet $pet) use ($tags): void {
             $pet->tags()->sync(
-                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray()
+                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray(),
             );
         });
     }
