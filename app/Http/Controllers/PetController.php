@@ -43,11 +43,7 @@ class PetController extends Controller
 
         $pet = Pet::query()->create($request->validated());
 
-        if ($request->has("tags")) {
-            $tags = $request->input("tags", []);
-            $tagIds = $this->tagService->processTagsAndGetIds($tags);
-            $pet->tags()->sync($tagIds);
-        }
+        $this->syncTags($pet, $request->input("tags", []));
 
         return back()->with("success", "Pet created successfully.");
     }
@@ -56,14 +52,9 @@ class PetController extends Controller
     {
         $this->authorize("update", $pet);
 
-        $petData = $request->except("tags");
-        $pet->update($petData);
+        $pet->update($request->except("tags"));
 
-        if ($request->has("tags")) {
-            $tags = $request->input("tags", []);
-            $tagIds = $this->tagService->processTagsAndGetIds($tags);
-            $pet->tags()->sync($tagIds);
-        }
+        $this->syncTags($pet, $request->input("tags", []));
 
         return back()->with("success", "Pet updated successfully.");
     }
@@ -75,5 +66,17 @@ class PetController extends Controller
         $pet->delete();
 
         return back()->with("success", "Pet deleted successfully.");
+    }
+
+    private function syncTags(Pet $pet, array $tags): void
+    {
+        if (empty($tags)) {
+            $pet->tags()->sync([]);
+
+            return;
+        }
+
+        $tagIds = $this->tagService->processTagsAndGetIds($tags);
+        $pet->tags()->sync($tagIds);
     }
 }

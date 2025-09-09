@@ -10,49 +10,15 @@ class TagService
 {
     public function processTagsAndGetIds(array $tags): array
     {
-        $tagIds = [];
-
-        foreach ($tags as $tag) {
-            if (is_array($tag) && isset($tag["id"])) {
-                $tagIds[] = $tag["id"];
-            } 
-            // If tag is just a name string (new tag)
-            elseif (is_string($tag)) {
-                $sanitizedTagName = $this->sanitizeSingleTagName($tag);
-
-                if ($sanitizedTagName) {
-                    $tagModel = Tag::query()->firstOrCreate(["name" => $sanitizedTagName]);
-                    $tagIds[] = $tagModel->id;
-                }
-            }
-            // If tag is an array with name but no ID (new tag from frontend)
-            elseif (is_array($tag) && isset($tag["name"]) && !isset($tag["id"])) {
-                $sanitizedTagName = $this->sanitizeSingleTagName($tag["name"]);
-
-                if ($sanitizedTagName) {
-                    $tagModel = Tag::query()->firstOrCreate(["name" => $sanitizedTagName]);
-                    $tagIds[] = $tagModel->id;
-                }
-            }
-        }
-
-        return array_unique($tagIds);
-    }    
-
-    public function sanitizeTagName(string|array $tagNames): string|array|null
-    {
-        if (is_string($tagNames)) {
-            return $this->sanitizeSingleTagName($tagNames);
-        }
-
-        if (is_array($tagNames)) {
-            return $this->sanitizeTagNamesArray($tagNames);
-        }
-
-        return null;
+        return collect($tags)
+            ->map(fn($tag) => $this->getTagId($tag))
+            ->filter()      
+            ->unique()       
+            ->values()
+            ->all();
     }
 
-    private function sanitizeSingleTagName(string $tagName): ?string
+    public function sanitizeTagName(string $tagName): ?string
     {
         $sanitized = trim(preg_replace('/\s+/', " ", $tagName));
         $sanitized = preg_replace('/[^\p{L}\s]/u', "", $sanitized);
@@ -61,22 +27,35 @@ class TagService
         return $sanitized !== "" ? $sanitized : null;
     }
 
-    private function sanitizeTagNamesArray(array $tagNames): array
+    private function getTagId(string|array $tag): ?int
     {
-        $sanitizedTags = [];
-
-        foreach ($tagNames as $tagName) {
-            if (!is_string($tagName)) {
-                continue;
-            }
-
-            $sanitized = $this->sanitizeSingleTagName($tagName);
-
-            if ($sanitized !== null) {
-                $sanitizedTags[] = $sanitized;
-            }
+        if (is_array($tag) && !empty($tag["id"])) {
+            return $tag["id"];
         }
 
-        return array_unique($sanitizedTags);
+        $tagName = match(true) {
+            is_string($tag) => $tag,
+            is_array($tag) && !empty($tag["name"]) => $tag["name"],
+            default => null,
+        };
+
+        if (!$tagName) {
+            return null;
+        }
+
+        $sanitized = $this->sanitizeTagName($tagName);
+
+        if (!$sanitized) {
+            return null;
+        }
+
+        return $this->getOrCreateTagId($sanitized);
+    }
+
+    private function getOrCreateTagId(string $sanitizedName): int
+    {
+        $tagModel = Tag::firstOrCreate(["name" => $sanitizedName]);
+
+        return $tagModel->id;
     }
 }
