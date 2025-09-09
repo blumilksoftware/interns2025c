@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Pet;
-use App\Models\Tag;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PetAdminResource extends JsonResource
@@ -48,10 +47,7 @@ class PetAdminResource extends JsonResource
             "adoption_status" => $pet->adoption_status,
             "is_accepted" => $pet->is_accepted,
             "shelter_id" => $pet->shelter_id,
-            "tags" => $pet->tags->map(fn(Tag $tag): array => [
-                "id" => $tag->id,
-                "name" => $tag->name,
-            ])->toArray(),
+            "tags" => $pet->tags->map->only(["id", "name"]),
             "created_at" => $pet->created_at?->toISOString(),
             "updated_at" => $pet->updated_at?->toISOString(),
         ];
