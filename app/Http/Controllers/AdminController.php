@@ -16,14 +16,14 @@ class AdminController extends Controller
 {
     public function index(): Response
     {
-        $pets = Pet::query()->latest()->paginate(15);
-        $incomingPetsRequests = Pet::query()->where("is_accepted", false)->latest()->paginate(15);
+        $pets = Pet::query()->with("tags")->where("is_accepted", true)->get();
+        $incomingPetsRequests = Pet::query()->with("tags")->where("is_accepted", false)->get();
 
         return Inertia::render("AdminPanel/AdminPanel", [
             "pets" => PetAdminResource::collection($pets),
             "incomingPetsRequests" => PetAdminResource::collection($incomingPetsRequests),
-            "shelters" => PetShelter::query()->latest()->paginate(15),
-            "users" => User::query()->latest()->paginate(15),
+            "shelters" => PetShelter::query()->with("address")->get(),
+            "users" => User::query()->get(),
         ]);
     }
 

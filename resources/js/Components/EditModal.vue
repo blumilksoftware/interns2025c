@@ -3,6 +3,8 @@ import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue'
 import CommonIcons from '@/Components/Icons/CommonIcons.vue'
+import { prepareFormDataForEditing } from '@/helpers/dateTimeHelper.js'
+import { isNotEmpty } from '@/helpers/checkFunctions'
 import {
   columnConfig,
   getColumnType,
@@ -11,7 +13,6 @@ import {
   getColumnLabel,
   isColumnEditable,
   isColumnRequired,
-  sortFieldsByOrder,
 } from '@/data/columns/index'
 
 const { t } = useI18n()
@@ -42,6 +43,32 @@ const props = defineProps({
 const emit = defineEmits(['close', 'save', 'delete'])
 
 const editData = ref({})
+const errors = ref({})
+const convertTagsToDisplayFormat = (tags) => {
+  if (!Array.isArray(tags) || tags.length === 0) return ''
+  
+  const tagNames = tags.map(tag => {
+    if (typeof tag === 'object' && tag.name) return tag.name
+    return String(tag)
+  })
+  
+  return tagNames.join(', ')
+}
+
+const convertTagNamesToArray = (tagNamesString) => {
+  if (!tagNamesString || typeof tagNamesString !== 'string') return []
+  
+  return tagNamesString.split(',').map(name => name.trim()).filter(name => name.length > 0)
+}
+
+const convertArrayToDisplayFormat = (array) => {
+  if (!Array.isArray(array) || array.length === 0) return ''
+  
+  if (typeof array[0] === 'object' && array[0].name) {
+    return array.map(item => item.name).join(', ')
+  }
+  return array.join(', ')
+}
 
 watch(() => props.item, (newItem) => {
   if (newItem && Object.keys(newItem).length > 0) {
@@ -57,20 +84,25 @@ watch(() => props.item, (newItem) => {
         case 'number':
           editData.value[fieldKey] = null
           break
+        case 'array':
+          editData.value[fieldKey] = Array.isArray(editData.value[fieldKey])
+            ? editData.value[fieldKey]
+            : []
+          break
         default:
           editData.value[fieldKey] = null
         }
       }
     }
-    for (const field of editableFields.value) {
-      if (field.type === 'date' && editData.value[field.key]) {
-        const date = new Date(editData.value[field.key])
-        if (!isNaN(date.getTime())) {
-          editData.value[field.key] = date.toISOString().split('T')[0]
-        }
-      }
-      if (field.type === 'checkbox') {
-        editData.value[field.key] = Boolean(editData.value[field.key])
+    editData.value = prepareFormDataForEditing(editData.value, editableFields.value)
+    
+    const allConfiguredFields = Object.keys(columnConfig[props.dataSetType] || {})
+    for (const fieldKey of allConfiguredFields) {
+      const fieldType = getColumnType(props.dataSetType, fieldKey)
+      if (fieldType === 'array' && Array.isArray(editData.value[fieldKey])) {
+        editData.value[fieldKey] = fieldKey === 'tags' 
+          ? convertTagsToDisplayFormat(editData.value[fieldKey])
+          : convertArrayToDisplayFormat(editData.value[fieldKey])
       }
     }
   }
@@ -91,10 +123,25 @@ const editableFields = computed(() => {
     if (key === 'is_accepted') {
       return false
     }
+
+    const fieldType = getColumnType(props.dataSetType, key)
+    const isDateTimeField = fieldType === 'date' || fieldType === 'datetime-local'
+    const isSystemManagedField = key.endsWith('_at') || 
+      key === 'timestamp' || 
+      key === 'last_login' || 
+      key === 'adoption_date' ||
+      key === 'created_at' ||
+      key === 'updated_at' ||
+      key === 'verified_at'
+    
+    if (isDateTimeField && isSystemManagedField) {
+      return false
+    }
+
     return isColumnEditable(props.dataSetType, key)
   })
 
-  const sortedFields = sortFieldsByOrder(props.dataSetType, fields)
+  const sortedFields = fields
 
   return sortedFields.map(field => ({
     key: field,
@@ -106,36 +153,47 @@ const editableFields = computed(() => {
   }))
 })
 
-const errors = ref({})
-
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const validateForm = () => {
   errors.value = {}
 
   for (const field of editableFields.value) {
-    if (field.required && (!editData.value[field.key] || editData.value[field.key] === '')) {
+    const value = editData.value[field.key]
+
+    if (field.required && !isNotEmpty(value)) {
       errors.value[field.key] = `${field.label} is required`
+      continue
     }
 
-    if (field.type === 'email' && editData.value[field.key]) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(editData.value[field.key])) {
+    if (!isNotEmpty(value)) continue
+
+    switch (field.type) {
+    case 'email': {
+      if (!emailRegex.test(value)) {
         errors.value[field.key] = 'Please enter a valid email address'
       }
+      break
     }
-
-    if (field.type === 'number' && editData.value[field.key]) {
-      const num = parseFloat(editData.value[field.key])
-      if (field.attributes.min !== undefined && num < field.attributes.min) {
+    case 'number': {
+      const num = parseFloat(value)
+      if (isNaN(num)) {
+        errors.value[field.key] = 'Please enter a valid number'
+        break
+      }
+      if (field.attributes?.min !== undefined && num < field.attributes.min) {
         errors.value[field.key] = `Value must be at least ${field.attributes.min}`
       }
-      if (field.attributes.max !== undefined && num > field.attributes.max) {
+      if (field.attributes?.max !== undefined && num > field.attributes.max) {
         errors.value[field.key] = `Value must be at most ${field.attributes.max}`
       }
+      break
+    }
     }
   }
 
   return Object.keys(errors.value).length === 0
 }
+
 
 const closeModal = () => {
   errors.value = {}
@@ -146,8 +204,18 @@ const prepareDataForSave = () => {
   const cleanedData = { ...editData.value }
 
   for (const field of editableFields.value) {
-    if (field.type === 'number' && cleanedData[field.key] !== null && cleanedData[field.key] !== '') {
+    if (field.type === 'number' && isNotEmpty(cleanedData[field.key])) {
       cleanedData[field.key] = parseFloat(cleanedData[field.key])
+    }
+
+    if (field.type === 'array') {
+      if (cleanedData[field.key] && typeof cleanedData[field.key] === 'string') {
+        cleanedData[field.key] = field.key === 'tags'
+          ? convertTagNamesToArray(cleanedData[field.key])
+          : cleanedData[field.key].split(',').map(item => item.trim()).filter(item => item.length > 0)
+      } else if (!Array.isArray(cleanedData[field.key])) {
+        cleanedData[field.key] = []
+      }
     }
 
     if (!field.required && cleanedData[field.key] === '') {
@@ -168,28 +236,29 @@ const saveChanges = () => {
 
 const showDeleteConfirm = ref(false)
 
-const confirmDelete = () => {
-  showDeleteConfirm.value = true
-}
-
-const cancelDelete = () => {
-  showDeleteConfirm.value = false
+const toggleDeleteConfirm = (value) => {
+  showDeleteConfirm.value = value ?? !showDeleteConfirm.value
 }
 
 const deleteItem = () => {
   emit('delete', props.item)
-  showDeleteConfirm.value = false
+  toggleDeleteConfirm(false)
   closeModal()
 }
 
+const cancelDelete = () => {
+  toggleDeleteConfirm(false)
+}
+
+
 const getItemDisplayName = () => {
-  return props.item.name || props.item.email || `#${props.item.id}` || 'Item'
+  return 'Item'
 }
 
 const handleKeydown = (event) => {
   if (event.key === 'Escape') {
     if (showDeleteConfirm.value) {
-      cancelDelete()
+      toggleDeleteConfirm(false)
     } else {
       closeModal()
     }
@@ -206,7 +275,7 @@ const handleKeydown = (event) => {
           <div class="sm:flex sm:items-start">
             <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
               <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-                {{ t('admin.modal.edit', { type: dataSetType.charAt(0).toUpperCase() + dataSetType.slice(1) }) }}
+                {{ t('admin.modal.edit', { type: getItemDisplayName() }) }}
               </h3>
 
               <form class="space-y-4" @submit.prevent="saveChanges">
@@ -234,9 +303,9 @@ const handleKeydown = (event) => {
                       :id="field.key"
                       v-model="editData[field.key]"
                       :type="field.type"
-                      :min="field.attributes.min"
-                      :max="field.attributes.max"
-                      :step="field.attributes.step"
+                      :min="field.attributes?.min"
+                      :max="field.attributes?.max"
+                      :step="field.attributes?.step"
                       :required="field.required"
                       :class="[
                         'mt-1 block w-full rounded-md shadow-sm sm:text-sm',
@@ -246,6 +315,20 @@ const handleKeydown = (event) => {
                       ]"
                     >
 
+                    <input
+                      v-else-if="field.type === 'array'"
+                      :id="field.key"
+                      v-model="editData[field.key]"
+                      type="text"
+                      :required="field.required"
+                      :placeholder="field.key === 'tags' ? 'Enter any tag names separated by commas (new tags will be created automatically)' : 'Enter values separated by commas'"
+                      :class="[
+                        'mt-1 block w-full rounded-md shadow-sm sm:text-sm',
+                        errors[field.key]
+                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
+                      ]"
+                    >
                     <input
                       v-else-if="field.type === 'date'"
                       :id="field.key"
@@ -339,7 +422,7 @@ const handleKeydown = (event) => {
             type="button"
             :disabled="isSaving || isDeleting"
             class="mt-3 w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:mr-auto sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            @click="confirmDelete"
+            @click="toggleDeleteConfirm"
           >
             <CommonIcons name="delete" class="size-4 mr-2" />
             {{ t('admin.modal.delete') }}

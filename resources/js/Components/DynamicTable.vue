@@ -339,8 +339,15 @@ const handleNativeDateChange = (columnKey, date) => {
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200 ">
-          <tr v-for="row in paginatedData" :key="row.id" class="hover:bg-gray-50">
-            <td v-for="column in columns" :key="column.key" class="p-2 sm:px-4 text-sm text-center text-gray-900 border-2 border-gray-100 ">
+          <tr v-for="(row, index) in paginatedData" :key="row.id" class="hover:bg-gray-50">
+            <td
+              v-for="column in columns"
+              :key="column.key"
+              :class="[
+                'p-2 sm:px-4 text-sm text-center text-gray-900 border-2 border-gray-100',
+                (index % 2 === 1) ? 'bg-blue-100' : ''
+              ]"
+            >
               <div class="overflow-auto h-30 w-auto flex justify-center items-center">
                 <CellContent :column-key="column.key" :value="row[column.key] ?? '-' " />
               </div>
