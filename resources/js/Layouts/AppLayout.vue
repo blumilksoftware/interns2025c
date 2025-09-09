@@ -12,7 +12,7 @@ defineProps({
 <template>
   <div>
     <Head :title="title" />
-    <div class="min-h-screen bg-[#fefae0]/50 relative">
+    <div class="min-h-screen bg-soft-cream/50 relative">
       <Header />
       <main>
         <slot />

@@ -160,7 +160,7 @@ return [
         "password" => "Hasło",
         "current_password" => "Aktualne hasło",
         "name" => "Imię",
-        "email" => "e-mail",
+        "email" => "E-mail",
     ],
     "custom" => [],
 ];
