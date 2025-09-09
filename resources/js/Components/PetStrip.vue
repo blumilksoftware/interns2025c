@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n'
 import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { getGenderInfo } from '@/helpers/mappers'
 
 const { t } = useI18n()
 
@@ -28,8 +28,6 @@ const scrollContainer = ref(null)
 const canScrollLeft = ref(false)
 const canScrollRight = ref(true)
 
-const petTags = getPetTags()
-
 const toggleLike = (petId) => {
   if (likedPets.value.has(petId)) {
     likedPets.value.delete(petId)
@@ -38,9 +36,12 @@ const toggleLike = (petId) => {
   }
 }
 
-const getPetTagsForPet = (pet) => {
-  if (!pet.tags || !Array.isArray(pet.tags)) return []
-  return pet.tags.map(tagId => petTags[tagId]).filter(Boolean)
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags) ? pet.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+
+const descriptionFor = (pet) => {
+  const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
+  if (desc) return desc
+  return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
 }
 
 const checkScrollPosition = () => {
@@ -113,7 +114,7 @@ nextTick(() => {
         >
           <div class="relative aspect-square ">
             <Link :href="routes.pets.show(pet.id)" class="focus-visible:outline-none">
-              <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
+              <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" @error="($event) => { $event.target.src = '/Images/cat-dog.png' }">
             </Link> 
 
             <button 
@@ -125,7 +126,7 @@ nextTick(() => {
             </button>
             
             <div class="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
-              <span :class="getGenderInfo(pet.gender).color">{{ getGenderInfo(pet.gender).symbol }}</span>
+              <span :class="getGenderInfo(pet.sex).color">{{ getGenderInfo(pet.sex).symbol }}</span>
             </div>
           </div>
           
@@ -137,21 +138,22 @@ nextTick(() => {
             
             <div class="flex items-center justify-center gap-1 sm:gap-2 mb-2">
               <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800">{{ pet.age }}</span>
-              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800">{{ pet.status }}</span>
+              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800">{{ pet.adoption_status }}</span>
             </div>
             
             <div class="border-t border-gray-200 my-2 sm:my-3" />
             
-            <div class="flex flex-wrap gap-1 sm:gap-2 justify-center">
-              <span 
-                v-for="tag in getPetTagsForPet(pet)" 
-                :key="tag.name"
-                class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full"
-                :class="tag.color"
-              >
-                <span class="text-xs sm:text-sm shrink-0">{{ tag.emoji }}</span>
-                <span class="truncate text-xs sm:text-sm">{{ tag.name }}</span>
-              </span>
+            <div class="flex flex-col gap-2 items-center">
+              <p class="text-xs sm:text-sm text-gray-700 leading-relaxed text-center px-2">{{ descriptionFor(pet) }}</p>
+              <div class="flex flex-wrap gap-1 sm:gap-2 justify-center">
+                <span 
+                  v-for="tag in getPetTagsForPet(pet)" 
+                  :key="`${pet.id}-${tag}`"
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full bg-gray-50 text-gray-700"
+                >
+                  <span class="truncate text-xs sm:text-sm">{{ tag }}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>

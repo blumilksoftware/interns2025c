@@ -20,8 +20,14 @@ class PetIndexResource extends JsonResource
             "species" => $pet->species,
             "breed" => $pet->breed,
             "sex" => $pet->sex,
+            "age" => $pet->age,
+            "size" => $pet->size,
+            "weight" => $pet->weight,
+            "color" => $pet->color,
+            "description" => $pet->description,
             "behavioral_notes" => $pet->behavioral_notes,
             "adoption_status" => $pet->adoption_status,
+            "tags" => $pet->tags->pluck('name')->values(),
         ];
     }
 }

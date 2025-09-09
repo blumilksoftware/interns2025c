@@ -3,8 +3,6 @@ import { computed, ref } from 'vue'
 import Header from '@/Components/Header.vue'
 import Footer from '@/Components/Footer.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import { bestMatches, dogs, cats } from '@/data/petsData.js'
-import { getGenderInfo } from '@/helpers/mappers'
 import PetGallery from './Partials/PetGallery.vue'
 import PetDetails from './Partials/PetDetails.vue'
 import PetLocation from './Partials/PetLocation.vue'
@@ -21,41 +19,15 @@ const props = defineProps({
   },
 })
 
-const allPets = [...bestMatches, ...dogs, ...cats]
-
-const routeId = computed(() => {
-  const path = typeof window !== 'undefined' ? window.location.pathname : ''
-  const match = path.match(/\/(?:pets)(?:\/static)?\/(\d+)/)
-  const id = match ? Number(match[1]) : NaN
-  return Number.isFinite(id) ? id : null
+const displayPet = computed(() => {
+  const p = props.pet
+  if (!p) return null
+  const tagNames = Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+  const imageUrl = `https://placedog.net/500?id=${p.id || 1}`
+  return { ...p, tags: tagNames, status: p.adoption_status, gender: p.sex, imageUrl }
 })
 
-const staticPet = computed(() => allPets.find(pet => pet.id === routeId.value) || null)
-
-const effectivePet = computed(() => {
-  if (props.pet && staticPet.value) {
-    return {
-      ...props.pet,
-      ...staticPet.value,
-    }
-  }
-  return props.pet ?? staticPet.value
-})
-
-const similarPets = computed(() => {
-  const current = effectivePet.value
-  if (!current) return []
-  const currentTags = new Set(Array.isArray(current.tags) ? current.tags : [])
-  const candidates = allPets.filter(pet => pet.id !== current.id)
-  const scored = candidates.map(pet => {
-    const petTags = Array.isArray(pet.tags) ? pet.tags : []
-    const overlap = petTags.filter(tag => currentTags.has(tag)).length
-    return { pet: pet, score: overlap }
-  })
-  const filtered = scored.filter(s => s.score > 0)
-  filtered.sort((a, b) => b.score - a.score)
-  return filtered.slice(0, 10).map(s => s.pet)
-})
+const similarPets = computed(() => [])
 
 const showSimilarOverlay = ref(false)
 const similarListTitle = ref('')
@@ -74,10 +46,10 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
     <Head :title="t('titles.petShow')" />     
     <Header />
 
-    <PetGallery v-if="effectivePet" :pet="effectivePet" />
+    <PetGallery v-if="displayPet" :pet="displayPet" />
 
     <div class="mx-auto max-w-6xl px-6 lg:px-2 py-4">
-      <PetDetails v-if="effectivePet" :pet="effectivePet" />
+      <PetDetails v-if="displayPet" :pet="displayPet" />
     </div>
 
     <div v-if="similarPets.length" class="mx-auto max-w-6xl p-6 lg:px-2">

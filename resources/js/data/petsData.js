@@ -24,3 +24,35 @@ export const cats = [
   { breed: 'Scottish Fold' },
 ]
 
+export const bestMatches = [
+  {
+    id: 1,
+    name: 'Buddy',
+    breed: 'Labrador Retriever',
+    age: '2 years',
+    status: 'Available',
+    gender: 'male',
+    imageUrl: '/Images/cat-dog.png',
+    description: 'Friendly and energetic companion.',
+    tags: ['friendly', 'playful', 'active'],
+  },
+  {
+    id: 2,
+    name: 'Luna',
+    breed: 'Siamese',
+    age: '1 year',
+    status: 'Available',
+    gender: 'female',
+    imageUrl: '/Images/cat-dog.png',
+    description: 'Gentle and smart.',
+    tags: ['gentle', 'smart', 'calm'],
+  },
+]
+
+// 100 przykładowych zdjęć (stabilne dzięki seed) – do podmiany na dane z bazy
+export const samplePetImages = Array.from({ length: 100 }, (_, i) => {
+  const id = i + 1
+  // Stabilne zdjęcia psów; param id zapewnia deterministyczny wybór
+  return { id, imageUrl: `https://placedog.net/500?id=${id}` }
+})
+

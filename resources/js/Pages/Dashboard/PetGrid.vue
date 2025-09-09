@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PetStrip from '@/Components/PetStrip.vue'
-import { bestMatches, dogs, cats } from '@/data/petsData.js'
-import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { getGenderInfo } from '@/helpers/mappers'
 import { Link } from '@inertiajs/vue3'
 import { routes } from '@/routes'
 
@@ -16,20 +15,32 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  bestMatchesRest: {
+    type: Array,
+    default: () => [],
+  },
+  dogs: {
+    type: Array,
+    default: () => [],
+  },
+  cats: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['showPetList', 'hidePetList'])
 
-const petTags = getPetTags()
-
 const { t } = useI18n()
 
-const getPetTagsForPet = (pet) => {
-  if (!pet.tags || !Array.isArray(pet.tags)) return []
-  return pet.tags.map(tagId => petTags[tagId]).filter(Boolean)
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags) ? pet.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+
+const descriptionFor = (pet) => {
+  const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
+  if (desc) return desc
+  return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
 }
 
-const bestMatchesRest = computed(() => bestMatches.slice(1))
 
 const handleShowPetList = (data) => {
   emit('showPetList', data)
@@ -106,7 +117,7 @@ const handleHidePetList = () => {
               
               <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
-                <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
+                <p class="text-base text-gray-700 leading-relaxed">{{ descriptionFor(pet) }}</p>
                 <div class="mt-3">
                   <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
                 </div>

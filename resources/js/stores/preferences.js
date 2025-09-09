@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { router } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 
 const defaultForm = () => ({
   species: [],
@@ -63,7 +65,15 @@ export const usePreferencesStore = defineStore('preferences', {
       }
     },
     apply() {
-      // Placeholder: hook for triggering search or analytics
+      // Navigate to dashboard; preferences are persisted in Pinia/localStorage
+      try {
+        // Persist before navigation
+        this.save()
+
+        router.get(routes.dashboard(), {}, { preserveState: false, replace: false })
+      } catch (error) {
+        console.warn('Failed to apply preferences:', error)
+      }
     },
   },
 })
