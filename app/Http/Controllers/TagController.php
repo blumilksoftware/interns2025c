@@ -24,7 +24,7 @@ class TagController extends Controller
         if ($sanitizedName) {
             Tag::query()->firstOrCreate(["name" => $sanitizedName]);
 
-            return redirect("/admin")
+            return back()
                 ->with("success", "Tag created successfully.");
         }
 
@@ -41,11 +41,11 @@ class TagController extends Controller
         if ($sanitizedName) {
             $tag->update(["name" => $sanitizedName]);
 
-            return redirect("/admin")
+            return back()
                 ->with("success", "Tag updated successfully.");
         }
 
-        return redirect("/admin")
+        return back()
             ->with("error", "Invalid tag name - only letters are allowed.");
     }
 
@@ -55,7 +55,7 @@ class TagController extends Controller
 
         $tag->delete();
 
-        return redirect("/admin")
+        return back()
             ->with("success", "Tag deleted successfully.");
     }
 }
