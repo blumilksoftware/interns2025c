@@ -57,7 +57,7 @@ const cancelDelete = () => {
               </h3>
               <div class="mt-2">
                 <p class="text-sm text-gray-500">
-                  {{ t('admin.modal.confirmDeleteMessage', { name: itemName }) }} 
+                  {{ t('admin.modal.confirmDeleteMessage', { name: itemName }) }}
                 </p>
               </div>
             </div>
