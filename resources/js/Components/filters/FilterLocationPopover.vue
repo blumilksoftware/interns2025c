@@ -134,45 +134,45 @@ function pickRemote(item) { emit('use', item.label) }
 
 <template>
   <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
+    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
     <div class="sm:relative z-[3000]">
-      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
-      <div v-if="isOpen" class="mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-2 sm:absolute sm:z-[4000] sm:shadow-lg">
+      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
+      <div v-if="isOpen" class="mt-1 w-full bg-white border border-gray-200 rounded-md p-2 sm:absolute sm:z-[4000] sm:shadow-lg">
         <template v-if="(valueProxy || '').length >= 3">
-          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Sugestie</div>
+          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Sugestie</div>
           <div ref="listRef" :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" @scroll="onScroll">
             <div :style="{ height: totalHeight + 'px', position: 'relative' }">
               <div :style="{ position: 'absolute', top: offsetTop + 'px', left: 0, right: 0 }">
-                <button v-for="it in visibleItems" :key="it.display + it.lat + it.lon" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="pickRemote(it)">
+                <button v-for="it in visibleItems" :key="it.display + it.lat + it.lon" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="pickRemote(it)">
                   {{ it.label }}
                 </button>
               </div>
             </div>
           </div>
-          <div v-if="loading" class="flex items-center gap-2 p-2 text-xs text-gray-500 dark:text-gray-400">
+          <div v-if="loading" class="flex items-center gap-2 p-2 text-xs text-gray-500">
             <svg class="animate-spin size-4 text-indigo-600" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
             <span>Ładowanie…</span>
           </div>
-          <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Brak wyników</div>
+          <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500">Brak wyników</div>
         </template>
 
         <template v-else>
           <div class="max-h-64 overflow-auto">
             <template v-if="valueProxy && filteredLocations.length > 0">
-              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Wyniki</div>
-              <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Wyniki</div>
+              <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </template>
             <template v-else-if="valueProxy">
-              <div class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Brak wyników. Użyj wpisanej lokalizacji.</div>
+              <div class="px-2 py-1 text-xs text-gray-500">Brak wyników. Użyj wpisanej lokalizacji.</div>
             </template>
             <div v-if="recentLocations.length > 0" class="mt-2">
-              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Ostatnio wybierane</div>
-              <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200" @click="$emit('use', loc)">
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Ostatnio wybierane</div>
+              <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </div>
@@ -180,10 +180,10 @@ function pickRemote(item) { emit('use', item.label) }
         </template>
 
         <div class="mt-2 flex justify-between gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800" @click="$emit('clear')">Wyczyść</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="$emit('clear')">Wyczyść</button>
           <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">Użyj tego</button>
         </div>
       </div>
+      </div>
     </div>
-  </div>
 </template>

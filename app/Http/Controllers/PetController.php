@@ -8,8 +8,8 @@ use App\Http\Requests\PetRequest;
 use App\Http\Resources\PetIndexResource;
 use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +18,7 @@ class PetController extends Controller
     public function index(Request $request): Response
     {
         $pets = Pet::query()
-            ->with('tags')
+            ->with("tags")
             ->latest()
             ->paginate(50);
 

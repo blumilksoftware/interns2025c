@@ -55,8 +55,8 @@ const limitedBadges = computed(() => {
   <div class="space-y-6">
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="activity">
       <div class="flex items-center justify-between mb-3">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.activityLevel') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.activityLevel = null; props.moveFilterById('activity')">{{ t('preferences.placeholders.any') }}</button>
+        <label class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.activityLevel') }}</label>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.activityLevel = null; props.moveFilterById('activity')">{{ t('preferences.placeholders.any') }}</button>
       </div>
       <ChoiceTiles :columns="props.selectorConfigs.activity.columns" :options="props.selectorConfigs.activity.options" :model-value="form.activityLevel" @update:model-value="val => { form.activityLevel = val; props.moveFilterById('activity') }">
         <template #label="{ option }">
@@ -66,14 +66,14 @@ const limitedBadges = computed(() => {
     </div>
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="tags">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.labels.tags') }}</label>
+      <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.labels.tags') }}</label>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in tagOptions"
           :key="tag.value"
           type="button"
           class="px-3 py-1 rounded-full border text-sm transition-all duration-150 ease-in-out hover:-translate-y-0.5"
-          :class="form.tags.includes(tag.value) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-transparent text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700'"
+          :class="form.tags.includes(tag.value) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-transparent text-gray-700 border-gray-300'"
           @click="toggleTag(tag.value, $event)"
         >
           {{ tag.label }}
@@ -82,8 +82,8 @@ const limitedBadges = computed(() => {
     </div>
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="summary">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ t('preferences.summary') }}</label>
-      <div v-if="summary.length === 0" class="text-sm text-gray-500 dark:text-gray-400">{{ t('preferences.placeholders.noActiveFilters') }}</div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.summary') }}</label>
+      <div v-if="summary.length === 0" class="text-sm text-gray-500">{{ t('preferences.placeholders.noActiveFilters') }}</div>
       <div v-else class="flex flex-wrap gap-2">
         <template v-for="badge in limitedBadges" :key="badge.ellipsis ? 'ellipsis' : (badge.title + '-' + String(badge.value))">
           <button v-if="badge.ellipsis" type="button" class="badge-selected" @click="showAllBadges = true">...</button>

@@ -48,7 +48,7 @@ onMounted(() => {
         animationDelay: paw.delay + 's'
       }"
     >
-      <svg width="60" height="60" viewBox="0 0 60 60" class="text-gray-300 dark:text-gray-500/50">
+      <svg width="60" height="60" viewBox="0 0 60 60" class="text-gray-300">
         <g fill="currentColor">
           <circle cx="30" cy="37" r="12" />
           <circle cx="18" cy="22" r="6" />

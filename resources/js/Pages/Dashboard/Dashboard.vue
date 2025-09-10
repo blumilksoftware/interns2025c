@@ -102,8 +102,6 @@ const cats = computed(() => sortedPets.value.filter(p => String(p.species) === '
           <h3 class="font-semibold mb-2">Zastosowane preferencje</h3>
           <pre class="text-sm text-gray-700 whitespace-pre-wrap">{{ JSON.stringify(filters, null, 2) }}</pre>
         </div>
-
-        
       </div>
       <MVPSection v-if="featuredPet" :pet="featuredPet" />
       <PetGrid 

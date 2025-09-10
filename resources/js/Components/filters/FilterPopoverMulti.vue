@@ -53,26 +53,26 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ label }}</label>
+    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
     <div class="relative z-30">
-      <button type="button" class="w-full text-left text-black dark:text-gray-100 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = !isOpen">
+      <button type="button" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
         <div class="flex items-center gap-2">
           <span v-if="selected.length > 0" class="bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">{{ selected.length }}</span>
-          <svg class="size-4 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <svg class="size-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
           </svg>
         </div>
       </button>
-      <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-2">
+      <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg p-2">
         <div class="max-h-60 overflow-auto">
-          <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800">
-            <input v-model="selected" type="checkbox" :value="opt.value" class="rounded border-gray-300 dark:border-gray-700 transition-all duration-150 ease-in-out checked:scale-105">
+          <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 px-2 py-1 rounded hover:bg-gray-50">
+            <input v-model="selected" type="checkbox" :value="opt.value" class="rounded border-gray-300 transition-all duration-150 ease-in-out checked:scale-105">
             <span>{{ opt.labelKey ? t(opt.labelKey) : (opt.label || opt.value) }}</span>
           </label>
         </div>
         <div class="mt-2 flex justify-end gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="selected = [];">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="selected = [];">{{ t('preferences.placeholders.any') }}</button>
           <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = false">OK</button>
         </div>
       </div>

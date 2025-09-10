@@ -65,28 +65,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-orange-200/40 via-pink-100/40 to-blue-200/40 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900 relative">
+  <div class="min-h-screen bg-gradient-to-br from-orange-200/40 via-pink-100/40 to-blue-200/40 relative">
     <PawPrints />
 
     <ScrollToTop />
 
     <div class="mx-auto max-w-5xl px-6 lg:px-8 py-10">
       <div class="mb-6">
-        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">{{ t('preferences.title') }}</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-300">{{ t('preferences.subtitle') }}</p>
+        <h1 class="text-3xl font-semibold text-gray-900">{{ t('preferences.title') }}</h1>
+        <p class="mt-2 text-gray-600">{{ t('preferences.subtitle') }}</p>
       </div>
 
-      <div class="bg-white/70 dark:bg-gray-800/20 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-6 space-y-6 shadow-lg preferences-form-container">
+      <div class="bg-white/70 backdrop-blur-md border border-gray-200/50 rounded-xl p-6 space-y-6 shadow-lg preferences-form-container">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="flex items-center gap-1 sm:gap-2 max-w-full min-w-0 justify-between sm:justify-start">
             <template v-for="stepNumber in 5" :key="stepNumber">
               <button type="button" class="size-8 rounded-full flex items-center justify-center text-sm shrink-0 transition-all duration-150 ease-in-out hover:-translate-y-0.5"
-                      :class="stepNumber === currentStep ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'"
+                      :class="stepNumber === currentStep ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'"
                       @click="currentStep = stepNumber"
               >
                 {{ stepNumber }}
               </button>
-              <span v-if="stepNumber < 5" class="hidden sm:block w-6 h-0.5 bg-gray-300 dark:bg-gray-600 shrink-0" />
+              <span v-if="stepNumber < 5" class="hidden sm:block w-6 h-0.5 bg-gray-300 shrink-0" />
             </template>
           </div>
         </div>
@@ -154,12 +154,12 @@ onMounted(() => {
         </div>
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="w-full sm:w-auto">
-            <button type="button" class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-3 py-1 text-xs sm:text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.reset()">
+            <button type="button" class="inline-flex items-center rounded-md bg-gray-100 px-3 py-1 text-xs sm:text-sm text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.reset()">
               {{ t('preferences.actions.reset') }}
             </button>
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <button type="button" class="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs sm:text-sm transition-all duration-150 ease-in-out hover:-translate-y-0.5" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
+            <button type="button" class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 text-xs sm:text-sm transition-all duration-150 ease-in-out hover:-translate-y-0.5" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
             <button v-if="currentStep < 5" type="button" class="px-3 py-1 rounded-md bg-indigo-600 text-white text-xs sm:text-sm transition-all duration-150 ease-in-out hover:-translate-y-0.5" :disabled="currentStep===5" @click="currentStep++">{{ t('common.next') || 'Dalej' }}</button>
             <button v-else type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1 text-xs sm:text-sm text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.apply()">
               {{ t('preferences.actions.apply') }}

@@ -29,14 +29,14 @@
     .heading-xl { @apply text-xl font-semibold text-gray-900 mb-3; }
     .heading-lg { @apply text-3xl sm:text-4xl font-bold text-gray-900; }
 
-    .disclosure { @apply overflow-hidden bg-white dark:bg-[#0b1220]; }
+    .disclosure { @apply overflow-hidden bg-white; }
     .disclosure[open] { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
     .disclosure-summary::-webkit-details-marker { display: none; }
-    .disclosure-summary { @apply list-none flex items-center justify-between py-3.5 px-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-b from-indigo-500/5 to-transparent hover:from-indigo-500/10 dark:from-indigo-500/12; }
+    .disclosure-summary { @apply list-none flex items-center justify-between py-3.5 px-4 border-b border-gray-200 bg-gradient-to-b from-indigo-500/5 to-transparent hover:from-indigo-500/10; }
     .chevron { @apply transition-transform duration-200 ease-linear; }
     .disclosure[open] .chevron { @apply rotate-180; }
 
-    .badge-selected { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs bg-indigo-50 text-indigo-900 border-indigo-200 dark:bg-indigo-500/25 dark:text-indigo-100 dark:border-indigo-500/45; }
+    .badge-selected { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs bg-indigo-50 text-indigo-900 border-indigo-200; }
 
     .tile-checkbox { @apply cursor-pointer transition-all; }
     .checkbox-content { @apply flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 text-center min-h-[90px] sm:min-h-[100px] rounded-lg border-2 border-gray-200 bg-white transition; }

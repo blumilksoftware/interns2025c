@@ -75,8 +75,8 @@ const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(val
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="age">
       <div class="flex items-center justify-between mb-3">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.age') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.ageIndex = []; moveFilterById('age')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
+        <label class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.age') }}</label>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.ageIndex = []; moveFilterById('age')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
       <ChoiceTiles :columns="props.selectorConfigs.age.columns" :options="props.selectorConfigs.age.options" :model-value="form.ageIndex" :multiple="true" @update:model-value="value => { form.ageIndex = value; moveFilterById('age') }">
         <template #label="{ option }">
@@ -87,8 +87,8 @@ const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(val
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="size">
       <div class="flex items-center justify-between mb-3">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.size') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.sizeIndex = []; moveFilterById('size')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
+        <label class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.size') }}</label>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.sizeIndex = []; moveFilterById('size')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
       <ChoiceTiles :columns="props.selectorConfigs.size.columns" :options="props.selectorConfigs.size.options" :model-value="form.sizeIndex" :multiple="true" @update:model-value="value => { form.sizeIndex = value; moveFilterById('size') }">
         <template #label="{ option }">
@@ -99,8 +99,8 @@ const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(val
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="weight">
       <div class="flex items-center justify-between mb-3">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ t('preferences.labels.weightKg') }}</label>
-        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.weightState = []; moveFilterById('weight')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
+        <label class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.weightKg') }}</label>
+        <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.weightState = []; moveFilterById('weight')">{{ t('preferences.placeholders.any') || 'Wszystkie' }}</button>
       </div>
       <ChoiceTiles :columns="props.selectorConfigs.weight.columns" :options="props.selectorConfigs.weight.options" :model-value="form.weightState" :multiple="true" @update:model-value="value => { form.weightState = value; moveFilterById('weight') }">
         <template #label="{ option }">
