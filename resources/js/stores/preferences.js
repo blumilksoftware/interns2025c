@@ -65,9 +65,7 @@ export const usePreferencesStore = defineStore('preferences', {
       }
     },
     apply() {
-      // Navigate to dashboard; preferences are persisted in Pinia/localStorage
       try {
-        // Persist before navigation
         this.save()
 
         router.get(routes.dashboard(), {}, { preserveState: false, replace: false })

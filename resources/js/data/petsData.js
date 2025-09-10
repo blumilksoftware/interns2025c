@@ -49,10 +49,8 @@ export const bestMatches = [
   },
 ]
 
-// 100 przykładowych zdjęć (stabilne dzięki seed) – do podmiany na dane z bazy
 export const samplePetImages = Array.from({ length: 100 }, (_, i) => {
   const id = i + 1
-  // Stabilne zdjęcia psów; param id zapewnia deterministyczny wybór
   return { id, imageUrl: `https://placedog.net/500?id=${id}` }
 })
 

@@ -55,7 +55,6 @@ export function useFormState() {
 
   function applyPreferences() {
     // placeholder
-    // console.log('Applied preferences:', { ...form.value })
   }
 
   return { form, resetForm, applyPreferences }

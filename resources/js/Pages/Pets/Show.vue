@@ -33,7 +33,6 @@ const displayPet = computed(() => {
   }
   return {
     ...p,
-    // normalize fields expected by child components
     tags: tagNames,
     status: statusLabel,
     gender: p.sex ?? p.gender,
