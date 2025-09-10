@@ -8,23 +8,12 @@ use App\Enums\PetAdoptionStatus;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSpecies;
-use App\Models\Pet;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class PetRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        if ($this->user() === null) {
-            return true;
-        }
-
-        return Gate::allows("store", Pet::class);
-    }
-
     public function rules(): array
     {
         return [
