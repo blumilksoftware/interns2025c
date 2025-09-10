@@ -85,7 +85,6 @@ let debounceTimer = null
 
 async function render() {
   await ensureLeafletLoaded()
-  // Ensure container is mounted
   if (!containerRef.value) {
     await nextTick()
     if (!containerRef.value) return

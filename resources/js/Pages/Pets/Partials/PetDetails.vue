@@ -106,59 +106,59 @@ const medicalInfo = computed(() => {
         <h2 class="heading-xl">{{ t('dashboard.aboutPet') }}</h2>
         <p class="text-base text-gray-700 leading-relaxed">{{ props.pet?.description }}</p>
         <div class="mt-8 space-y-6">
-          <div v-if="props.pet?.health_status" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div v-if="props.pet?.health_status" class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
             <div class="flex items-center gap-3 mb-4">
-              <div class="shrink-0 size-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+              <div class="shrink-0 size-10 bg-blue-100 rounded-full flex items-center justify-center">
                 <PetIcons name="heart" />
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ t('dashboard.mvp.healthStatus.title') }}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">{{ t('dashboard.mvp.healthStatus.description') }}</p>
+                <h3 class="text-lg font-semibold text-gray-900">{{ t('dashboard.mvp.healthStatus.title') }}</h3>
+                <p class="text-sm text-gray-600">{{ t('dashboard.mvp.healthStatus.description') }}</p>
               </div>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div v-if="props.pet?.health_status" class="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div v-if="props.pet?.health_status" class="flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200">
                 <div class="shrink-0">
                   <div :class="`size-8 ${getHealthStatusInfo(props.pet.health_status).bgColor} rounded-full flex items-center justify-center`">
                     <PetIcons :name="getHealthStatusInfo(props.pet.health_status).icon" />
                   </div>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  <p class="text-sm font-medium text-gray-900">
                     {{ t(getHealthStatusInfo(props.pet.health_status).label) }}
                   </p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ t(getHealthStatusInfo(props.pet.health_status).description) }}</p>
+                  <p class="text-xs text-gray-500">{{ t(getHealthStatusInfo(props.pet.health_status).description) }}</p>
                 </div>
               </div>
             </div>
 
-            <div v-if="props.pet?.current_treatment" class="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+            <div v-if="props.pet?.current_treatment" class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
               <div class="flex items-start gap-3">
-                <div class="shrink-0 size-6 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mt-0.5">
+                <div class="shrink-0 size-6 bg-amber-100 rounded-full flex items-center justify-center mt-0.5">
                   <PetIcons name="treatment" />
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-amber-900 dark:text-amber-100">{{ t('dashboard.mvp.healthStatus.currentTreatment') }}</p>
-                  <p class="text-sm text-amber-800 dark:text-amber-200 mt-1">{{ props.pet.current_treatment }}</p>
+                  <p class="text-sm font-medium text-amber-900">{{ t('dashboard.mvp.healthStatus.currentTreatment') }}</p>
+                  <p class="text-sm text-amber-800 mt-1">{{ props.pet.current_treatment }}</p>
                 </div>
               </div>
             </div>
 
             <div v-if="medicalInfo.length" class="mt-6">
-              <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-3">{{ t('dashboard.mvp.healthStatus.medicalInfo') }}</h4>
+              <h4 class="text-md font-semibold text-gray-900 mb-3">{{ t('dashboard.mvp.healthStatus.medicalInfo') }}</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div 
                   v-for="info in medicalInfo" 
                   :key="info.type"
-                  class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                  class="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200"
                 >
                   <div :class="`size-8 ${info.bgColor} rounded-full flex items-center justify-center`">
                     <PetIcons :name="info.icon" />
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t(info.label) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ t(info.description) }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ t(info.label) }}</p>
+                    <p class="text-xs text-gray-500">{{ t(info.description) }}</p>
                   </div>
                 </div>
               </div>
