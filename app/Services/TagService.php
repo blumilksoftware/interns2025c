@@ -12,7 +12,7 @@ class TagService
     public function processTagsAndGetIds(array $tags): array
     {
         return collect($tags)
-            ->map(fn(Tag $tag): ?int => $this->getTagId($tag))
+            ->map(fn(string $tag) : ?int => $this->getTagId($tag))
             ->filter()      
             ->unique()       
             ->values()
