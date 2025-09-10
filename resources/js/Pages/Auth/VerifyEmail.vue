@@ -39,7 +39,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
         {{ t('auth.emailVerification') }}
       </div>
 
-      <div v-if="verificationLinkSent" class="mb-4 text-center font-medium text-sm text-green-600">
+      <div v-if="verificationLinkSent" class="mb-4 text-center font-medium text-sm text-green-600 dark:text-green-400">
         {{ t('auth.emailVerificationSent') }}
       </div>
 

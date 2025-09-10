@@ -26,8 +26,7 @@ const handleHidePetList = () => {
 const prefs = usePreferencesStore()
 const filters = computed(() => prefs.form || {})
 
-// Build weighted matches from server pets
-const page = usePage()
+  const page = usePage()
 const petImageFor = (_p, idx) => `https://placedog.net/500?id=${idx + 1}`
 
 const normalizeEnum = (v) => (v && typeof v === 'object') ? (('value' in v) ? v.value : (('name' in v) ? v.name : String(v))) : v
