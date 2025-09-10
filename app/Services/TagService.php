@@ -12,9 +12,9 @@ class TagService
     public function processTagsAndGetIds(array $tags): array
     {
         return collect($tags)
-            ->map(fn(string $tag) : ?int => $this->getTagId($tag))
-            ->filter()      
-            ->unique()       
+            ->map(fn(string|array $tag): ?int => $this->getTagId($tag))
+            ->filter()
+            ->unique()
             ->values()
             ->all();
     }
