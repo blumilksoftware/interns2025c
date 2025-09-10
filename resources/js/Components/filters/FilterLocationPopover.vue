@@ -184,6 +184,6 @@ function pickRemote(item) { emit('use', item.label) }
           <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">Użyj tego</button>
         </div>
       </div>
-      </div>
     </div>
+  </div>
 </template>

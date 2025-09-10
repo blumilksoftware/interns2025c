@@ -35,6 +35,7 @@
         "@tailwindcss/typography": "^0.5.10",
         "@typescript-eslint/eslint-plugin": "^8.37.0",
         "@vitejs/plugin-vue": "^6.0.1",
+        "ajv": "^6.12.6",
         "autoprefixer": "^10.4.21",
         "eslint": "^9.31.0",
         "eslint-config-prettier": "^10.1.5",
