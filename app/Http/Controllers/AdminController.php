@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PetAdminResource;
+use App\Http\Resources\PetShelterAdminResource;
+use App\Http\Resources\UserAdminResource;
 use App\Models\Pet;
 use App\Models\PetShelter;
 use App\Models\User;
@@ -18,12 +20,14 @@ class AdminController extends Controller
     {
         $pets = Pet::query()->with("tags")->where("is_accepted", true)->get();
         $incomingPetsRequests = Pet::query()->with("tags")->where("is_accepted", false)->get();
+        $shelters = PetShelter::query()->with("address")->get();
+        $users = User::query()->get();
 
         return Inertia::render("AdminPanel/AdminPanel", [
             "pets" => PetAdminResource::collection($pets),
             "incomingPetsRequests" => PetAdminResource::collection($incomingPetsRequests),
-            "shelters" => PetShelter::query()->with("address")->get(),
-            "users" => User::query()->get(),
+            "shelters" => PetShelterAdminResource::collection($shelters),
+            "users" => UserAdminResource::collection($users),
         ]);
     }
 

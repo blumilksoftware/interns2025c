@@ -1,6 +1,6 @@
 export const renderRules = [
   { pattern: /^status$/i, kind: 'status' },
-  { pattern: /(created_at|updated_at|email_verified_at|last_login|timestamp|date)/i, kind: 'date' },
+  { pattern: /(created_at|updated_at|deleted_at|email_verified_at|last_login|timestamp|date)/i, kind: 'date' },
   { pattern: /^email$/i, kind: 'email' },
   { pattern: /^ip(_address)?$/i, kind: 'ip' },
   { pattern: /(details|user_agent)/i, kind: 'details' },

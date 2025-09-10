@@ -3,7 +3,7 @@ export const autoFieldTypes = {
   email: ['email'],
   number: ['weight', 'shelter_id'],
   date: ['admission_date'],
-  datetime: ['timestamp', 'created_at', 'updated_at', 'last_login', 'adoption_date'],
+  datetime: ['timestamp', 'created_at', 'updated_at', 'last_login', 'adoption_date', 'deleted_at'],
   select: ['status', 'type', 'role', 'shelter', 'category', 'gender', 'size', 'color', 'species', 'sex', 'health_status', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats', 'attitude_to_children', 'activity_level', 'adoption_status'],
   textarea: ['description', 'medical_tests', 'behavioral_notes'],
   checkbox: ['sterilized', 'vaccinated', 'has_chip', 'dewormed', 'deflea_treated', 'is_accepted'],

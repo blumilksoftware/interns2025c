@@ -321,8 +321,8 @@ const handleNativeDateChange = (columnKey, date) => {
       </div>
     </div>
 
-    <div class="overflow-x-auto max-w-full min-w-0">
-      <table class="divide-y divide-gray-200 ">
+    <div class="overflow-x-auto max-w-full min-w-0 w-full">
+      <table class="divide-y divide-gray-200 w-full min-w-full table-auto">
         <thead class="bg-gray-50">
           <tr>
             <th v-for="column in columns" :key="column.key" class="text-wrap break-words p-2 sm:px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" @click="handleSort(column.key)">

@@ -30,6 +30,7 @@ export function useCrud() {
   }
 
   const updateItem = async (dataSetType, item, onSuccess = null, onError = null) => {
+    console.log('UPDATE ITEM', dataSetType, item)
     if (isLoading.value) return
 
     isLoading.value = true
@@ -41,6 +42,7 @@ export function useCrud() {
       const dataToSend = { ...item }
       delete dataToSend.created_at
       delete dataToSend.updated_at
+      delete dataToSend.deleted_at
       delete dataToSend.id
 
       await router.put(updateUrl, dataToSend, {

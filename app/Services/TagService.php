@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Tag;
+use Illuminate\Support\Str;
 
 class TagService
 {
     public function processTagsAndGetIds(array $tags): array
     {
         return collect($tags)
-            ->map(fn($tag) => $this->getTagId($tag))
+            ->map(fn(Tag $tag): ?int => $this->getTagId($tag))
             ->filter()      
             ->unique()       
             ->values()
@@ -20,9 +21,13 @@ class TagService
 
     public function sanitizeTagName(string $tagName): ?string
     {
-        $sanitized = trim(preg_replace('/\s+/', " ", $tagName));
-        $sanitized = preg_replace('/[^\p{L}\s]/u', "", $sanitized);
-        $sanitized = trim(preg_replace('/\s+/', " ", $sanitized));
+        $sanitized = Str::squish($tagName);
+
+        $sanitized = Str::replaceMatches('/[^\p{L}\s]/u', "", $sanitized);
+
+        $sanitized = Str::squish($sanitized);
+
+        $sanitized = Str::lower($sanitized);
 
         return $sanitized !== "" ? $sanitized : null;
     }

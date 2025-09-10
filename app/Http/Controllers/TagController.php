@@ -21,15 +21,10 @@ class TagController extends Controller
 
         $sanitizedName = $this->tagService->sanitizeTagName($request->input("name"));
 
-        if ($sanitizedName) {
-            Tag::query()->firstOrCreate(["name" => $sanitizedName]);
+        Tag::query()->firstOrCreate(["name" => $sanitizedName]);
 
-            return back()
-                ->with("success", "Tag created successfully.");
-        }
-
-        return redirect("/admin")
-            ->with("error", "Invalid tag name - only letters are allowed.");
+        return back()
+            ->with("success", "Tag created successfully.");
     }
 
     public function update(TagRequest $request, Tag $tag): RedirectResponse
@@ -38,15 +33,10 @@ class TagController extends Controller
 
         $sanitizedName = $this->tagService->sanitizeTagName($request->input("name"));
 
-        if ($sanitizedName) {
-            $tag->update(["name" => $sanitizedName]);
-
-            return back()
-                ->with("success", "Tag updated successfully.");
-        }
+        $tag->update(["name" => $sanitizedName]);
 
         return back()
-            ->with("error", "Invalid tag name - only letters are allowed.");
+            ->with("success", "Tag updated successfully.");
     }
 
     public function destroy(Tag $tag): RedirectResponse

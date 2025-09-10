@@ -21,12 +21,12 @@ const props = defineProps({
     default: () => ({}),
   },
   shelters: {
-    type: Array,
-    default: () => ([]),
+    type: Object,
+    default: () => ({}),
   },
   users: {
-    type: Array,
-    default: () => ([]),
+    type: Object,
+    default: () => ({}),
   },
 })
 
@@ -53,8 +53,8 @@ watch(() => [props.pets, props.incomingPetsRequests, props.shelters, props.users
     localDataSets.value = {
       pets: pets?.data || [],
       incomingPetsRequests: incomingPetsRequests?.data || [],
-      shelters: shelters?.data || shelters || [],
-      users: users?.data || users || [],
+      shelters: shelters?.data || [],
+      users: users?.data || [],
     }
   }, 
   { immediate: true, deep: true },
@@ -69,11 +69,11 @@ const countIncomingPetsRequests = computed(() => ({
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) return dataSets.value[currentDataSet.value]
   const query = searchQuery.value.toLowerCase()
-  return dataSets.value[currentDataSet.value].filter(item =>
+  return dataSets.value[currentDataSet.value]?.filter(item =>
     Object.keys(item).some(key => {
       const value = item[key]
       if (value == null) return false
-      const isDateField = /(date|created_at|updated_at|timestamp|last_login)/i.test(key)
+      const isDateField = /(date|created_at|deleted_at|updated_at|timestamp|last_login)/i.test(key)
       const original = String(value).toLowerCase()
       const formatted = isDateField ? formatDateForSearch(value).toLowerCase() : ''
       return `${original} ${formatted}`.includes(query)

@@ -132,8 +132,9 @@ const editableFields = computed(() => {
       key === 'adoption_date' ||
       key === 'created_at' ||
       key === 'updated_at' ||
-      key === 'verified_at'
-    
+      key === 'verified_at' ||
+      key === 'deleted_at'
+      
     if (isDateTimeField && isSystemManagedField) {
       return false
     }
