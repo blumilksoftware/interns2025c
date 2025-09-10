@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getPetTags, getAvailableMedicalInfo, getHealthStatusInfo, getPetCharacteristics, getStatusInfo } from '@/helpers/mappers'
 import PetIcons from '@/Components/Icons/PetIcons.vue'
+import { formatAge } from '@/helpers/formatters/age.ts'
 
 const props = defineProps({
   pet: {
@@ -28,7 +29,10 @@ const personalityTraits = computed(() => {
 })
 
 const characteristics = computed(() => {
-  return getPetCharacteristics(props.pet).map(item => ({
+  return getPetCharacteristics({
+    ...props.pet,
+    age: Number.isFinite(Number(props.pet?.age)) ? formatAge(props.pet?.age) : props.pet?.age,
+  }).map(item => ({
     ...item,
     label: t(item.label),
     value: item.value.startsWith('dashboard.mvp.') ? t(item.value) : item.value,

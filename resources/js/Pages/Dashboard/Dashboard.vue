@@ -32,13 +32,27 @@ const petImageFor = (_p, idx) => `https://placedog.net/500?id=${idx + 1}`
 
 const normalizeEnum = (v) => (v && typeof v === 'object') ? (('value' in v) ? v.value : (('name' in v) ? v.name : String(v))) : v
 
-const pets = computed(() => (page.props.pets?.data || []).map((p, idx) => ({
-  ...p,
-  species: normalizeEnum(p.species),
-  sex: normalizeEnum(p.sex),
-  tags: Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
-  imageUrl: petImageFor(p, idx),
-})))
+const pets = computed(() => (page.props.pets?.data || []).map((p, idx) => {
+  const sexNormalized = normalizeEnum(p.sex)
+  const sexValue = String(sexNormalized ?? '').toLowerCase()
+  const rawStatus = normalizeEnum(p.adoption_status ?? p.status)
+  let statusLabel = rawStatus
+  if (String(rawStatus).toLowerCase() === 'available') {
+    statusLabel = (sexValue === 'male' || sexValue === 'm')
+      ? (t('dashboard.mvp.availablemale') || 'Dostępny')
+      : (t('dashboard.mvp.availablefemale') || 'Dostępna')
+  }
+
+  return {
+    ...p,
+    species: normalizeEnum(p.species),
+    sex: sexNormalized,
+    gender: p.sex ?? p.gender,
+    tags: Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
+    imageUrl: petImageFor(p, idx),
+    status: statusLabel,
+  }
+}))
 
 const weightConfig = { species: 3, breed: 3, sex: 2, color: 1, tags: 2 }
 const scorePet = (pet) => {

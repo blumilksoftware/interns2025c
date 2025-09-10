@@ -7,6 +7,7 @@ import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { getGenderInfo } from '@/helpers/mappers'
+import { formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -137,7 +138,7 @@ nextTick(() => {
             </div>
             
             <div class="flex items-center justify-center gap-1 sm:gap-2 mb-2">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800">{{ pet.age }}</span>
+              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800">{{ formatAge(pet.age) }}</span>
               <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800">{{ pet.adoption_status }}</span>
             </div>
             

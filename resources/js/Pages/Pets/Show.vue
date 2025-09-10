@@ -9,6 +9,7 @@ import PetLocation from './Partials/PetLocation.vue'
 import PetStrip from '@/Components/PetStrip.vue'
 import { useI18n } from 'vue-i18n'
 import { routes } from '@/routes'
+import { formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -20,11 +21,26 @@ const props = defineProps({
 })
 
 const displayPet = computed(() => {
-  const p = props.pet
+  const p = props.pet && typeof props.pet === 'object' && 'data' in props.pet ? props.pet.data : props.pet
   if (!p) return null
   const tagNames = Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
   const imageUrl = `https://placedog.net/500?id=${p.id || 1}`
-  return { ...p, tags: tagNames, status: p.adoption_status, gender: p.sex, imageUrl }
+  const rawStatus = p.adoption_status ?? p.status
+  const sexValue = String(p.sex ?? p.gender ?? '').toLowerCase()
+  let statusLabel = rawStatus
+  if (String(rawStatus).toLowerCase() === 'available') {
+    statusLabel = (sexValue === 'male' || sexValue === 'm') ? (t('dashboard.mvp.availablemale') || 'Dostępny') : (t('dashboard.mvp.availablefemale') || 'Dostępna')
+  }
+  return {
+    ...p,
+    // normalize fields expected by child components
+    tags: tagNames,
+    status: statusLabel,
+    gender: p.sex ?? p.gender,
+    microchipped: p.has_chip ?? p.microchipped ?? false,
+    imageUrl,
+    age: Number.isFinite(Number(p.age)) ? formatAge(p.age) : p.age,
+  }
 })
 
 const similarPets = computed(() => [])
@@ -116,7 +132,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
                     </div>
                   </div>
                   <div class="flex items-center gap-2 mb-3">
-                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ similarPet.age }}</span>
+                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ formatAge(similarPet.age) }}</span>
                     <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ similarPet.status }}</span>
                     <span :class="getGenderInfo(similarPet.gender).color + ' text-xl'">{{ getGenderInfo(similarPet.gender).symbol }}</span>
                   </div>

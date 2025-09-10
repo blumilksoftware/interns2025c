@@ -17,8 +17,10 @@ const props = defineProps({
 const petData = props.pet
 const petPersonality = computed(() => Array.isArray(petData.tags) ? petData.tags.slice(0, 6) : [])
 
+import { formatAge } from '@/helpers/formatters/age.ts'
+
 const characteristics = computed(() => [
-  `${t('dashboard.mvp.age')}: ${petData.age}`,
+  `${t('dashboard.mvp.age')}: ${formatAge(petData.age)}`,
   `${t('dashboard.mvp.breed')}: ${petData.breed}`,
   `${t('dashboard.mvp.status')}: ${petData.status}`,
   `${t('dashboard.mvp.gender')}: ${petData.gender === 'male' ? t('dashboard.mvp.male') : t('dashboard.mvp.female')}`,
@@ -50,7 +52,7 @@ const characteristics = computed(() => [
             <div class="mt-4 flex gap-4 text-sm font-medium">
               <div class="flex items-center gap-2">
                 <CalendarIcon class="size-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.age }}</span>
+                <span class="text-gray-700">{{ formatAge(petData.age) }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <MapPinIcon class="size-5 text-gray-600" />

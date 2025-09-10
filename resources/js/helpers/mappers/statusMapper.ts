@@ -11,7 +11,31 @@ export const statusMapper: StatusMapper = {
   },
 };
 
+const normalize = (s: string): string => {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}+/gu, '')
+    .trim();
+}
+
+const AVAILABLE_KEYWORDS = [
+  'available',
+  'dostepny',
+  'dostepna',
+  'dostepne',
+  'dostepni',
+  'wolny',
+  'wolna',
+  'wolne',
+  'gotowy do adopcji',
+  'ready for adoption',
+]
+
 export const getStatusInfo = (status: string, availableStatuses: string[]): StatusInfo => {
-  const isAvailable = availableStatuses.includes(status);
-  return isAvailable ? statusMapper.available : statusMapper.unavailable;
+  const normalized = normalize(String(status || ''))
+  const isLocalizedAvailable = availableStatuses.map(normalize).includes(normalized)
+  const matchesKeywords = AVAILABLE_KEYWORDS.some((kw) => normalized.includes(kw))
+  const isAvailable = isLocalizedAvailable || matchesKeywords
+  return isAvailable ? statusMapper.available : statusMapper.unavailable
 };
