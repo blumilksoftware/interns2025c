@@ -1,7 +1,7 @@
 {
   "admin": {
     "currentlyViewing": "Aktualnie przeglądasz:",
-    "records": "rekordów",
+    "records": "Rekordy",
     "searchInAllFields": "Szukaj we wszystkich polach",
     "searchPlaceholder": "Szukaj we wszystkich polach...",
     "sidebar": {
@@ -12,7 +12,7 @@
       "logs": "Logi",
       "goToProfile": "Przejdź do swojego profilu",
       "incomingRequests": "Przychodzące zgłoszenia",
-      "petsRequests": "Zwierzęta oczekujące na akceptację"
+      "incomingPetsRequests": "Zwierzęta oczekujące na akceptację"
     },
     "table": {
       "title": "Dynamiczna tabela danych",
@@ -35,7 +35,7 @@
       "select": "Wybierz {field}",
       "delete": "Usuń",
       "confirmDelete": "Potwierdzenie usunięcia",
-      "confirmDeleteMessage": "Czy na pewno chcesz usunąć {type}: {name}? Ta operacja jest nieodwracalna.",
+      "confirmDeleteMessage": "Czy na pewno chcesz usunąć {type} {name}? Ta operacja jest nieodwracalna.",
       "confirmDeleteButton": "Tak, usuń",
       "deleting": "Usuwanie..."
     },
@@ -60,4 +60,3 @@
     }
   }
 }
-

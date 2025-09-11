@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,12 +24,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $password
  * @property string $role
+ * @property string $locale
  * @property ?Carbon $email_verified_at
  * @property ?string $remember_token
  * @property-read Collection|array<PetShelter> $petShelters
  * @property-read Collection|array<Preference> $preferences
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
 {
     use HasApiTokens;
     use HasFactory;
@@ -37,6 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
         "email",
         "password",
         "role",
+        "locale",
     ];
     protected $hidden = [
         "password",
@@ -53,6 +58,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === Role::Admin->value;
     }
 
+    public function preferredLocale(): string
+    {
+        return $this->locale ?? config("app.locale");
+    }
+
     public function petShelters(): BelongsToMany
     {
         return $this->belongsToMany(PetShelter::class);
@@ -61,6 +71,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function preferences(): HasMany
     {
         return $this->hasMany(Preference::class);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification());
     }
 
     protected function casts(): array

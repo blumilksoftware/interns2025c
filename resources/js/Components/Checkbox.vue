@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-
+import { IconPawFilled } from '@tabler/icons-vue'
 const emit = defineEmits(['update:checked'])
 
 const props = defineProps({
@@ -31,6 +31,12 @@ const proxyChecked = computed({
     v-model="proxyChecked"
     type="checkbox"
     :value="value"
-    class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
+    class="sr-only peer focus:outline-none"
   >
+  <IconPawFilled
+    class="size-8 text-gray-400 transition-all duration-150 ease-out
+         hover:text-gray-600 hover:scale-110
+         peer-checked:text-yellow-400 peer-checked:scale-110
+         peer-focus:text-gray-600 peer-focus:scale-110" 
+  />
 </template>

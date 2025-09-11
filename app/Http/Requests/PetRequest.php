@@ -78,7 +78,6 @@ class PetRequest extends FormRequest
                 "exists:pet_shelters,id",
             ],
             "tags" => ["nullable", "array"],
-            "tags.*" => ["integer", "exists:tags,id"],
         ];
     }
 }

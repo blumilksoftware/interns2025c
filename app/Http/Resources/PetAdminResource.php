@@ -47,6 +47,7 @@ class PetAdminResource extends JsonResource
             "adoption_status" => $pet->adoption_status,
             "is_accepted" => $pet->is_accepted,
             "shelter_id" => $pet->shelter_id,
+            "tags" => $pet->tags->map->only(["id", "name"]),
             "created_at" => $pet->created_at?->toISOString(),
             "updated_at" => $pet->updated_at?->toISOString(),
         ];
