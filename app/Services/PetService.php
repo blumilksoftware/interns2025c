@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Pet;
-use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -27,15 +26,10 @@ class PetService
 
         $shelterId = PetShelterService::findShelterByItsUrlHost($shelterUrl)?->id;
 
-        $tags = TagService::extractTagsFromText($petData["tags"] ?? "");
-        $tagIds = [];
-
-        foreach ($tags as $tagName) {
-            $tag = Tag::query()->firstOrCreate(["name" => $tagName]);
-            $tagIds[] = $tag->id;
-        }
-
         foreach ($petData["animals"] ?? [] as $animal) {
+            $animalTagsText = $animal["tags"] ?? ($petData["tags"] ?? "");
+            $tags = TagService::extractTagsFromText($animalTagsText);
+            $tagIds = (new TagService())->processTagsAndGetIds($tags);
             $identifyingAttributes = [
                 "name" => $animal["name"],
                 "shelter_id" => $shelterId,
@@ -71,6 +65,7 @@ class PetService
                 "has_chip" => $animal["has_chip"] ?? null,
                 "adoption_url" => $extractedPetAdoptionUrl,
                 "image_urls" => array_values($petData["image_urls"] ?? null),
+                "is_accepted" => false,
             ];
 
             $pet = Pet::query()->updateOrCreate($identifyingAttributes, $attributes);

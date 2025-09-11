@@ -32,6 +32,7 @@ You are an expert in extracting detailed information about pets from a single sh
       "admission_date": string|null, 
       "found_location": string|null, 
       "adoption_status": string|null // adopted, waiting for adoption, quarantined, in temporary home
+      "tags": string|null 
     }
   ]
 }
@@ -51,3 +52,4 @@ admission_date: take from text; year only → 01-01-YEAR.
 current_treatment: list surgeries or treatments (e.g. "tail amputation").
 If field contains null, don't include it in the JSON.
 If fields like species, name, sex are missing, set contains_animals to false.
+Tags must be provided as a string with one-word tag names eg. "joyful happy energetic"

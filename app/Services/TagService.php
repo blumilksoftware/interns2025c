@@ -9,6 +9,37 @@ use Illuminate\Support\Str;
 
 class TagService
 {
+    /**
+     * Extract tag names from free-form text where tags are usually space-separated,
+     * e.g. "joyful happy playful". Falls back to splitting by any whitespace.
+     * Returns sanitized, unique tag names.
+     */
+    public static function extractTagsFromText(string $text): array
+    {
+        $service = new self();
+
+        $text = trim($text);
+
+        if ($text === "") {
+            return [];
+        }
+
+        // Split by any whitespace (spaces, tabs, newlines)
+        $rawTokens = preg_split('/\s+/u', $text) ?: [];
+
+        $unique = [];
+
+        foreach ($rawTokens as $token) {
+            $clean = $service->sanitizeTagName($token);
+
+            if ($clean !== null) {
+                $unique[$clean] = true;
+            }
+        }
+
+        return array_keys($unique);
+    }
+
     public function processTagsAndGetIds(array $tags): array
     {
         return collect($tags)
