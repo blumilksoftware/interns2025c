@@ -14,9 +14,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  incomingPetsRequestsCount: {
-    type: Object,
-    default: () => ({}),
+  allIncomingPetsRequestsCount: {
+    type: Number,
+    default: 0,
   },
 })  
 
@@ -46,8 +46,8 @@ const incomingRequestsNavigation = [
   },
 ]
 
-const getIncomingPetsRequestsCount = computed(() => {
-  return props.incomingPetsRequestsCount.incomingPetsRequests
+const getAllIncomingPetsCount = computed(() => {
+  return props.allIncomingPetsRequestsCount
 })
 
 const handleDataSetChange = (key) => {
@@ -112,8 +112,8 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                       @click="handleDataSetChange(subItem.key)"
                     >
                       {{ subItem.name }}
-                      <span v-if="getIncomingPetsRequestsCount > 0" class="text-xs font-bold text-white bg-red-500  rounded-full px-2 py-1 ml-2">
-                        {{ getIncomingPetsRequestsCount }}
+                      <span v-if="allIncomingPetsRequestsCount > 0" class="text-xs font-bold text-white bg-red-500  rounded-full px-2 py-1 ml-2">
+                        {{ allIncomingPetsRequestsCount }}
                       </span>
                     </button>
                   </li>
@@ -183,8 +183,8 @@ const closeUserProfile = () => { isUserProfileOpen.value = false }
                           @click="handleDataSetChange(subItem.key)"
                         >
                           {{ subItem.name }}
-                          <span v-if="getIncomingPetsRequestsCount > 0" class="text-xs font-bold text-white bg-red-500  rounded-full px-2 py-1 ml-2">
-                            {{ getIncomingPetsRequestsCount }}
+                          <span v-if="getAllIncomingPetsCount > 0" class="text-xs font-bold text-white bg-red-500  rounded-full px-2 py-1 ml-2">
+                            {{ getAllIncomingPetsCount }}
                           </span>
                         </button>
                       </li>

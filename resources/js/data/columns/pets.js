@@ -229,6 +229,13 @@ export const petsConfig = {
     renderer: 'boolean',
     label: 'Is Accepted',
   },
+  tags: {
+    width: 'w-48 sm:w-56',
+    type: 'array',
+    editable: true,
+    renderer: 'tags',
+    label: 'Tags',
+  },
   shelter_id: {
     width: 'w-20 sm:w-24',
     type: 'number',
@@ -237,13 +244,6 @@ export const petsConfig = {
     label: 'Shelter ID',
     min: 1,
     required: true,
-  },
-  tags: {
-    width: 'w-20 sm:w-24',
-    type: 'array',
-    editable: true,
-    renderer: 'array',
-    label: 'Tags',
   },
   created_at: commonFields.createdAt,
   updated_at: commonFields.updatedAt,

@@ -4,11 +4,33 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\UrlFormatHelper;
 use App\Models\PetShelter;
 use Illuminate\Support\Facades\Log;
 
 class PetShelterService
 {
+    public static function findShelterByItsUrlHost(string $shelterUrl): ?PetShelter
+    {
+        if (!$shelterUrl) {
+            Log::error("Shelter URL is empty or invalid.");
+
+            return null;
+        }
+
+        $host = UrlFormatHelper::getUrlHost($shelterUrl);
+
+        $shelter = PetShelter::where("url", "like", "%" . $host . "%")->first();
+
+        if ($shelter) {
+            return $shelter;
+        }
+
+        Log::warning("No shelter found for URL: $shelterUrl");
+
+        return null;
+    }
+
     public function store(array $results): void
     {
         if (!isset($results["shelters"]) || !is_array($results["shelters"])) {
