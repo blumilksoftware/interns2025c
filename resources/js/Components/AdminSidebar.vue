@@ -41,7 +41,7 @@ const incomingRequestsNavigation = [
     name: t('admin.sidebar.incomingRequests'),
     current: false,
     children: [
-      { name: t('admin.sidebar.petsRequests'), key: 'incomingPetsRequests', href: '#' },
+      { name: t('admin.sidebar.incomingPetsRequests'), key: 'incomingPetsRequests', href: '#' },
     ],
   },
 ]

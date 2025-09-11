@@ -104,7 +104,7 @@ class PetTest extends TestCase
         $this->assertEquals("NewName", $pet->name);
     }
 
-    public function testUserCanUpdatePetTags(): void
+    public function testShelterEmployeeCanUpdatePetTags(): void
     {
         $user = User::factory()->create(["role" => Role::ShelterEmployee->value]);
         $shelter = PetShelter::factory()->create();
@@ -121,7 +121,7 @@ class PetTest extends TestCase
             "sex" => $pet->sex,
             "description" => $pet->description,
             "shelter_id" => $pet->shelter_id,
-            "tags" => $newTags->pluck("id")->toArray(),
+            "tags" => $newTags->pluck("name")->toArray(),
         ];
 
         $response = $this->actingAs($user)->put("/pets/{$pet->id}", $updateData);

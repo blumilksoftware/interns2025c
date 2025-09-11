@@ -8,12 +8,17 @@ use App\Http\Requests\PetRequest;
 use App\Http\Resources\PetIndexResource;
 use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
+use App\Services\TagService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PetController extends Controller
 {
+    public function __construct(
+        private TagService $tagService,
+    ) {}
+
     public function index(): Response
     {
         $pets = Pet::query()->latest()->paginate(15);
@@ -38,9 +43,7 @@ class PetController extends Controller
 
         $pet = Pet::query()->create($request->validated());
 
-        if ($request->has("tags")) {
-            $pet->tags()->sync($request->input("tags"));
-        }
+        $this->syncTags($pet, $request->input("tags", []));
 
         return back()->with("success", "Pet created successfully.");
     }
@@ -49,14 +52,9 @@ class PetController extends Controller
     {
         $this->authorize("update", $pet);
 
-        $tags = $request->input("tags", []);
-        $petData = $request->except("tags");
+        $pet->update($request->except("tags"));
 
-        $pet->update($petData);
-
-        if (!empty($tags)) {
-            $pet->tags()->sync($tags);
-        }
+        $this->syncTags($pet, $request->input("tags", []));
 
         return back()->with("success", "Pet updated successfully.");
     }
@@ -68,5 +66,17 @@ class PetController extends Controller
         $pet->delete();
 
         return back()->with("success", "Pet deleted successfully.");
+    }
+
+    private function syncTags(Pet $pet, array $tags): void
+    {
+        if (empty($tags)) {
+            $pet->tags()->sync([]);
+
+            return;
+        }
+
+        $tagIds = $this->tagService->processTagsAndGetIds($tags);
+        $pet->tags()->sync($tagIds);
     }
 }

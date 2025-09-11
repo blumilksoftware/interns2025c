@@ -1,9 +1,9 @@
 import { autoFieldTypes } from './types.js'
-import { petsConfig, petsFieldOrder } from './pets.js'
-import { incomingPetsRequestsConfig, incomingPetsRequestsFieldOrder } from './incomingPetsRequests.js'
-import { usersConfig, usersFieldOrder } from './users.js'
-import { sheltersConfig, sheltersFieldOrder } from './shelters.js'
-import { logsConfig, logsFieldOrder } from './logs.js'
+import { petsConfig } from './pets.js'
+import { incomingPetsRequestsConfig } from './incomingPetsRequests.js'
+import { usersConfig } from './users.js'
+import { sheltersConfig } from './shelters.js'
+import { logsConfig } from './logs.js'
 
 export const columnConfig = {
   pets: petsConfig,
@@ -13,37 +13,6 @@ export const columnConfig = {
   logs: logsConfig,
 }
 
-export const fieldOrder = {
-  pets: petsFieldOrder,
-  incomingPetsRequests: incomingPetsRequestsFieldOrder,
-  users: usersFieldOrder,
-  shelters: sheltersFieldOrder,
-  logs: logsFieldOrder,
-}
-
-export function getFieldOrder(dataSetType) {
-  return fieldOrder[dataSetType] || []
-}
-
-export function sortFieldsByOrder(dataSetType, fields) {
-  const order = getFieldOrder(dataSetType)
-  const orderedFields = []
-  const unorderedFields = []
-  
-  for (const fieldName of order) {
-    if (fields.includes(fieldName)) {
-      orderedFields.push(fieldName)
-    }
-  }
-  
-  for (const field of fields) {
-    if (!order.includes(field)) {
-      unorderedFields.push(field)
-    }
-  }
-  
-  return [...orderedFields, ...unorderedFields]
-}
 
 export function getColumnConfig(dataSetType, fieldName) {
   return columnConfig[dataSetType]?.[fieldName] || null

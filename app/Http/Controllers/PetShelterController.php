@@ -41,6 +41,9 @@ class PetShelterController extends Controller
 
         $petShelter->update($request->validated());
 
+        $address = $petShelter->address;
+        $address->update($request->validated());
+
         return back()
             ->with("success", "Pet shelter updated successfully.");
     }
