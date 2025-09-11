@@ -37,7 +37,9 @@ const toggleLike = (petId) => {
   }
 }
 
-const getPetTagsForPet = (pet) => Array.isArray(pet.tags) ? pet.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags)
+  ? pet.tags.map((t) => (typeof t === 'string' ? t : t?.name)).filter(Boolean)
+  : []
 
 const descriptionFor = (pet) => {
   const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
@@ -150,7 +152,7 @@ nextTick(() => {
                 <span 
                   v-for="tag in getPetTagsForPet(pet)" 
                   :key="`${pet.id}-${tag}`"
-                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full bg-gray-50 text-gray-700"
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full"
                 >
                   <span class="truncate text-xs sm:text-sm">{{ tag }}</span>
                 </span>

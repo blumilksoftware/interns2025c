@@ -10,13 +10,20 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
+const props = defineProps({
+  pets: {
+    type: [Array, Object],
+    default: () => [],
+  },
+})
+
 </script>
 
 <template>
   <Head :title="t('titles.landingPage')" />
   <BackgroundGradient />
   <Header />
-  <ImageSection />
+  <ImageSection :pets="props.pets" />
   <ButtonSection />
   <Footer />
 </template>

@@ -1,12 +1,24 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { dogs, cats } from '@/data/petsData.js'
 import { Link } from '@inertiajs/vue3'
-import { routes } from '@/routes.js'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 
-const animals = [...dogs, ...cats].slice(0, 6)
+const props = defineProps({
+  pets: {
+    type: [Array, Object],
+    default: () => [],
+  },
+})
+
+const sourcePets = Array.isArray(props.pets) ? props.pets : (props.pets?.data || [])
+const animals = (sourcePets || []).slice(0, 6).map((p) => ({
+  id: p.id,
+  name: p.name,
+  description: p.description,
+  imageUrl: `https://placedog.net/500?id=${p.id || 1}`,
+}))
 
 </script>
 

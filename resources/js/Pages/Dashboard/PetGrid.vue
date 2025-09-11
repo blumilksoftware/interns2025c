@@ -34,7 +34,9 @@ const emit = defineEmits(['showPetList', 'hidePetList'])
 
 const { t } = useI18n()
 
-const getPetTagsForPet = (pet) => Array.isArray(pet.tags) ? pet.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags)
+  ? pet.tags.map((t) => (typeof t === 'string' ? t : t?.name)).filter(Boolean)
+  : []
 
 const descriptionFor = (pet) => {
   const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
@@ -106,12 +108,10 @@ const handleHidePetList = () => {
                 <div class="flex flex-wrap gap-1 mb-3">
                   <span 
                     v-for="tag in getPetTagsForPet(pet)" 
-                    :key="`${pet.id}-${tag.name}`"
+                    :key="`${pet.id}-${tag}`"
                     class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium border"
-                    :class="tag.color"
                   >
-                    <span class="text-sm">{{ tag.emoji }}</span>
-                    <span class="text-sm">{{ tag.name }}</span>
+                    <span class="text-sm">{{ tag }}</span>
                   </span>
                 </div>
               </div>

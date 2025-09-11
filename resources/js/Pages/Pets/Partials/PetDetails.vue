@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getPetTags, getAvailableMedicalInfo, getHealthStatusInfo, getPetCharacteristics, getStatusInfo } from '@/helpers/mappers'
+import { getAvailableMedicalInfo, getHealthStatusInfo, getPetCharacteristics, getStatusInfo } from '@/helpers/mappers'
 import PetIcons from '@/Components/Icons/PetIcons.vue'
 import { formatAge } from '@/helpers/formatters/age.ts'
 
@@ -14,18 +14,13 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const petTags = getPetTags()
 
-const petTagObjects = computed(() => {
-  const petData = props.pet
-  if (!petData?.tags || !Array.isArray(petData.tags)) return []
-  return petData.tags.map(tagId => petTags[tagId]).filter(Boolean)
-})
+const petTagObjects = computed(() => [])
 
 const personalityTraits = computed(() => {
   const pet = props.pet
   if (!pet?.tags || !Array.isArray(pet.tags)) return []
-  return pet.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
+  return pet.tags.map(tag => (typeof tag === 'string' ? tag : String(tag))).filter(Boolean)
 })
 
 const characteristics = computed(() => {

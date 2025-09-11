@@ -10,7 +10,6 @@ import { useLocation } from '@/composables/useLocation'
 import { useBreeds } from '@/composables/useBreeds'
 import { useTopFilters } from '@/composables/useTopFilters'
 import { selectorConfigs } from '@/helpers/selectors'
-import { getPetTags } from '@/helpers/mappers'
 import { speciesOptions as speciesCfg, sexOptions as sexCfg, colorOptions as colorCfg, healthOptions as healthCfg, adoptionOptions as adoptionCfg } from '@/helpers/preferencesConfig'
 
 const { t } = useI18n()
@@ -41,10 +40,7 @@ const healthChecksOpen = ref(false)
 const breedOpen = ref(false)
 const sexOpen = ref(false)
 
-const allTags = getPetTags()
-const tagOptions = computed(() =>
-  Object.entries(allTags).map(([key, meta]) => ({ value: key, label: `${meta.emoji} ${meta.name}` })),
-)
+const tagOptions = computed(() => [])
 
 function toggleTag(tag) {
   const idx = form.value.tags.indexOf(tag)

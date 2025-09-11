@@ -1,4 +1,3 @@
-export { getPetTags } from '../data/petTagsConfig.js'
 export { getGenderInfo } from './mappers/genderMapper.ts'
 export { getAvailableMedicalInfo, getHealthStatusInfo } from './mappers/medicalInfoMapper.ts'
 export { getStatusInfo } from './mappers/statusMapper.ts'

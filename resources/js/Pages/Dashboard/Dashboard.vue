@@ -31,10 +31,12 @@ const petImageFor = (_p, idx) => `https://placedog.net/500?id=${idx + 1}`
 
 const normalizeEnum = (v) => (v && typeof v === 'object') ? (('value' in v) ? v.value : (('name' in v) ? v.name : String(v))) : v
 
-const pets = computed(() => (page.props.pets?.data || []).map((p, idx) => {
-  const sexNormalized = normalizeEnum(p.sex)
+const sourcePets = computed(() => Array.isArray(page.props.pets) ? page.props.pets : (page.props.pets?.data || []))
+const pets = computed(() => (sourcePets.value || []).map((p, idx) => {
+  const base = (p && typeof p === 'object' && 'pet' in p) ? p.pet : p
+  const sexNormalized = normalizeEnum(base.sex)
   const sexValue = String(sexNormalized ?? '').toLowerCase()
-  const rawStatus = normalizeEnum(p.adoption_status ?? p.status)
+  const rawStatus = normalizeEnum(base.adoption_status ?? base.status)
   let statusLabel = rawStatus
   if (String(rawStatus).toLowerCase() === 'available') {
     statusLabel = (sexValue === 'male' || sexValue === 'm')
@@ -43,11 +45,11 @@ const pets = computed(() => (page.props.pets?.data || []).map((p, idx) => {
   }
 
   return {
-    ...p,
-    species: normalizeEnum(p.species),
+    ...base,
+    species: normalizeEnum(base.species),
     sex: sexNormalized,
-    gender: p.sex ?? p.gender,
-    tags: Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
+    gender: base.sex ?? base.gender,
+    tags: Array.isArray(base.tags) ? base.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
     imageUrl: petImageFor(p, idx),
     status: statusLabel,
   }
@@ -96,12 +98,6 @@ const cats = computed(() => sortedPets.value.filter(p => String(p.species) === '
       
     <div v-else class="min-h-screen">
       <Header />
-      <div class="mx-auto max-w-6xl px-6 lg:px-8 my-6">
-        <div v-if="Object.keys(filters || {}).length" class="mb-6 rounded-lg border border-gray-200 bg-white p-4">
-          <h3 class="font-semibold mb-2">Zastosowane preferencje</h3>
-          <pre class="text-sm text-gray-700 whitespace-pre-wrap">{{ JSON.stringify(filters, null, 2) }}</pre>
-        </div>
-      </div>
       <MVPSection v-if="featuredPet" :pet="featuredPet" />
       <PetGrid 
         :show-pet-list="showPetList" 
