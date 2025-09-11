@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Hash;
 
 class DemoSeeder extends Seeder
 {
-    public const NUMBER_OF_PET_SHELTERS_TO_CREATE = 50;
     public const NUMBER_OF_USERS_TO_CREATE = 100;
     public const NUMBER_OF_PETS_TO_CREATE = 100;
     public const NUMBER_OF_TAGS_TO_CREATE = 20; 
@@ -53,7 +52,16 @@ class DemoSeeder extends Seeder
         $users = User::all();
 
         $pets = Pet::factory()->count(self::NUMBER_OF_PETS_TO_CREATE)->create();
-        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
+
+        $pets->each(function (Pet $pet): void {
+            $pet->shelter->address()->update([
+                "address" => fake()->address(),
+                "city" => fake()->city(),
+                "postal_code" => fake()->postcode(),
+            ]);
+        });
+
+        $shelters = PetShelter::all();
 
         foreach ($users as $user) {
             $userHasExistingShelter = DB::table("pet_shelter_user")
@@ -61,7 +69,7 @@ class DemoSeeder extends Seeder
                 ->exists();
 
             if (!$userHasExistingShelter && !$user->hasAdminRole()) {
-                $randomShelter = $petShelters->random();
+                $randomShelter = $shelters->random();
                 $randomShelter->users()->attach($user->id);
 
                 if (random_int(1, 100) <= 30) {
@@ -70,7 +78,7 @@ class DemoSeeder extends Seeder
             }
         }
 
-        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($petShelters->random())->save());
+        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($shelters->random())->save());
 
         $tags = Tag::all();
 

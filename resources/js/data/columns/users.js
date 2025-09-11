@@ -15,7 +15,16 @@ export const usersConfig = {
     editable: true,
     renderer: 'email',
     label: 'Email',
+  },  
+  email_verified_at: {
+    width: 'w-24 sm:w-32',
+    type: 'datetime-local',
+    editable: true,
+    renderer: 'date',
+    label: 'Email Verified At',
   },
+  created_at: commonFields.createdAt,
+  updated_at: commonFields.updatedAt,
   role: {
     width: 'w-20 sm:w-24',
     type: 'select',
@@ -25,24 +34,4 @@ export const usersConfig = {
     label: 'Role',
     required: true,
   },
-  status: {
-    width: 'w-20 sm:w-24',
-    type: 'select',
-    editable: true,
-    renderer: 'status',
-    options: commonOptions.userStatus,
-    label: 'Status',
-  },
-  last_login: {
-    width: 'w-24 sm:w-32',
-    type: 'datetime-local',
-    editable: false,
-    renderer: 'date',
-    label: 'Last Login',
-  },
-  created_at: commonFields.createdAt,
 }
-
-export const usersFieldOrder = [
-  'name', 'email', 'role', 'status',
-]

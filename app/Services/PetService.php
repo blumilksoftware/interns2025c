@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Helpers\UrlFormatHelper;
 use App\Models\Pet;
-use App\Models\PetShelter;
 use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class PetService
 {
@@ -28,7 +25,15 @@ class PetService
             return;
         }
 
-        $shelterId = $this->findShelterByItsUrlHost($shelterUrl)?->id;
+        $shelterId = PetShelterService::findShelterByItsUrlHost($shelterUrl)?->id;
+
+        $tags = TagService::extractTagsFromText($petData["tags"] ?? "");
+        $tagIds = [];
+
+        foreach ($tags as $tagName) {
+            $tag = Tag::query()->firstOrCreate(["name" => $tagName]);
+            $tagIds[] = $tag->id;
+        }
 
         foreach ($petData["animals"] ?? [] as $animal) {
             $identifyingAttributes = [
@@ -68,49 +73,11 @@ class PetService
                 "image_urls" => array_values($petData["image_urls"] ?? null),
             ];
 
-            Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
+            $pet = Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
+
+            if (!empty($tagIds)) {
+                $pet->tags()->syncWithoutDetaching($tagIds);
+            }
         }
-
-        $tags = $this->extractTagsFromText(
-            $petData["tags"] ?? "",
-        );
-
-        foreach ($tags as $tag) {
-            Tag::query()->firstOrCreate(["name" => $tag]);
-        }
-    }
-
-    private function findShelterByItsUrlHost(string $shelterUrl): PetShelter|null
-    {
-        if (!$shelterUrl) {
-            Log::error("Shelter URL is empty or invalid.");
-
-            return null;
-        }
-
-        $host = UrlFormatHelper::getUrlHost($shelterUrl);
-
-        $shelter = PetShelter::where("url", "like", "%" . $host . "%")->first();
-
-        if ($shelter) {
-            return $shelter;
-        }
-        Log::warning("No shelter found for URL: $shelterUrl");
-
-        return null;
-    }
-
-    private function extractTagsFromText(string $text, string $delimiter = " "): array
-    {
-        if (empty($text)) {
-            return [];
-        }
-
-        return Str::of($text)
-            ->explode($delimiter)
-            ->map(fn(string $tag): string => trim($tag))
-            ->filter()
-            ->unique()
-            ->toArray();
     }
 }

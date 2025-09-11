@@ -229,6 +229,13 @@ export const petsConfig = {
     renderer: 'boolean',
     label: 'Is Accepted',
   },
+  tags: {
+    width: 'w-48 sm:w-56',
+    type: 'array',
+    editable: true,
+    renderer: 'tags',
+    label: 'Tags',
+  },
   shelter_id: {
     width: 'w-20 sm:w-24',
     type: 'number',
@@ -248,6 +255,6 @@ export const petsFieldOrder = [
   'has_chip', 'chip_number', 'dewormed', 'deflea_treated', 'medical_tests',
   'food_type', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats',
   'attitude_to_children', 'activity_level', 'behavioral_notes',
-  'adoption_url', 'admission_date', 'found_location', 'adoption_status',
-  'is_accepted', 'shelter_id',
+  'adoption_url', 'admission_date', 'found_location', 'adoption_status', 
+  'is_accepted', 'shelter_id', 'tags',
 ]

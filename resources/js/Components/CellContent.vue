@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import StatusBadge from './StatusBadge.vue'
 import { getKindForColumn } from '@/data/columnRenderers.js'
 
 const props = defineProps({

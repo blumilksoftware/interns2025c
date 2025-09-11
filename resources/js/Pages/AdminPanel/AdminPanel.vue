@@ -29,6 +29,7 @@ const props = defineProps({
     default: () => ({}),
   },
 })
+console.log(props.pets, props.incomingPetsRequests, props.shelters, props.users)
 
 function formatDateForSearch(value) {
   const date = new Date(value)
@@ -48,17 +49,19 @@ const localDataSets = ref({
   users: [],
 })
 
-watch(() => [props.pets, props.incomingPetsRequests, props.shelters, props.users], 
+watch(
+  () => [props.pets, props.incomingPetsRequests, props.shelters, props.users],
   ([pets, incomingPetsRequests, shelters, users]) => {
     localDataSets.value = {
-      pets: pets?.data || [],
-      incomingPetsRequests: incomingPetsRequests?.data || [],
-      shelters: shelters?.data || [],
-      users: users?.data || [],
+      pets: pets?.data ?? pets ?? [],
+      incomingPetsRequests: incomingPetsRequests?.data ?? incomingPetsRequests ?? [],
+      shelters: shelters?.data ?? shelters ?? [],
+      users: users?.data ?? users ?? [],
     }
-  }, 
+  },
   { immediate: true, deep: true },
 )
+
 
 const dataSets = computed(() => localDataSets.value)
 
@@ -69,11 +72,11 @@ const countIncomingPetsRequests = computed(() => ({
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) return dataSets.value[currentDataSet.value]
   const query = searchQuery.value.toLowerCase()
-  return dataSets.value[currentDataSet.value].filter(item =>
+  return dataSets.value[currentDataSet.value]?.filter(item =>
     Object.keys(item).some(key => {
       const value = item[key]
       if (value == null) return false
-      const isDateField = /(date|created_at|updated_at|timestamp|last_login)/i.test(key)
+      const isDateField = /(date|created_at|deleted_at|updated_at|timestamp|last_login)/i.test(key)
       const original = String(value).toLowerCase()
       const formatted = isDateField ? formatDateForSearch(value).toLowerCase() : ''
       return `${original} ${formatted}`.includes(query)
@@ -106,6 +109,8 @@ const closeModal = () => {
 
 const { isLoading: isSaving, isLoading: isDeleting, updateItem, deleteItem: deleteCrudItem, error, clearError } = useCrud()
 
+import { router } from '@inertiajs/vue3'
+
 const saveChanges = async (updatedItem) => {
   clearError()
 
@@ -113,7 +118,7 @@ const saveChanges = async (updatedItem) => {
     currentDataSet.value,
     updatedItem,
     () => {
-      updateLocalItemState(updatedItem)
+      router.reload({ only: ['pets', 'incomingPetsRequests', 'shelters', 'users'] })
       closeModal()
     },
     (errors) => {
@@ -123,20 +128,6 @@ const saveChanges = async (updatedItem) => {
   )
 }
 
-const updateLocalItemState = (updatedItem) => {
-  const key = currentDataSet.value
-  const currentData = [...localDataSets.value[key]]
-  const index = currentData.findIndex(item => item.id === updatedItem.id)
-  
-  if (index !== -1) {
-    currentData[index] = { ...updatedItem }
-    localDataSets.value = {
-      ...localDataSets.value,
-      [key]: currentData,
-    }
-  }
-}
-
 const deleteItem = async (itemToDelete) => {
   clearError()
 
@@ -144,7 +135,7 @@ const deleteItem = async (itemToDelete) => {
     currentDataSet.value,
     itemToDelete,
     () => {
-      removeItemFromLocalState(itemToDelete)
+      router.reload({ only: ['pets', 'incomingPetsRequests', 'shelters', 'users'] })
       closeModal()
     },
     (errors) => {
@@ -152,16 +143,6 @@ const deleteItem = async (itemToDelete) => {
       alert('Failed to delete item. Please try again.')
     },
   )
-}
-
-const removeItemFromLocalState = (itemToDelete) => {
-  const key = currentDataSet.value
-  const filteredData = localDataSets.value[key].filter(item => item.id !== itemToDelete.id)
-  
-  localDataSets.value = {
-    ...localDataSets.value,
-    [key]: filteredData,
-  }
 }
 
 const clearSearch = () => { searchQuery.value = '' }
@@ -203,8 +184,8 @@ onBeforeUnmount(() => {
       <div class="px-2 sm:px-4 md:px-6 py-4">
         <div class="mb-2 sm:mb-4">
           <h2 class="text-sm sm:text-base md:text-lg font-medium text-gray-900">
-            {{ t('admin.currentlyViewing') }} <span class="text-blue-600 capitalize">{{ currentDataSet }}</span>
-            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ tableData?.length || 0 }} {{ t('admin.records') }})</span>
+            {{ t('admin.currentlyViewing') }} <span class="text-blue-600">{{ t(`admin.sidebar.${currentDataSet}`) }}</span>
+            <span class="text-xs sm:text-sm text-gray-500 ml-2">({{ t('admin.records') }} : {{ tableData?.length || 0 }})</span>
           </h2>
         </div>
         <div class="mb-2 sm:mb-4">
