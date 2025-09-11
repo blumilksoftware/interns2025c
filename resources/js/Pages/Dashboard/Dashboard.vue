@@ -1,12 +1,13 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Header from '@/Components/Header.vue'
 import MVPSection from './MVPSection.vue'
 import PetGrid from './PetGrid.vue'
 import Footer from '@/Components/Footer.vue'
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 import { usePreferencesStore } from '@/stores/preferences'
+import { routes } from '@/routes'
 import { samplePetImages } from '@/data/petsData.js'
 
 const { t } = useI18n()
@@ -25,6 +26,12 @@ const handleHidePetList = () => {
 
 const prefs = usePreferencesStore()
 const filters = computed(() => prefs.form || {})
+
+onMounted(() => {
+  if (prefs.isEmpty) {
+    router.get(routes.preferences.index(), {}, { replace: true })
+  }
+})
 
 const page = usePage()
 const petImageFor = (_p, idx) => `https://placedog.net/500?id=${idx + 1}`
