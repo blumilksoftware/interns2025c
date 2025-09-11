@@ -104,11 +104,6 @@ watch(() => props.item, (newItem) => {
           ? convertTagsToDisplayFormat(editData.value[fieldKey])
           : convertArrayToDisplayFormat(editData.value[fieldKey])
       }
-      if (field.type === 'array') {
-        arrayFieldsAsText.value[field.key] = Array.isArray(editData.value[field.key]) 
-          ? editData.value[field.key].join(', ') 
-          : (editData.value[field.key] || '')
-      }
     }
   }
 }, { immediate: true, deep: true })
@@ -266,47 +261,6 @@ const cancelDelete = () => {
 
 const getItemDisplayName = () => {
   return 'Item'
-}
-
-const formatArrayInput = (value) => {
-  if (!value || typeof value !== 'string') return []
-  
-  // Handle empty string case
-  const trimmedValue = value.trim()
-  if (trimmedValue === '') return []
-  
-  const items = trimmedValue
-    .split(/[,;]/) // Allow both commas and semicolons as separators
-    .map(item => item.trim()) // Remove whitespace
-    .filter(item => item.length > 0) // Remove empty items
-  
-  // Remove duplicates (case-insensitive)
-  const seen = new Set()
-  return items.filter(item => {
-    const lowerItem = item.toLowerCase()
-    if (seen.has(lowerItem)) {
-      return false
-    }
-    seen.add(lowerItem)
-    return true
-  })
-}
-
-const handleArrayInputChange = (fieldKey, value) => {
-  // Just store the text value, don't convert yet
-  arrayFieldsAsText.value[fieldKey] = value
-}
-
-const handleArrayInputBlur = (fieldKey) => {
-  // Convert to array when user finishes editing
-  const textValue = arrayFieldsAsText.value[fieldKey] || ''
-  const arrayValue = formatArrayInput(textValue)
-  
-  // Update the actual data
-  editData.value[fieldKey] = arrayValue
-  
-  // Update the display text with cleaned format
-  arrayFieldsAsText.value[fieldKey] = arrayValue.join(', ')
 }
 
 const handleKeydown = (event) => {

@@ -53,11 +53,8 @@ class TagService
     public function sanitizeTagName(string $tagName): ?string
     {
         $sanitized = Str::squish($tagName);
-
         $sanitized = Str::replaceMatches('/[^\p{L}\s]/u', "", $sanitized);
-
         $sanitized = Str::squish($sanitized);
-
         $sanitized = Str::lower($sanitized);
 
         return $sanitized !== "" ? $sanitized : null;
