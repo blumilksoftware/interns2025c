@@ -94,7 +94,8 @@ onMounted(() => {
           </div>
           <div class="grid grid-cols-5 gap-2">
             <span v-for="(title, idx) in stepTitles" :key="idx" class="text-center text-xs sm:text-sm text-gray-600 truncate"
-                  :class="(idx + 1) === currentStep ? 'text-indigo-700 font-medium' : ''">
+                  :class="(idx + 1) === currentStep ? 'text-indigo-700 font-medium' : ''"
+            >
               {{ title }}
             </span>
           </div>
@@ -162,19 +163,19 @@ onMounted(() => {
           />
         </div>
         <div class="flex flex-wrap items-center justify-between gap-2">
-  <div class="w-full sm:w-auto">
-    <button type="button" class="inline-flex items-center rounded-md bg-gray-100 px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.reset()">
-      {{ t('preferences.actions.reset') }}
-    </button>
-  </div>
-  <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-    <button type="button" class="px-6 py-3 rounded-md border border-gray-300 text-gray-700 text-sm font-medium transition-all duration-150 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
-    <button v-if="currentStep < 5" type="button" class="px-6 py-3 rounded-md bg-indigo-600 text-white text-sm font-medium transition-all duration-150 ease-in-out hover:-translate-y-0.5 hover:bg-indigo-700" :disabled="currentStep===5" @click="currentStep++">{{ t('common.next') || 'Dalej' }}</button>
-    <button v-else type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.apply()">
-      {{ t('preferences.actions.apply') }}
-    </button>
-  </div>
-</div>
+          <div class="w-full sm:w-auto">
+            <button type="button" class="inline-flex items-center rounded-md bg-gray-100 px-6 py-3 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.reset()">
+              {{ t('preferences.actions.reset') }}
+            </button>
+          </div>
+          <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button type="button" class="px-6 py-3 rounded-md border border-gray-300 text-gray-700 text-sm font-medium transition-all duration-150 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50" :disabled="currentStep===1" @click="currentStep--">{{ t('common.prev') || 'Wstecz' }}</button>
+            <button v-if="currentStep < 5" type="button" class="px-6 py-3 rounded-md bg-indigo-600 text-white text-sm font-medium transition-all duration-150 ease-in-out hover:-translate-y-0.5 hover:bg-indigo-700" :disabled="currentStep===5" @click="currentStep++">{{ t('common.next') || 'Dalej' }}</button>
+            <button v-else type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="prefs.apply()">
+              {{ t('preferences.actions.apply') }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

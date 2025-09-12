@@ -61,12 +61,12 @@ function moveFocus(currentIndex, delta) {
       <label
         v-for="(opt, idx) in options"
         :key="String(opt.value)"
+        :ref="el => (tileRefs[idx] = el)"
         class="tile-checkbox focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 rounded-lg"
         :tabindex="0"
         :role="multiple ? 'checkbox' : 'radio'"
         :aria-checked="multiple ? (Array.isArray(modelValue) && modelValue.includes(opt.value)) : (modelValue === opt.value)"
         :aria-label="String(opt.label || opt.labelKey || opt.value)"
-        :ref="el => (tileRefs[idx] = el)"
         @click.prevent="toggle(opt.value)"
         @keydown.enter.prevent="toggle(opt.value)"
         @keydown.space.prevent="toggle(opt.value)"
