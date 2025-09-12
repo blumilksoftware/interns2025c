@@ -10,6 +10,7 @@ use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
 use App\Services\TagService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,9 +20,12 @@ class PetController extends Controller
         private TagService $tagService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $pets = Pet::query()->latest()->paginate(15);
+        $pets = Pet::query()
+            ->with("tags")
+            ->latest()
+            ->paginate(50);
 
         return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetIndexResource::collection($pets),

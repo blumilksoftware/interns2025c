@@ -15,6 +15,11 @@ use Inertia\Response;
 
 class PreferenceController extends Controller
 {
+    public function show(): Response
+    {
+        return Inertia::render("Preferences/Preferences");
+    }
+
     public function index(PetMatcher $matcher): Response
     {
         $user = request()->user();
@@ -24,7 +29,7 @@ class PreferenceController extends Controller
             ->get()
             ->map(function (Pet $pet) use ($preference, $matcher): array {
                 $matchPercentage = $preference
-                    ? $matcher->match($pet->toArray(), $preference->preferences)
+                    ? $matcher->match($pet->toArray(), (array)($preference->preferences ?? []))
                     : 0;
 
                 return [

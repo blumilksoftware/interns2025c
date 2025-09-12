@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div 
-    class="relative w-full overflow-hidden bg-gray-300/60 p-4 sm:px-6 md:px-4 lg:px-12 rounded-lg dark:bg-neutral-900 cursor-grab active:cursor-grabbing select-none"
+    class="relative w-full overflow-hidden bg-gray-300/60 p-4 sm:px-6 md:px-4 lg:px-12 rounded-lg cursor-grab active:cursor-grabbing select-none"
     @mousedown="handleDragStart"
     @mousemove="handleDragMove"
     @mouseup="handleDragEnd"
@@ -181,7 +181,7 @@ onBeforeUnmount(() => {
           :key="index"
           class="w-[50vw] shrink-0 px-2 md:px-[2vw] lg:px-[5vw]"
         >
-          <div class="flex justify-center h-full bg-transparent dark:bg-neutral-900">
+          <div class="flex justify-center h-full bg-transparent">
             <img
               :src="url"
               :alt="`${props.pet?.name || 'Pet'} - ${index + 1}`"
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
       v-if="imageUrls.length > 1"
       type="button" 
       :disabled="currentImageIndex === 0"
-      class="absolute inset-y-0 start-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+      class="absolute inset-y-0 start-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-s-lg disabled:opacity-50 disabled:cursor-not-allowed"
       @click="prevImage"
     >
       <span class="text-2xl" aria-hidden="true">
@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
       v-if="imageUrls.length > 1"
       type="button" 
       :disabled="currentImageIndex >= imageUrls.length - 1"
-      class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+      class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg disabled:opacity-50 disabled:cursor-not-allowed"
       @click="nextImage"
     >
       <span class="sr-only">{{ t('pets.gallery.next') }}</span>

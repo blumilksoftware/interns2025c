@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Header from '@/Components/Header.vue'
 import MVPSection from './MVPSection.vue'
 import PetGrid from './PetGrid.vue'
 import Footer from '@/Components/Footer.vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
+import { usePreferencesStore } from '@/stores/preferences'
+import { routes } from '@/routes'
+import { samplePetImages } from '@/data/petsData.js'
 
 const { t } = useI18n()
 
@@ -20,6 +23,68 @@ const handleShowPetList = (data) => {
 const handleHidePetList = () => {
   showPetList.value = false
 }
+
+const prefs = usePreferencesStore()
+const filters = computed(() => prefs.form || {})
+
+onMounted(() => {
+  if (prefs.isEmpty) {
+    router.get(routes.preferences.index(), {}, { replace: true })
+  }
+})
+
+const page = usePage()
+const petImageFor = (_p, idx) => `https://placedog.net/500?id=${idx + 1}`
+
+const normalizeEnum = (v) => (v && typeof v === 'object') ? (('value' in v) ? v.value : (('name' in v) ? v.name : String(v))) : v
+
+const sourcePets = computed(() => Array.isArray(page.props.pets) ? page.props.pets : (page.props.pets?.data || []))
+const pets = computed(() => (sourcePets.value || []).map((p, idx) => {
+  const base = (p && typeof p === 'object' && 'pet' in p) ? p.pet : p
+  const sexNormalized = normalizeEnum(base.sex)
+  const sexValue = String(sexNormalized ?? '').toLowerCase()
+  const rawStatus = normalizeEnum(base.adoption_status ?? base.status)
+  let statusLabel = rawStatus
+  if (String(rawStatus).toLowerCase() === 'available') {
+    statusLabel = (sexValue === 'male' || sexValue === 'm')
+      ? (t('dashboard.mvp.availablemale'))
+      : (t('dashboard.mvp.availablefemale'))
+  }
+
+  return {
+    ...base,
+    species: normalizeEnum(base.species),
+    sex: sexNormalized,
+    gender: base.sex ?? base.gender,
+    tags: Array.isArray(base.tags) ? base.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
+    imageUrl: petImageFor(p, idx),
+    status: statusLabel,
+  }
+}))
+
+const weightConfig = { species: 3, breed: 3, sex: 2, color: 1, tags: 2 }
+const scorePet = (pet) => {
+  const f = filters.value
+  let score = 0
+  if (Array.isArray(f.species) && f.species.includes(String(pet.species))) score += weightConfig.species
+  if (Array.isArray(f.breed) && f.breed.includes(pet.breed)) score += weightConfig.breed
+  if (f.sex && String(f.sex) === String(pet.sex)) score += weightConfig.sex
+  if (Array.isArray(f.color) && f.color.includes(pet.color)) score += weightConfig.color
+  if (Array.isArray(f.tags) && f.tags.length) {
+    const petTags = Array.isArray(pet.tags) ? pet.tags : []
+    const overlap = f.tags.filter((t) => petTags.includes(t))
+    if (overlap.length) score += weightConfig.tags * Math.min(1, overlap.length / 3)
+  }
+  return score
+}
+
+const sortedPets = computed(() => [...pets.value].sort((a, b) => scorePet(b) - scorePet(a)))
+const featuredPet = computed(() => sortedPets.value[0] || null)
+const bestMatchesRest = computed(() => sortedPets.value.slice(1, 13))
+const dogs = computed(() => sortedPets.value.filter(p => String(p.species) === 'dog').slice(0, 12))
+const cats = computed(() => sortedPets.value.filter(p => String(p.species) === 'cat').slice(0, 12))
+
+
 </script>
 
 <template>
@@ -40,8 +105,16 @@ const handleHidePetList = () => {
       
     <div v-else class="min-h-screen">
       <Header />
-      <MVPSection />
-      <PetGrid :show-pet-list="showPetList" :current-pet-list="currentPetList" @show-pet-list="handleShowPetList" @hide-pet-list="handleHidePetList" />
+      <MVPSection v-if="featuredPet" :pet="featuredPet" />
+      <PetGrid 
+        :show-pet-list="showPetList" 
+        :current-pet-list="currentPetList"
+        :best-matches-rest="bestMatchesRest"
+        :dogs="dogs"
+        :cats="cats"
+        @show-pet-list="handleShowPetList"
+        @hide-pet-list="handleHidePetList"
+      />
       <Footer />
     </div>
   </transition>
