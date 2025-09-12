@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
-    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
+    <span class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</span>
     <div class="relative z-30">
       <button type="button" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
@@ -71,7 +71,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="mt-2 flex justify-end gap-2">
           <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="valueProxy = ''">{{ t('preferences.placeholders.any') }}</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = false">OK</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
         </div>
       </div>
     </div>

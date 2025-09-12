@@ -45,6 +45,7 @@ const healthChecksSummary = computed(() => {
 </script>
 
 <template>
+  <main role="main">
   <div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <FilterPopoverMulti
@@ -67,7 +68,7 @@ const healthChecksSummary = computed(() => {
     </div>
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="health-checks" :style="{ zIndex: healthChecksOpenModel ? 1000 : 'auto' }">
-      <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('preferences.labels.healthChecks') }}</label>
+      <span class="block text-sm font-medium text-gray-700 mb-1">{{ t('preferences.labels.healthChecks') }}</span>
       <div class="relative z-30">
         <button type="button" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="healthChecksOpenModel = !healthChecksOpenModel">
           <span>{{ healthChecksSummary }}</span>
@@ -98,13 +99,11 @@ const healthChecksSummary = computed(() => {
           </div>
           <div class="mt-3 flex justify-end gap-2">
             <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.vaccinated=false;form.sterilized=false;form.microchipped=false;form.dewormed=false;form.defleaTreated=false; moveFilterById('health-checks')">{{ t('preferences.placeholders.any') }}</button>
-            <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="healthChecksOpenModel = false">{{ t('common.ok') || 'OK' }}</button>
+            <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="healthChecksOpenModel = false">{{ t('common.ok') }}</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+  </main> 
 </template>
-
-
-

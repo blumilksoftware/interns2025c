@@ -15,9 +15,10 @@ const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(val
 </script>
 
 <template>
+  <main role="main">
   <div class="bg-white/70 backdrop-blur-md border border-gray-200/60 rounded-xl p-4 filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="attitudes">
     <div class="flex items-center justify-between mb-4">
-      <label class="block text-base font-medium text-gray-800">{{ t('preferences.attitudes') || 'Stosunki' }}</label>
+      <span class="block text-base font-medium text-gray-800">{{ t('preferences.attitudes')}}</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 md:auto-rows-fr gap-6">
       <div class="h-full border border-gray-200/70 rounded-lg p-3 bg-white/60 filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="attitude-dogs">
@@ -69,4 +70,5 @@ const form = computed({ get: () => prefs.form, set: (value) => prefs.setForm(val
       </div>
     </div>
   </div>
+  </main>
 </template>

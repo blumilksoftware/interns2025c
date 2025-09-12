@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import CommonIcons from '@/Components/Icons/CommonIcons.vue'
 
 const props = defineProps({
@@ -11,6 +11,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+// Refs to tile DOM elements to enable keyboard navigation
+const tileRefs = ref([])
 
 function toggle(value) {
   if (props.multiple) {
@@ -41,15 +44,42 @@ const gridClasses = computed(() => {
     return 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3'
   }
 })
+
+function moveFocus(currentIndex, delta) {
+  const elements = (tileRefs.value || []).filter(Boolean)
+  if (!elements.length) return
+  let next = currentIndex + delta
+  if (next < 0) next = 0
+  if (next >= elements.length) next = elements.length - 1
+  elements[next]?.focus()
+}
 </script>
 
 <template>
   <div>
     <div :class="gridClasses">
-      <label v-for="opt in options" :key="String(opt.value)" class="tile-checkbox">
+      <label
+        v-for="(opt, idx) in options"
+        :key="String(opt.value)"
+        class="tile-checkbox focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500 rounded-lg"
+        :tabindex="0"
+        :role="multiple ? 'checkbox' : 'radio'"
+        :aria-checked="multiple ? (Array.isArray(modelValue) && modelValue.includes(opt.value)) : (modelValue === opt.value)"
+        :aria-label="String(opt.label || opt.labelKey || opt.value)"
+        :ref="el => (tileRefs[idx] = el)"
+        @click.prevent="toggle(opt.value)"
+        @keydown.enter.prevent="toggle(opt.value)"
+        @keydown.space.prevent="toggle(opt.value)"
+        @keydown.right.prevent="moveFocus(idx, 1)"
+        @keydown.left.prevent="moveFocus(idx, -1)"
+        @keydown.down.prevent="moveFocus(idx, columns || 3)"
+        @keydown.up.prevent="moveFocus(idx, -(columns || 3))"
+      >
         <input
           type="checkbox"
           class="sr-only"
+          tabindex="-1"
+          aria-hidden="true"
           :checked="multiple ? Array.isArray(modelValue) && modelValue.includes(opt.value) : modelValue === opt.value"
           @change="toggle(opt.value)"
         >

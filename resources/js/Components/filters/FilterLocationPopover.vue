@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   filterId: { type: String, default: 'location' },
@@ -11,6 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'update:open', 'use', 'clear', 'changed'])
+
+const { t } = useI18n()
 
 const valueProxy = computed({
   get: () => props.modelValue,
@@ -111,7 +114,7 @@ async function fetchNominatim(q) {
   } catch (e) {
     if (e?.name === 'AbortError') return
     loading.value = false
-    errorMsg.value = 'Błąd pobierania'
+    errorMsg.value = t('preferences.location.loadingError')
     remoteResults.value = []
   }
 }
@@ -136,10 +139,10 @@ function pickRemote(item) { emit('use', item.label) }
   <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
     <div class="sm:relative z-[3000]">
-      <input v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" placeholder="Miasto lub kod pocztowy" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
+      <input :id="`${filterId}-input`" v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" :placeholder="t('preferences.placeholders.cityOrZip')" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
       <div v-if="isOpen" class="mt-1 w-full bg-white border border-gray-200 rounded-md p-2 sm:absolute sm:z-[4000] sm:shadow-lg">
         <template v-if="(valueProxy || '').length >= 3">
-          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Sugestie</div>
+          <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.location.suggestions') }}</div>
           <div ref="listRef" :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" @scroll="onScroll">
             <div :style="{ height: totalHeight + 'px', position: 'relative' }">
               <div :style="{ position: 'absolute', top: offsetTop + 'px', left: 0, right: 0 }">
@@ -154,24 +157,24 @@ function pickRemote(item) { emit('use', item.label) }
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
-            <span>Ładowanie…</span>
+            <span>{{ t('preferences.location.loading') }}</span>
           </div>
-          <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500">Brak wyników</div>
+          <div v-if="!loading && visibleItems.length === 0" class="px-2 py-1 text-xs text-gray-500">{{ t('preferences.location.noResults') }}</div>
         </template>
 
         <template v-else>
           <div class="max-h-64 overflow-auto">
             <template v-if="valueProxy && filteredLocations.length > 0">
-              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Wyniki</div>
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.location.results') }}</div>
               <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </template>
             <template v-else-if="valueProxy">
-              <div class="px-2 py-1 text-xs text-gray-500">Brak wyników. Użyj wpisanej lokalizacji.</div>
+              <div class="px-2 py-1 text-xs text-gray-500">{{ t('preferences.location.noResultsUseEntered') }}</div>
             </template>
             <div v-if="recentLocations.length > 0" class="mt-2">
-              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Ostatnio wybierane</div>
+              <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.location.recent') }}</div>
               <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
@@ -180,8 +183,8 @@ function pickRemote(item) { emit('use', item.label) }
         </template>
 
         <div class="mt-2 flex justify-between gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="$emit('clear')">Wyczyść</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">Użyj tego</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="$emit('clear')">{{ t('preferences.actions.clear') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">{{ t('preferences.location.useThis') }}</button>
         </div>
       </div>
     </div>

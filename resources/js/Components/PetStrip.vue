@@ -83,8 +83,10 @@ nextTick(() => {
       <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{{ title }}</h2>
       <button 
         class="relative overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
+        :aria-label="t('dashboard.mvp.seeMore')"
         @click="showPetListHandler"
       >
+        <span class="sr-only">{{ t('dashboard.mvp.seeMore') }}</span>
         {{ t('dashboard.mvp.seeMore') }} →
       </button>
     </div>
@@ -93,16 +95,20 @@ nextTick(() => {
       <button 
         v-show="canScrollLeft"
         class="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 size-8 sm:size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+        :aria-label="t('common.prev')"
         @click="scrollLeft"
       >
+        <span class="sr-only">{{ t('common.prev') }}</span>
         <ChevronLeftIcon class="size-4 sm:size-6 text-gray-700" />
       </button>
       
       <button 
         v-show="canScrollRight"
         class="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 size-8 sm:size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+        :aria-label="t('common.next')"
         @click="scrollRight"
       >
+        <span class="sr-only">{{ t('common.next') }}</span>
         <ChevronRightIcon class="size-4 sm:size-6 text-gray-700" />
       </button>
       
@@ -116,14 +122,16 @@ nextTick(() => {
           class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square ">
-            <Link :href="routes.pets.show(pet.id)" class="focus-visible:outline-none">
+            <Link :href="routes.pets.show(pet.id)" :aria-label="`${pet.name} - ${pet.breed}`" class="focus-visible:outline-none">
               <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" @error="($event) => { $event.target.src = '/Images/cat-dog.png' }">
             </Link> 
 
             <button 
               class="absolute top-2 sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
+              :aria-label="t('dashboard.mvp.like')"
               @click.prevent.stop="toggleLike(pet.id)"
             >
+              <span class="sr-only">{{ t('dashboard.mvp.like') }}</span>
               <HeartIcon v-if="likedPets.has(pet.id)" class="size-4 sm:size-5 text-purple-600 animate-heartbeat [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)]" />
               <HeartOutlineIcon v-else class="size-4 sm:size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>
@@ -135,13 +143,13 @@ nextTick(() => {
           
           <div class="flex flex-1 flex-col p-3 sm:p-4 text-center">
             <div class="flex flex-col items-center mb-2">
-              <h3 class="text-lg sm:text-xl font-bold text-gray-900">{{ pet.name }}</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-gray-900" :aria-label="`${pet.name} - ${pet.breed}`">{{ pet.name }}</h3>
               <span class="text-sm sm:text-base text-gray-600">{{ pet.breed }}</span>
             </div>
             
             <div class="flex items-center justify-center gap-1 sm:gap-2 mb-2">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800">{{ formatAge(pet.age) }}</span>
-              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800">{{ pet.adoption_status }}</span>
+              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800" :aria-label="`${t('dashboard.mvp.age')}: ${formatAge(pet.age)}`">{{ formatAge(pet.age) }}</span>
+              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800" :aria-label="`${t('dashboard.mvp.status')}: ${pet.adoption_status}`">{{ pet.adoption_status }}</span>
             </div>
             
             <div class="border-t border-gray-200 my-2 sm:my-3" />

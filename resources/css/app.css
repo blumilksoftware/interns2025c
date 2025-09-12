@@ -39,9 +39,11 @@
     .badge-selected { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs bg-indigo-50 text-indigo-900 border-indigo-200; }
 
     .tile-checkbox { @apply cursor-pointer transition-all; }
-    .checkbox-content { @apply flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 text-center min-h-[90px] sm:min-h-[100px] rounded-lg border-2 border-gray-200 bg-white transition; }
-    .tile-checkbox:hover .checkbox-content { @apply -translate-y-0.5 shadow-[0_8px_25px_rgba(0,0,0,0.15)]; }
-    .tile-checkbox input:checked + .checkbox-content { @apply -translate-y-0.5 shadow-[0_8px_25px_rgba(99,102,241,0.3)] border-indigo-500 bg-gradient-to-br from-indigo-500 to-violet-500 text-white; }
+    .checkbox-content { @apply flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 text-center min-h-[90px] h-0 sm:min-h-[100px] rounded-lg border-2 border-gray-200 bg-white transition-shadow; }
+    .tile-checkbox:hover .checkbox-content { @apply shadow-[0_8px_25px_rgba(0,0,0,0.15)]; }
+    .tile-checkbox input:checked + .checkbox-content { @apply shadow-[0_8px_25px_rgba(99,102,241,0.3)] border-indigo-500 bg-gradient-to-br from-indigo-500 to-violet-500 text-white; }
+    .tile-checkbox:focus-visible .checkbox-content { @apply outline outline-2 outline-offset-2 outline-indigo-500; }
+    .tile-checkbox:focus-visible input:checked + .checkbox-content { @apply outline outline-2 outline-offset-2 outline-white border-white; }
     .icon-container { @apply flex items-center justify-center h-8 sm:h-10 w-full; }
     .label-container { @apply break-words whitespace-normal leading-snug; }
 }

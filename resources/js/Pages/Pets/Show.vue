@@ -29,7 +29,7 @@ const displayPet = computed(() => {
   const sexValue = String(p.sex ?? p.gender ?? '').toLowerCase()
   let statusLabel = rawStatus
   if (String(rawStatus).toLowerCase() === 'available') {
-    statusLabel = (sexValue === 'male' || sexValue === 'm') ? (t('dashboard.mvp.availablemale') || 'Dostępny') : (t('dashboard.mvp.availablefemale') || 'Dostępna')
+    statusLabel = (sexValue === 'male' || sexValue === 'm') ? (t('dashboard.mvp.availablemale')) : (t('dashboard.mvp.availablefemale'))
   }
   return {
     ...p,
@@ -49,7 +49,7 @@ const similarListTitle = ref('')
 const similarList = ref([])
 
 const onShowSimilar = ({ title, pets }) => {
-  similarListTitle.value = title || (t('dashboard.mvp.similarPets') || 'Podobne zwierzaki')
+  similarListTitle.value = title || (t('dashboard.mvp.similarPets'))
   similarList.value = Array.isArray(pets) ? pets : []
   showSimilarOverlay.value = true
 }
@@ -69,7 +69,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
 
     <div v-if="similarPets.length" class="mx-auto max-w-6xl p-6 lg:px-2">
       <PetStrip 
-        :title="t('dashboard.mvp.similarPets') || 'Podobne zwierzaki'" 
+        :title="t('dashboard.mvp.similarPets')" 
         :pets="similarPets"
         @show-pet-list="onShowSimilar"
         @hide-pet-list="onHideSimilar"

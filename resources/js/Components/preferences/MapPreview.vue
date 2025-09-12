@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   query: { type: String, default: '' },
@@ -23,7 +24,10 @@ const POLAND_BOUNDS = [
 
 function isWholeCountry(query) {
   const normalizedQuery = (query || '').trim().toLowerCase()
-  return normalizedQuery === 'polska' || normalizedQuery === 'cała polska' || normalizedQuery === 'cala polska'
+  const { t } = useI18n()
+  const whole = (t('preferences.location.wholeCountry') || '').toLowerCase()
+  const country = (t('preferences.location.countryFallback') || '').toLowerCase()
+  return normalizedQuery === country || normalizedQuery === whole
 }
 function normalizeString(text) { return (text || '').toLowerCase().trim() }
 

@@ -63,5 +63,3 @@ export const selectorConfigs = {
 }
 
 export type SelectorConfigs = typeof selectorConfigs
-
-

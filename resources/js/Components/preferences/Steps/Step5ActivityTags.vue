@@ -55,7 +55,7 @@ const limitedBadges = computed(() => {
   <div class="space-y-6">
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="activity">
       <div class="flex items-center justify-between mb-3">
-        <label class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.activityLevel') }}</label>
+        <span class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.activityLevel') }}</span>
         <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="form.activityLevel = null; props.moveFilterById('activity')">{{ t('preferences.placeholders.any') }}</button>
       </div>
       <ChoiceTiles :columns="props.selectorConfigs.activity.columns" :options="props.selectorConfigs.activity.options" :model-value="form.activityLevel" @update:model-value="val => { form.activityLevel = val; props.moveFilterById('activity') }">
@@ -66,7 +66,7 @@ const limitedBadges = computed(() => {
     </div>
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="tags">
-      <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.labels.tags') }}</label>
+      <span class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.labels.tags') }}</span>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in tagOptions"
@@ -82,14 +82,14 @@ const limitedBadges = computed(() => {
     </div>
 
     <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="summary">
-      <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.summary') }}</label>
+      <span class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.summary') }}</span>
       <div v-if="summary.length === 0" class="text-sm text-gray-500">{{ t('preferences.placeholders.noActiveFilters') }}</div>
       <div v-else class="flex flex-wrap gap-2">
         <template v-for="badge in limitedBadges" :key="badge.ellipsis ? 'ellipsis' : (badge.title + '-' + String(badge.value))">
           <button v-if="badge.ellipsis" type="button" class="badge-selected" @click="showAllBadges = true">...</button>
           <span v-else class="badge-selected">
             {{ badge.title }}: {{ badge.label }}
-            <button type="button" class="ml-1 inline-flex items-center justify-center size-4 rounded-full hover:bg-white/20" @click="handleClearItem(badge.key, badge.value)">
+            <button type="button" :aria-label="`Usuń ${badge.title}: ${badge.label}`" class="ml-1 inline-flex items-center justify-center size-4 rounded-full hover:bg-white/20" @click="handleClearItem(badge.key, badge.value)">
               <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />

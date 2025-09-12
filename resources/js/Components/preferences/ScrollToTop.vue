@@ -1,5 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const show = ref(false)
 
@@ -19,7 +21,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   <button 
     v-show="show"
     class="fixed bottom-6 right-6 z-50 p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    title="Powrót do góry"
+    :title="t('common.scrollToTop')"
     @click="scrollTop"
   >
     <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,5 +29,3 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     </svg>
   </button>
 </template>
-
-

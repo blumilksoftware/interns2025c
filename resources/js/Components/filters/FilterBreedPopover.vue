@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   filterId: { type: String, default: 'breed' },
@@ -11,6 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'update:open', 'changed'])
+
+const { t } = useI18n()
 
 const selected = computed({
   get: () => Array.isArray(props.modelValue) ? props.modelValue : [],
@@ -26,7 +29,7 @@ const isOpen = computed({
 })
 
 const summary = computed(() => {
-  if (!Array.isArray(selected.value) || selected.value.length === 0) return 'Dowolne'
+  if (!Array.isArray(selected.value) || selected.value.length === 0) return t('preferences.placeholders.any')
   return selected.value.join(', ')
 })
 
@@ -51,7 +54,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
-    <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
+    <span class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</span>
     <div class="relative">
       <button type="button" :disabled="(dogBreeds.length + catBreeds.length) === 0" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
@@ -65,14 +68,14 @@ onBeforeUnmount(() => {
       <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg p-2">
         <div class="max-h-64 overflow-auto space-y-2">
           <div v-if="dogBreeds.length > 0">
-            <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Psy</div>
+            <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.breeds.dogs') }}</div>
             <label v-for="dogBreed in dogBreeds" :key="'dog-'+dogBreed" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 px-2 py-1 rounded hover:bg-gray-50">
               <input v-model="selected" type="checkbox" :value="dogBreed" class="rounded border-gray-300 ">
               <span>{{ dogBreed }}</span>
             </label>
           </div>
           <div v-if="catBreeds.length > 0">
-            <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">Koty</div>
+            <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.breeds.cats') }}</div>
             <label v-for="catBreed in catBreeds" :key="'cat-'+catBreed" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 px-2 py-1 rounded hover:bg-gray-50">
               <input v-model="selected" type="checkbox" :value="catBreed" class="rounded border-gray-300">
               <span>{{ catBreed }}</span>
@@ -80,8 +83,8 @@ onBeforeUnmount(() => {
           </div>
         </div>
         <div class="mt-2 flex justify-end gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="selected = []">Dowolne</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="isOpen = false">OK</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="selected = []">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
         </div>
       </div>
     </div>

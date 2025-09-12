@@ -129,7 +129,6 @@ class PetMatchingTest extends TestCase
 
         $response = $this->actingAs($user)->get("/dashboard");
 
-        // Validate Inertia response and that both pets are present in the list
         $response->assertInertia(
             fn(Assert $page) => $page
                 ->component("Dashboard/Dashboard")

@@ -1,10 +1,17 @@
 {
   "preferences": {
+    "steps": {
+      "basic": "Podstawowe",
+      "health": "Zdrowie",
+      "location": "Lokalizacja",
+      "attitudes": "Stosunki",
+      "activity": "Aktywność"
+    },
     "title": "Preferencje wyszukiwania",
     "subtitle": "Dopasuj parametry, aby znaleźć idealnego zwierzaka.",
     "labels": {
       "species": "Gatunek",
-      "breed": "Rasa",
+      "breed": "Rasa",  
       "sex": "Płeć",
       "age": "Wiek",
       "location": "Lokalizacja",
@@ -26,6 +33,22 @@
       "noActiveFilters": "Brak aktywnych filtrów.",
       "any": "Dowolne",
       "cityOrZip": "Miasto lub kod pocztowy"
+    },
+    "location": {
+      "suggestions": "Sugestie",
+      "loading": "Ładowanie…",
+      "loadingError": "Błąd pobierania",
+      "noResults": "Brak wyników",
+      "noResultsUseEntered": "Brak wyników. Użyj wpisanej lokalizacji.",
+      "results": "Wyniki",
+      "recent": "Ostatnio wybierane",
+      "useThis": "Użyj tego",
+      "countryFallback": "Polska",
+      "wholeCountry": "Cała Polska"
+    },
+    "breeds": {
+      "dogs": "Psy",
+      "cats": "Koty"
     },
     "species": {
       "dog": "Pies",
@@ -96,7 +119,9 @@
     "actions": {
       "apply": "Zastosuj",
       "reset": "Wyczyść",
-      "collapse": "Zwiń"
+      "collapse": "Zwiń",
+      "ok": "OK",
+      "clear": "Wyczyść"
     },
     "attitudes": "Stosunki",
     "summary": "Podsumowanie filtrów"

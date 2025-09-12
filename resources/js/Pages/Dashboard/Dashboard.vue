@@ -47,8 +47,8 @@ const pets = computed(() => (sourcePets.value || []).map((p, idx) => {
   let statusLabel = rawStatus
   if (String(rawStatus).toLowerCase() === 'available') {
     statusLabel = (sexValue === 'male' || sexValue === 'm')
-      ? (t('dashboard.mvp.availablemale') || 'Dostępny')
-      : (t('dashboard.mvp.availablefemale') || 'Dostępna')
+      ? (t('dashboard.mvp.availablemale'))
+      : (t('dashboard.mvp.availablefemale'))
   }
 
   return {
