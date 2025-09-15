@@ -13,25 +13,12 @@ class TagService
     {
         $service = new self();
 
-        $text = trim($text);
-
-        if ($text === "") {
-            return [];
-        }
-
-        $rawTokens = preg_split('/\s+/u', $text) ?: [];
-
-        $unique = [];
-
-        foreach ($rawTokens as $token) {
-            $clean = $service->sanitizeTagName($token);
-
-            if ($clean !== null) {
-                $unique[$clean] = true;
-            }
-        }
-
-        return array_keys($unique);
+        return collect(preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY))
+            ->map(fn($token) => $service->sanitizeTagName($token))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     public function processTagsAndGetIds(array $tags): array
