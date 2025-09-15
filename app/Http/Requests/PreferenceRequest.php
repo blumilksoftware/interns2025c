@@ -69,7 +69,7 @@ class PreferenceRequest extends FormRequest
             "city" => ["nullable", "string", "max:255"],
             "latitude" => ["nullable", "numeric", "between:-90,90"],
             "longitude" => ["nullable", "numeric", "between:-180,180"],
-            "radius_km" => ["nullable", "integer", "min:1", "max:1000"],
+            "radius_in_km" => ["nullable", "integer", "min:1", "max:1000"],
         ];
     }
 }

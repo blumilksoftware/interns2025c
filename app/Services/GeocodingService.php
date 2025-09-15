@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Http\Integrations\Connectors\NominatimConnector;
+use App\Http\Integrations\Requests\GeocodeRequest;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Http;
 
 class GeocodingService
 {
@@ -17,19 +18,20 @@ class GeocodingService
             return null;
         }
 
-        $response = Http::get("https://nominatim.openstreetmap.org/search", [
-            "q" => $query,
-            "format" => "json",
-            "limit" => 1,
-        ]);
+        $connector = new NominatimConnector();
+        $request = new GeocodeRequest($query);
 
-        if ($response->failed() || empty($response[0])) {
+        $response = $connector->send($request);
+
+        $data = $response->json();
+
+        if (empty($data[0])) {
             return null;
         }
 
         return [
-            "latitude" => (float)$response[0]["lat"],
-            "longitude" => (float)$response[0]["lon"],
+            "latitude" => (float)$data[0]["lat"],
+            "longitude" => (float)$data[0]["lon"],
         ];
     }
 

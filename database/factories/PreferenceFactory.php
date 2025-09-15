@@ -48,7 +48,7 @@ class PreferenceFactory extends Factory
             "city" => $city,
             "latitude" => $latitude,
             "longitude" => $longitude,
-            "radius_km" => $this->faker->numberBetween(5, 50),
+            "radius_in_km" => $this->faker->numberBetween(5, 50),
         ];
     }
 

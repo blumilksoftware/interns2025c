@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $city
  * @property float|null $latitude
  * @property float|null $longitude
- * @property int $radius_km
+ * @property int $radius_in_km
  * @property-read User $user
  */
 class Preference extends Model
@@ -28,13 +28,13 @@ class Preference extends Model
         "city",
         "latitude",
         "longitude",
-        "radius_km",
+        "radius_in_km",
     ];
     protected $casts = [
         "preferences" => "array",
         "latitude" => "float",
         "longitude" => "float",
-        "radius_km" => "integer",
+        "radius_in_km" => "integer",
     ];
 
     public function user(): BelongsTo

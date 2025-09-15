@@ -25,12 +25,12 @@ class FindPetsForPreferenceAction
             $pets = $this->proximity->withinRadius(
                 $preference->latitude,
                 $preference->longitude,
-                $preference->radius_km,
+                $preference->radius_in_km,
             );
         }
 
         return $pets->get()
-            ->map(function (Pet $pet) use ($preference) {
+            ->map(function (Pet $pet) use ($preference): array {
                 $petData = $this->normalizePet($pet);
 
                 $matchPercentage = $preference

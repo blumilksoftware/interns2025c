@@ -32,7 +32,7 @@ class PetMatchingTest extends TestCase
             ],
             "latitude" => null,
             "longitude" => null,
-            "radius_km" => null,
+            "radius_in_km" => null,
         ]);
 
         $dog = Pet::factory()->create(["species" => "dog"]);
@@ -67,7 +67,7 @@ class PetMatchingTest extends TestCase
             ],
             "latitude" => null,
             "longitude" => null,
-            "radius_km" => null,
+            "radius_in_km" => null,
         ]);
 
         $cat = Pet::factory()->create(["species" => "cat"]);
@@ -97,7 +97,7 @@ class PetMatchingTest extends TestCase
             "preferences" => [],
             "latitude" => null,
             "longitude" => null,
-            "radius_km" => null,
+            "radius_in_km" => null,
         ]);
 
         Pet::factory()->count(3)->create();
@@ -121,7 +121,7 @@ class PetMatchingTest extends TestCase
             ],
             "latitude" => null,
             "longitude" => null,
-            "radius_km" => null,
+            "radius_in_km" => null,
         ]);
 
         $petWithTag = Pet::factory()->create();
@@ -149,7 +149,7 @@ class PetMatchingTest extends TestCase
             "preferences" => [],
             "latitude" => 40.0,
             "longitude" => -75.0,
-            "radius_km" => 50,
+            "radius_in_km" => 50,
         ]);
 
         $nearShelter = PetShelter::factory()->create();
@@ -185,7 +185,7 @@ class PetMatchingTest extends TestCase
             "preferences" => [],
             "latitude" => 40.0,
             "longitude" => -75.0,
-            "radius_km" => 1,
+            "radius_in_km" => 1,
         ]);
 
         $farShelter = PetShelter::factory()->create();
