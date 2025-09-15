@@ -14,7 +14,6 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-
 const personalityTraits = computed(() => {
   const pet = props.pet
   if (!pet?.tags || !Array.isArray(pet.tags)) return []
@@ -38,8 +37,6 @@ const characteristics = computed(() => {
     value: item.value.startsWith('dashboard.mvp.') ? t(item.value) : item.value,
   }))
 })
-
-
 
 const medicalInfo = computed(() => {
   return getAvailableMedicalInfo(props.pet)

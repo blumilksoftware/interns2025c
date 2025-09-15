@@ -84,7 +84,6 @@ const bestMatchesRest = computed(() => sortedPets.value.slice(1, 13))
 const dogs = computed(() => sortedPets.value.filter(p => String(p.species) === 'dog').slice(0, 12))
 const cats = computed(() => sortedPets.value.filter(p => String(p.species) === 'cat').slice(0, 12))
 
-
 </script>
 
 <template>
@@ -122,4 +121,3 @@ const cats = computed(() => sortedPets.value.filter(p => String(p.species) === '
 
 <style scoped>
 </style>
- 

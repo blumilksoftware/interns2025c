@@ -58,5 +58,3 @@ export function useFormState() {
 
   return { form, resetForm, applyPreferences }
 }
-
-

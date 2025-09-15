@@ -44,7 +44,6 @@ const descriptionFor = (pet) => {
   return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
 }
 
-
 const handleShowPetList = (data) => {
   emit('showPetList', data)
 }

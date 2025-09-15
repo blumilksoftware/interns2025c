@@ -16,5 +16,3 @@ export function useBreeds(form) {
   })
   return { dogBreedsAvailable, catBreedsAvailable, breedOptions }
 }
-
-

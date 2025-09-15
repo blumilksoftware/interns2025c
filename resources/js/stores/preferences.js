@@ -75,4 +75,3 @@ export const usePreferencesStore = defineStore('preferences', {
     },
   },
 })
-

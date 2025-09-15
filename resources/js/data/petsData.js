@@ -53,4 +53,3 @@ export const samplePetImages = Array.from({ length: 100 }, (_, i) => {
   const id = i + 1
   return { id, imageUrl: `https://placedog.net/500?id=${id}` }
 })
-

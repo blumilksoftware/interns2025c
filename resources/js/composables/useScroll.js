@@ -7,5 +7,3 @@ export function useScroll() {
   onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   return { showScrollToTop }
 }
-
-

@@ -71,8 +71,6 @@ onMounted(() => {
   <div class="min-h-screen bg-gradient-to-br from-orange-200/40 via-pink-100/40 to-blue-200/40 relative">
     <PawPrints />
 
-    
-
     <div class="mx-auto max-w-5xl px-6 lg:px-8 py-10">
       <div class="mb-6">
         <h1 class="text-3xl font-semibold text-gray-900">{{ t('preferences.title') }}</h1>
@@ -104,11 +102,11 @@ onMounted(() => {
 
         <div v-if="currentStep === 1">
           <Step1Basic
-          aria-
             v-model:species-open="speciesOpen"
             v-model:breed-open="breedOpen"
             v-model:sex-open="sexOpen"
             v-model:color-open="colorOpen"
+            aria-
             :form="form"
             :selector-configs="selectorConfigs"
             :species-options="speciesOptions"
@@ -180,6 +178,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-
-
