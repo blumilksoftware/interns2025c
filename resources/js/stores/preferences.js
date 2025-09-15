@@ -51,7 +51,7 @@ export const usePreferencesStore = defineStore('preferences', {
           const raw = localStorage.getItem('preferencesForm')
           if (raw) this.form = Object.assign(defaultForm(), JSON.parse(raw))
         } catch (error) {
-          console.warn('Failed to load preferences from localStorage:', error)
+          return[]
         }
       }
     },
@@ -60,7 +60,7 @@ export const usePreferencesStore = defineStore('preferences', {
         try {
           localStorage.setItem('preferencesForm', JSON.stringify(this.form))
         } catch (error) {
-          console.warn('Failed to save preferences to localStorage:', error)
+          return[]
         }
       }
     },
@@ -70,7 +70,7 @@ export const usePreferencesStore = defineStore('preferences', {
 
         router.get(routes.dashboard(), {}, { preserveState: false, replace: false })
       } catch (error) {
-        console.warn('Failed to apply preferences:', error)
+        return[]
       }
     },
   },

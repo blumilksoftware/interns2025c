@@ -83,10 +83,10 @@ nextTick(() => {
       <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{{ title }}</h2>
       <button 
         class="relative overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
-        :aria-label="t('dashboard.mvp.seeMore')"
+        :aria-label="`${t('dashboard.mvp.seeMore')}: ${title}`"
         @click="showPetListHandler"
       >
-        <span class="sr-only">{{ t('dashboard.mvp.seeMore') }}</span>
+        <span class="sr-only">{{ `${t('dashboard.mvp.seeMore')}: ${title}` }}</span>
         {{ t('dashboard.mvp.seeMore') }} →
       </button>
     </div>
@@ -122,16 +122,16 @@ nextTick(() => {
           class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
           <div class="relative aspect-square ">
-            <Link :href="routes.pets.show(pet.id)" :aria-label="`${pet.name} - ${pet.breed}`" class="focus-visible:outline-none">
+            <Link :href="routes.pets.show(pet.id)" :aria-label="`${t('dashboard.mvp.goToPetView') || t('dashboard.mvp.seeMore')}: ${pet.name}`" class="focus-visible:outline-none">
               <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" @error="($event) => { $event.target.src = '/Images/cat-dog.png' }">
             </Link> 
 
             <button 
               class="absolute top-2 sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
-              :aria-label="t('dashboard.mvp.like')"
+              :aria-label="`${t('dashboard.mvp.like')} - ${pet.name}`"
               @click.prevent.stop="toggleLike(pet.id)"
             >
-              <span class="sr-only">{{ t('dashboard.mvp.like') }}</span>
+              <span class="sr-only">{{ `${t('dashboard.mvp.like')} - ${pet.name}` }}</span>
               <HeartIcon v-if="likedPets.has(pet.id)" class="size-4 sm:size-5 text-purple-600 animate-heartbeat [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)]" />
               <HeartOutlineIcon v-else class="size-4 sm:size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>

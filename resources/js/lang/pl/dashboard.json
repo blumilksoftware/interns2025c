@@ -6,6 +6,9 @@
     "aboutPet": "O zwierzaku",
     "pageTitle": "Panel główny - interns2025c",
     "mvp": {
+      "goToPetView": "Przejdź do widoku zwierzaka",
+      "goToDashboard": "Przejdź do panelu głównego",
+      "like": "Lubię",
       "availablemale": "Dostępny",
       "availablefemale": "Dostępna",
       "featuredPet": "Polecany zwierzak",

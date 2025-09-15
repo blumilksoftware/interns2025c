@@ -92,7 +92,7 @@ const characteristics = computed(() => [
             </div>
 
             <div class="mt-6 flex">
-              <Link :href="routes.pets.show(petData.id)" class="group relative inline-flex items-center justify-center overflow-hidden rounded-md bg-indigo-600 px-6 py-3 text-sm/6 font-bold text-white transition hover:scale-110">
+              <Link :href="routes.pets.show(petData.id)" :aria-label="`${t('dashboard.mvp.goToPetView') || t('dashboard.mvp.adoptPet')}: ${petData.name}`" class="group relative inline-flex items-center justify-center overflow-hidden rounded-md bg-indigo-600 px-6 py-3 text-sm/6 font-bold text-white transition hover:scale-110">
                 <span>{{ t('dashboard.mvp.adoptPet') }} {{ petData.name }}</span>
                 <span aria-hidden="true" class="ml-2">&rarr;</span>
                 <div class="absolute inset-0 flex size-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">

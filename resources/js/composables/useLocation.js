@@ -10,7 +10,7 @@ export function useLocation(form) {
         const raw = localStorage.getItem('recentLocations')
         if (raw) recentLocations.value = JSON.parse(raw)
       } catch (error) {
-        console.warn('Failed to load recent locations from localStorage:', error)
+        return[]
       }
     }
   }
@@ -19,7 +19,7 @@ export function useLocation(form) {
       try {
         localStorage.setItem('recentLocations', JSON.stringify(recentLocations.value.slice(0, 10)))
       } catch (error) {
-        console.warn('Failed to save recent locations to localStorage:', error)
+        return[]
       }
     }
   }

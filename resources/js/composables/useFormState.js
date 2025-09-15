@@ -54,7 +54,6 @@ export function useFormState() {
   }
 
   function applyPreferences() {
-    // placeholder
   }
 
   return { form, resetForm, applyPreferences }

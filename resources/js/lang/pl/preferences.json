@@ -4,7 +4,7 @@
       "basic": "Podstawowe",
       "health": "Zdrowie",
       "location": "Lokalizacja",
-      "attitudes": "Stosunki",
+      "attitudes": "Nastawienie",
       "activity": "Aktywność"
     },
     "title": "Preferencje wyszukiwania",
@@ -22,10 +22,10 @@
       "healthStatus": "Stan zdrowia",
       "adoptionStatus": "Status adopcji",
       "healthChecks": "Badania / zabiegi",
-      "attitudeToDogs": "Stosunek do psów",
-      "attitudeToCats": "Stosunek do kotów",
-      "attitudeToChildren": "Stosunek do dzieci",
-      "attitudeToAdults": "Stosunek do dorosłych",
+      "attitudeToDogs": "Nastawienie do psów",
+      "attitudeToCats": "Nastawienie do kotów",
+      "attitudeToChildren": "Nastawienie do dzieci",
+      "attitudeToAdults": "Nastawienie do dorosłych",
       "activityLevel": "Poziom aktywności",
       "tags": "Cechy"
     },
@@ -123,7 +123,7 @@
       "ok": "OK",
       "clear": "Wyczyść"
     },
-    "attitudes": "Stosunki",
+    "attitudes": "Nastawienie",
     "summary": "Podsumowanie filtrów"
   }
 }

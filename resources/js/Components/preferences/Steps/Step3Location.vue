@@ -54,7 +54,7 @@ const effectiveRadius = computed(() => {
       />
 
       <div class="space-y-4">
-        <div class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" data-filter-id="radius">
+        <div class="filter-item" data-filter-id="radius">
           <label for="radius-select" class="block text-sm font-medium text-gray-700 mb-1">{{ t('preferences.labels.radiusKm') }}</label>
           <select id="radius-select" v-model="form.radiusKm" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" :disabled="!locationText || locationText.toLowerCase() === t('preferences.location.wholeCountry').toLowerCase()" @change="moveFilterById('radius')">
             <option :value="null">{{ t('preferences.placeholders.any') }}</option>

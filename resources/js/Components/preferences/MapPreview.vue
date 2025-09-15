@@ -22,9 +22,10 @@ const POLAND_BOUNDS = [
   [54.84, 24.15],
 ]
 
+const { t } = useI18n()
+
 function isWholeCountry(query) {
   const normalizedQuery = (query || '').trim().toLowerCase()
-  const { t } = useI18n()
   const whole = (t('preferences.location.wholeCountry') || '').toLowerCase()
   const country = (t('preferences.location.countryFallback') || '').toLowerCase()
   return normalizedQuery === country || normalizedQuery === whole

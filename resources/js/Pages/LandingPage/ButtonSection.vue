@@ -21,8 +21,8 @@ const { t } = useI18n()
     <div class="h-1/2 px-6 sm:px-6 lg:px-8">
       <div class="flex justify-center items-center h-full">
         <div class="flex gap-4">
-          <Link :href="routes.preferences.index()" class="rounded-full bg-indigo-600 px-12 py-6 text-xl font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
-            {{ t('landing.hero.adoptButton') }}
+          <Link :href="routes.dashboard()" class="rounded-full bg-indigo-600 text-pretty inline-flex w-full sm:w-auto items-center justify-center px-6 py-4 text-base sm:px-12 sm:py-6 sm:text-xl font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
+            {{ t('landing.imageSection.goToDashboard') }}
           </Link>
         </div>
       </div>

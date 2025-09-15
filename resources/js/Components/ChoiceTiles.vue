@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CommonIcons from '@/Components/Icons/CommonIcons.vue'
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const tileRefs = ref([])
+const { t } = useI18n()
 
 function toggle(value) {
   if (props.multiple) {
@@ -65,7 +67,7 @@ function moveFocus(currentIndex, delta) {
         :tabindex="0"
         :role="multiple ? 'checkbox' : 'radio'"
         :aria-checked="multiple ? (Array.isArray(modelValue) && modelValue.includes(opt.value)) : (modelValue === opt.value)"
-        :aria-label="String(opt.label || opt.labelKey || opt.value)"
+        :aria-label="opt.labelKey ? t(opt.labelKey) : (opt.label ? String(opt.label) : `Opcja: ${String(opt.value)}`)"
         @click.prevent="toggle(opt.value)"
         @keydown.enter.prevent="toggle(opt.value)"
         @keydown.space.prevent="toggle(opt.value)"
@@ -89,7 +91,7 @@ function moveFocus(currentIndex, delta) {
           <span class="text-[11px] sm:text-xs font-medium">
             <div class="label-container">
               <slot name="label" :option="opt">
-                {{ opt.label || opt.labelKey }}
+                {{ opt.labelKey ? t(opt.labelKey) : (opt.label || String(opt.value)) }}
               </slot>
             </div>
           </span>
@@ -98,6 +100,3 @@ function moveFocus(currentIndex, delta) {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

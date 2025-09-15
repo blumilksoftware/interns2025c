@@ -34,6 +34,12 @@ const summary = computed(() => {
   return opt ? (opt.labelKey ? t(opt.labelKey) : (opt.label || v)) : v
 })
 
+const ariaLabel = computed(() => {
+  const s = summary.value
+  const anyText = t('preferences.placeholders.any')
+  return s === anyText ? props.label : `${props.label}: ${s}`
+})
+
 const rootRef = ref(null)
 function handleClickOutside(event) {
   if (!isOpen.value) return
@@ -53,10 +59,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
+  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <span class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</span>
     <div class="relative z-30">
-      <button type="button" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = !isOpen">
+      <button type="button" :aria-label="ariaLabel" :aria-expanded="isOpen" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
         <svg class="size-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
@@ -70,8 +76,8 @@ onBeforeUnmount(() => {
           </label>
         </div>
         <div class="mt-2 flex justify-end gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="valueProxy = ''">{{ t('preferences.placeholders.any') }}</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out hover:-translate-y-0.5" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out" @click="valueProxy = ''">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
         </div>
       </div>
     </div>

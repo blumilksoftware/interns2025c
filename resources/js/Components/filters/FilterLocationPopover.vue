@@ -136,7 +136,7 @@ function pickRemote(item) { emit('use', item.label) }
 </script>
 
 <template>
-  <div ref="rootRef" class="filter-item transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
+  <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <label class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
     <div class="sm:relative z-[3000]">
       <input :id="`${filterId}-input`" v-model="valueProxy" type="text" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" :placeholder="t('preferences.placeholders.cityOrZip')" @focus="isOpen = true" @input="isOpen = true; $emit('changed', filterId)">
