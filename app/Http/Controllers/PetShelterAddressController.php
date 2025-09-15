@@ -11,12 +11,9 @@ use Illuminate\Http\RedirectResponse;
 
 class PetShelterAddressController extends Controller
 {
-    protected GeocodingService $geocodingService;
-
-    public function __construct(GeocodingService $geocodingService)
-    {
-        $this->geocodingService = $geocodingService;
-    }
+    public function __construct(
+        protected GeocodingService $geocodingService,
+    ) {}
 
     public function update(PetShelterAddressRequest $request, PetShelterAddress $petShelterAddress): RedirectResponse
     {
@@ -36,11 +33,11 @@ class PetShelterAddressController extends Controller
         $this->authorize("delete", $petShelterAddress);
 
         $petShelterAddress->update([
-            "address"     => null,
-            "city"        => null,
+            "address" => null,
+            "city" => null,
             "postal_code" => null,
-            "latitude"    => null,
-            "longitude"   => null,
+            "latitude" => null,
+            "longitude" => null,
         ]);
 
         return back()->with("success", "Pet shelter address deleted successfully.");

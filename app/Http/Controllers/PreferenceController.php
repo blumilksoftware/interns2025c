@@ -4,23 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PreferenceRequest;
 use App\Http\Resources\PetMatchResource;
 use App\Models\Preference;
-use App\Actions\FindPetsForPreferenceAction;
+use App\Services\GeocodingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Services\GeocodingService;
 
 class PreferenceController extends Controller
 {
-    protected GeocodingService $geocodingService;
-
-    public function __construct(GeocodingService $geocodingService)
-    {
-        $this->geocodingService = $geocodingService;
-    }
+    public function __construct(
+        protected GeocodingService $geocodingService,
+    ) {}
 
     public function index(FindPetsForPreferenceAction $findPetsForPreference): Response
     {
@@ -29,8 +26,8 @@ class PreferenceController extends Controller
 
         $pets = $findPetsForPreference->execute($preference);
 
-        return Inertia::render('Dashboard/Dashboard', [
-            'pets' => PetMatchResource::collection($pets)->resolve(),
+        return Inertia::render("Dashboard/Dashboard", [
+            "pets" => PetMatchResource::collection($pets)->resolve(),
         ]);
     }
 
@@ -40,10 +37,10 @@ class PreferenceController extends Controller
 
         $preference = $request->user()->preferences()->create($data);
 
-        if (!empty($data['city'])) {
+        if (!empty($data["city"])) {
             $this->geocodingService->fillCoordinates($preference, [
-                'address' => $data['city'],
-                'city' => $data['city'],
+                "address" => $data["city"],
+                "city" => $data["city"],
             ]);
         }
 
@@ -56,10 +53,10 @@ class PreferenceController extends Controller
 
         $data = $request->validated();
 
-        if (!empty($data['city'])) {
+        if (!empty($data["city"])) {
             $this->geocodingService->fillCoordinates($preference, [
-                'address' => $data['city'], 
-                'city' => $data['city']
+                "address" => $data["city"], 
+                "city" => $data["city"],
             ]);
         }
 

@@ -7,7 +7,6 @@ namespace Database\Seeders;
 use App\Enums\Role;
 use App\Models\Pet;
 use App\Models\PetShelter;
-use App\Models\PetShelterAddress;
 use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
@@ -64,14 +63,6 @@ class DemoSeeder extends Seeder
 
         $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
 
-        $petShelters->each(fn(PetShelter $shelter) => 
-            $shelter->address()->save(PetShelterAddress::factory()->make())
-        );
-
-        $pets = Pet::factory()->count(self::NUMBER_OF_PETS_TO_CREATE)->create();
-
-        $pets->each(fn(Pet $pet) => $pet->shelter()->associate($petShelters->random())->save());
-
         $tags = Tag::all();
 
         foreach ($users as $user) {
@@ -87,10 +78,7 @@ class DemoSeeder extends Seeder
                     $user->update(["role" => Role::ShelterEmployee]);
                 }
             }
-
-        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($shelters->random())->save());
-
-        $tags = Tag::all();
+        }
 
         foreach ($users as $user) {
             Preference::factory()

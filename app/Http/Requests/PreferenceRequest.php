@@ -66,10 +66,10 @@ class PreferenceRequest extends FormRequest
             "preferences.tags" => ["sometimes", "array"],
             "preferences.tags.*.value" => ["string"],
             "preferences.tags.*.weight" => ["integer", "min:0"],
-            'city' => ['nullable', 'string', 'max:255'],
-            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            'radius_km' => ['nullable', 'integer', 'min:1', 'max:1000'],
+            "city" => ["nullable", "string", "max:255"],
+            "latitude" => ["nullable", "numeric", "between:-90,90"],
+            "longitude" => ["nullable", "numeric", "between:-180,180"],
+            "radius_km" => ["nullable", "integer", "min:1", "max:1000"],
         ];
     }
 }

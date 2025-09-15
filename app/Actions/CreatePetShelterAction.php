@@ -10,12 +10,9 @@ use Illuminate\Support\Arr;
 
 class CreatePetShelterAction
 {
-    protected GeocodingService $geocodingService;
-
-    public function __construct(GeocodingService $geocodingService)
-    {
-        $this->geocodingService = $geocodingService;
-    }
+    public function __construct(
+        protected GeocodingService $geocodingService,
+    ) {}
 
     public function execute(array $data): PetShelter
     {

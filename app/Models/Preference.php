@@ -30,12 +30,11 @@ class Preference extends Model
         "longitude",
         "radius_km",
     ];
-
     protected $casts = [
         "preferences" => "array",
-        "latitude"    => "float",
-        "longitude"   => "float",
-        "radius_km"   => "integer",
+        "latitude" => "float",
+        "longitude" => "float",
+        "radius_km" => "integer",
     ];
 
     public function user(): BelongsTo

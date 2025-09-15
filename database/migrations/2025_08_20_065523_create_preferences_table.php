@@ -13,10 +13,10 @@ return new class() extends Migration {
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->json("preferences")->nullable();
-            $table->string('city')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->integer('radius_km')->default(25);
+            $table->string("city")->nullable();
+            $table->decimal("latitude", 10, 7)->nullable();
+            $table->decimal("longitude", 10, 7)->nullable();
+            $table->integer("radius_km")->nullable();
             $table->timestamps();
         });
     }
