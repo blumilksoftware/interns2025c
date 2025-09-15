@@ -24,7 +24,7 @@ const personalityTraits = computed(() => {
 const petTagObjects = computed(() => {
   return personalityTraits.value.map(tag => ({
     name: tag,
-    color: 'rounded-full bg-yellow-100 text-yellow-800'
+    color: 'rounded-full bg-yellow-100 text-yellow-800',
   }))
 })
 
@@ -93,7 +93,7 @@ const medicalInfo = computed(() => {
           <span 
             v-for="tag in petTagObjects" 
             :key="tag.name"
-            class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate shadow-lg border-[1px]"
+            class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate shadow-lg border"
             :class="tag.color"
           >
             <span class="truncate text-sm">{{ tag.name }}</span>
