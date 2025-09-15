@@ -61,9 +61,7 @@ class DemoSeeder extends Seeder
             ]);
         });
 
-        $petShelters = PetShelter::factory()->count(self::NUMBER_OF_PET_SHELTERS_TO_CREATE)->create();
-
-        $tags = Tag::all();
+        $shelters = PetShelter::all();
 
         foreach ($users as $user) {
             $userHasExistingShelter = DB::table("pet_shelter_user")
@@ -75,10 +73,14 @@ class DemoSeeder extends Seeder
                 $randomShelter->users()->attach($user->id);
 
                 if (random_int(1, 100) <= 30) {
-                    $user->update(["role" => Role::ShelterEmployee]);
+                    $user->update(["role" => "shelter"]);
                 }
             }
         }
+
+        $pets->each(fn(Pet $pet): bool => $pet->shelter()->associate($shelters->random())->save());
+
+        $tags = Tag::all();
 
         foreach ($users as $user) {
             Preference::factory()
@@ -97,7 +99,7 @@ class DemoSeeder extends Seeder
 
         $pets->each(function (Pet $pet) use ($tags): void {
             $pet->tags()->sync(
-                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray()
+                $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray(),
             );
         });
     }
