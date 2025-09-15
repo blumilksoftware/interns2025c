@@ -17,6 +17,13 @@ const props = defineProps({
 const petData = props.pet
 const petPersonality = computed(() => Array.isArray(petData.tags) ? petData.tags.slice(0, 6) : [])
 
+const petTagObjects = computed(() => {
+  return petPersonality.value.map(tag => ({
+    name: tag,
+    color: 'rounded-full bg-yellow-100 text-yellow-800'
+  }))
+})
+
 import { formatAge } from '@/helpers/formatters/age.ts'
 
 const characteristics = computed(() => [
@@ -62,12 +69,16 @@ const characteristics = computed(() => [
 
             <div class="mt-4">
               <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('dashboard.mvp.personalityTraits') }}</h3>
-              <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-2 text-sm/5 font-medium text-gray-700 sm:grid-cols-2 lg:grid">
-                <li v-for="trait in petPersonality" :key="trait" class="flex gap-x-3">
-                  <StarIcon class="size-5 flex-none text-yellow-500" aria-hidden="true" />
-                  {{ trait }}
-                </li>
-              </ul>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="tag in petTagObjects" 
+                  :key="tag.name"
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate shadow-lg border-[1px]"
+                  :class="tag.color"
+                >
+                  <span class="truncate text-sm">{{ tag.name }}</span>
+                </span>
+              </div>
             </div>
 
             <div class="mt-4">

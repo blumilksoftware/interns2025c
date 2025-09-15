@@ -15,12 +15,17 @@ const props = defineProps({
 const { t } = useI18n()
 
 
-const petTagObjects = computed(() => [])
-
 const personalityTraits = computed(() => {
   const pet = props.pet
   if (!pet?.tags || !Array.isArray(pet.tags)) return []
   return pet.tags.map(tag => (typeof tag === 'string' ? tag : String(tag))).filter(Boolean)
+})
+
+const petTagObjects = computed(() => {
+  return personalityTraits.value.map(tag => ({
+    name: tag,
+    color: 'rounded-full bg-yellow-100 text-yellow-800'
+  }))
 })
 
 const characteristics = computed(() => {
@@ -88,10 +93,9 @@ const medicalInfo = computed(() => {
           <span 
             v-for="tag in petTagObjects" 
             :key="tag.name"
-            class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate border"
+            class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate shadow-lg border-[1px]"
             :class="tag.color"
           >
-            <span class="text-sm shrink-0">{{ tag.emoji }}</span>
             <span class="truncate text-sm">{{ tag.name }}</span>
           </span>
         </div>
