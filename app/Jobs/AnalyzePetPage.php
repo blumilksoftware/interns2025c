@@ -110,7 +110,7 @@ class AnalyzePetPage implements ShouldQueue
 
             $petImages = array_values(array_filter(
                 $petImages,
-                static fn($imageUrl) => DomAttributeExtractor::DoesImageMeetMinimumDimensions($imageUrl, 300, 300),
+                static fn(string $imageUrl): bool => DomAttributeExtractor::DoesImageMeetMinimumDimensions($imageUrl, 300, 300),
             ));
 
             $data["image_urls"] = $petImages;
