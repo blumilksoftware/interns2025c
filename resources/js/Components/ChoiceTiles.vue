@@ -12,7 +12,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-// Refs to tile DOM elements to enable keyboard navigation
 const tileRefs = ref([])
 
 function toggle(value) {

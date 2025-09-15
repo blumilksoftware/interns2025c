@@ -122,8 +122,8 @@ async function fetchNominatim(q) {
 watch(() => valueProxy.value, (q) => { if (isOpen.value) debounceFetch(q) })
 
 const listRef = ref(null)
-const itemHeight = 36 // px
-const viewportHeight = 240 // px
+const itemHeight = 36
+const viewportHeight = 240
 const scrollTop = ref(0)
 function onScroll() { scrollTop.value = listRef.value ? listRef.value.scrollTop : 0 }
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / itemHeight) - 3))
