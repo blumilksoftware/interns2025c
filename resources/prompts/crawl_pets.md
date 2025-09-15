@@ -32,6 +32,7 @@ You are an expert in extracting detailed information about pets from a single sh
       "admission_date": string|null, 
       "found_location": string|null, 
       "adoption_status": string|null // adopted, waiting for adoption, quarantined, in temporary home
+      "tags": string|null 
     }
   ]
 }
@@ -41,7 +42,6 @@ Instructions:
 Include animals only if page has enough info (≥3 points from description, age, gender, size, breed, health, sterilized, vaccinated, chip, behavior, attitude). Else "contains_animals": false.
 For all boolean fields (sterilized, vaccinated, has_chip, dewormed, deflea_treated), check text, alt attributes, and any icon/visual symbol near the field.
 Text fields: use Polish, correct typos, consistent forms. Irrelevant info goes into description or behavioral_notes. Summarize description to max 300 characters.
-Behavioral notes: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated.
 Dates: convert to Laravel Carbon format ('d-m-Y') if present.
 Breed: use specific common breed name; if unknown, use "mieszaniec".
 Multiple animals: pick the most complete one.
@@ -51,3 +51,4 @@ admission_date: take from text; year only → 01-01-YEAR.
 current_treatment: list surgeries or treatments (e.g. "tail amputation").
 If field contains null, don't include it in the JSON.
 If fields like species, name, sex are missing, set contains_animals to false.
+Tags: extract one-word descriptive traits explicitly mentioned, lowercase, space-separated.

@@ -48,23 +48,25 @@ const localDataSets = ref({
   users: [],
 })
 
-watch(() => [props.pets, props.incomingPetsRequests, props.shelters, props.users], 
+watch(
+  () => [props.pets, props.incomingPetsRequests, props.shelters, props.users],
   ([pets, incomingPetsRequests, shelters, users]) => {
     localDataSets.value = {
-      pets: pets?.data || [],
-      incomingPetsRequests: incomingPetsRequests?.data || [],
-      shelters: shelters?.data || [],
-      users: users?.data || [],
+      pets: pets?.data ?? pets ?? [],
+      incomingPetsRequests: incomingPetsRequests?.data ?? incomingPetsRequests ?? [],
+      shelters: shelters?.data ?? shelters ?? [],
+      users: users?.data ?? users ?? [],
     }
-  }, 
+  },
   { immediate: true, deep: true },
 )
 
+
 const dataSets = computed(() => localDataSets.value)
 
-const countIncomingPetsRequests = computed(() => ({
-  incomingPetsRequests: props.incomingPetsRequests?.data?.length || 0,
-}))
+const countIncomingPetRequests = computed(() => (
+  props.incomingPetsRequests?.data?.length || 0
+))
 
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) return dataSets.value[currentDataSet.value]
@@ -173,7 +175,7 @@ onBeforeUnmount(() => {
 
     <AdminSidebar
       :is-open="isSidebarOpen"
-      :incoming-pets-requests-count="countIncomingPetsRequests"
+      :incoming-pet-requests-count="countIncomingPetRequests"
       @data-set-change="handleDataSetChange"
       @close="closeSidebar"
     />

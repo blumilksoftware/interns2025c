@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import StatusBadge from './StatusBadge.vue'
 import { getKindForColumn } from '@/data/columnRenderers.js'
 import { formatDateTime } from '@/helpers/dateTimeHelper.js'
 
@@ -49,8 +48,7 @@ function truncateText(text, maxLength) {
 
 <template>
   <div class="flex items-center justify-center">
-    <StatusBadge v-if="kind === 'status'" :status="value" />
-    <span v-else-if="kind === 'email'" class="text-blue-600 hover:text-blue-800">
+    <span v-if="kind === 'email'" class="text-blue-600 hover:text-blue-800">
       {{ formattedValue }}
     </span>
     <span v-else-if="kind === 'date'" class="text-gray-600 text-sm font-mono">
@@ -60,7 +58,7 @@ function truncateText(text, maxLength) {
       <span 
         v-for="(tagName, i) in formattedValue" 
         :key="i"
-        class="px-2 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-800"
+        class="px-3 text-sm font-medium text-gray-800"
       >
         {{ tagName }}
       </span>

@@ -107,6 +107,12 @@ class AnalyzePetPage implements ShouldQueue
             }
 
             $petImages = DomAttributeExtractor::scrapImageLinksFromWebpage($crawler, $this->url);
+
+            $petImages = array_values(array_filter(
+                $petImages,
+                static fn(string $imageUrl): bool => DomAttributeExtractor::DoesImageMeetMinimumDimensions($imageUrl, 300, 300),
+            ));
+
             $data["image_urls"] = $petImages;
             Log::info(sprintf(
                 "Extracted %d images from page: %s",
