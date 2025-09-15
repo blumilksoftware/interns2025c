@@ -29,7 +29,6 @@ const props = defineProps({
     default: () => ({}),
   },
 })
-console.log(props.pets, props.incomingPetsRequests, props.shelters, props.users)
 
 function formatDateForSearch(value) {
   const date = new Date(value)
@@ -65,9 +64,9 @@ watch(
 
 const dataSets = computed(() => localDataSets.value)
 
-const countIncomingPetsRequests = computed(() => ({
-  incomingPetsRequests: props.incomingPetsRequests?.data?.length || 0,
-}))
+const countIncomingPetRequests = computed(() => (
+  props.incomingPetsRequests?.data?.length || 0
+))
 
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) return dataSets.value[currentDataSet.value]
@@ -176,7 +175,7 @@ onBeforeUnmount(() => {
 
     <AdminSidebar
       :is-open="isSidebarOpen"
-      :incoming-pets-requests-count="countIncomingPetsRequests"
+      :incoming-pet-requests-count="countIncomingPetRequests"
       @data-set-change="handleDataSetChange"
       @close="closeSidebar"
     />

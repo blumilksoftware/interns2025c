@@ -17,6 +17,7 @@ class SavePetImagesToStorage extends Command
     public function handle(): void
     {
         $petsWithImageUrls = Pet::query()
+            ->where("is_accepted", true)
             ->whereNotNull("image_urls")
             ->get();
 
