@@ -24,8 +24,9 @@ class PetTest extends TestCase
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
-
-        $petData = Pet::factory()->make()->toArray();
+        $petData = Pet::factory()->make([
+            "shelter_id" => $shelter->id,
+        ])->toArray();
 
         $response = $this->actingAs($user)->post("/pets", $petData);
 
