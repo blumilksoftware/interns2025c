@@ -88,7 +88,7 @@ class DomAttributeExtractor
         return array_filter($images);
     }
 
-    public static function DoesImageMeetMinimumDimensions(string $imageUrl, int $minWidth, int $minHeight): bool
+    public static function hasImageMinimumDimensions(string $imageUrl, int $minWidth, int $minHeight): bool
     {
         try {
             $imageInfo = @getimagesize($imageUrl);

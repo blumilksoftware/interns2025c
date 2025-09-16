@@ -41,7 +41,8 @@ class PetController extends Controller
     {
         $this->authorize("store", Pet::class);
 
-        $pet = Pet::query()->create($request->except("tags"));
+        $validatedData = $request->validated()->except("tags");
+        $pet = Pet::query()->create($validatedData);
 
         $this->syncTags($pet, $request->input("tags", []));
 
@@ -52,7 +53,8 @@ class PetController extends Controller
     {
         $this->authorize("update", $pet);
 
-        $pet->update($request->except("tags"));
+        $validatedData = $request->validated()->except("tags");
+        $pet->update($validatedData);
 
         $this->syncTags($pet, $request->input("tags", []));
 

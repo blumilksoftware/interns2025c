@@ -66,7 +66,7 @@ class PetTest extends TestCase
             "role" => Role::User->value,
         ]);
 
-        $petData = Pet::factory()->make(["name" => "TestPet", "species" => "dog"])->toArray();
+        $petData = Pet::factory()->make(["name" => "TestPet", "species" => "dog", "adoption_status" => "available"])->toArray();
 
         $response = $this->actingAs($user)->post("/pets", $petData);
         $response->assertStatus(403);
@@ -75,7 +75,7 @@ class PetTest extends TestCase
 
     public function testCannotCreatePetWithInvalidData(): void
     {
-        $pet = ["species" => "dog", "description" => ""];
+        $pet = ["species" => "dog", "description" => "", "adoption_status" => "available"];
 
         $response = $this->post("/pets", $pet);
         $response->assertStatus(302);
