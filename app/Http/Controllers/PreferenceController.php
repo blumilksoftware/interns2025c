@@ -37,11 +37,16 @@ class PreferenceController extends Controller
 
         $preference = $request->user()->preferences()->create($data);
 
-        if (!empty($data["city"])) {
-            $this->geocodingService->fillCoordinates($preference, [
-                "address" => $data["city"],
-                "city" => $data["city"],
-            ]);
+        $coords = $this->geocodingService->resolve(
+            $data["address"] ?? null,
+            $data["city"] ?? null,
+            $data["postal_code"] ?? null,
+        );
+
+        if ($coords) {
+            $preference->latitude = $coords["latitude"];
+            $preference->longitude = $coords["longitude"];
+            $preference->save();
         }
 
         return back()->with("success", "Preference created successfully.");
@@ -53,11 +58,15 @@ class PreferenceController extends Controller
 
         $data = $request->validated();
 
-        if (!empty($data["city"])) {
-            $this->geocodingService->fillCoordinates($preference, [
-                "address" => $data["city"], 
-                "city" => $data["city"],
-            ]);
+        $coords = $this->geocodingService->resolve(
+            $data["address"] ?? null,
+            $data["city"] ?? null,
+            $data["postal_code"] ?? null,
+        );
+
+        if ($coords) {
+            $preference->latitude = $coords["latitude"];
+            $preference->longitude = $coords["longitude"];
         }
 
         $preference->update($data);

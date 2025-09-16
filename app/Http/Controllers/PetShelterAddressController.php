@@ -21,7 +21,16 @@ class PetShelterAddressController extends Controller
 
         $data = $request->validated();
 
-        $this->geocodingService->fillCoordinates($petShelterAddress, $data);
+        $coords = $this->geocodingService->resolve(
+            $data["address"] ?? null,
+            $data["city"] ?? null,
+            $data["postal_code"] ?? null,
+        );
+
+        if ($coords) {
+            $petShelterAddress->latitude = $coords["latitude"];
+            $petShelterAddress->longitude = $coords["longitude"];
+        }
 
         $petShelterAddress->update($data);
 

@@ -20,11 +20,20 @@ class CreatePetShelterAction
         $shelter = PetShelter::query()->create($shelterData);
 
         $addressData = Arr::only($data, ["address", "city", "postal_code"]);
+        $address = $addressData["address"] ?? null;
+        $city = $addressData["city"] ?? null;
+        $postalCode = $addressData["postal_code"] ?? null;
 
-        if (!empty($addressData["address"]) || !empty($addressData["city"]) || !empty($addressData["postal_code"])) {
+        if ($address || $city || $postalCode) {
             $shelterAddress = $shelter->address()->create($addressData);
-            $this->geocodingService->fillCoordinates($shelterAddress, $addressData);
-            $shelterAddress->save();
+
+            $coords = $this->geocodingService->resolve($address, $city, $postalCode);
+
+            if ($coords) {
+                $shelterAddress->latitude = $coords["latitude"];
+                $shelterAddress->longitude = $coords["longitude"];
+                $shelterAddress->save();
+            }
         }
 
         return $shelter;

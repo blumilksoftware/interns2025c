@@ -12,6 +12,12 @@ class PreferenceResource extends JsonResource
     {
         return [
             "preferences" => $this->preferences ?? [],
+            "address" => $this->address,
+            "city" => $this->city,
+            "postal_code" => $this->postal_code,
+            "latitude" => $this->latitude,
+            "longitude" => $this->longitude,
+            "radius_in_km" => $this->radius_in_km,
         ];
     }
 }

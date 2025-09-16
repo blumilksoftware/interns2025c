@@ -49,15 +49,16 @@ class FindPetsForPreferenceAction
 
     private function normalizePet(Pet $pet): array
     {
-        return [
-            "id" => $pet->id,
-            "species" => $pet->species,
-            "tags" => $pet->tags->map(fn(Tag $tag): array => ["id" => $tag->id, "name" => $tag->name])->all(),
-            "age" => $pet->age,
-            "size" => $pet->size,
-            "shelter_id" => $pet->shelter_id,
-            "shelter_latitude" => $pet->shelter?->address?->latitude,
-            "shelter_longitude" => $pet->shelter?->address?->longitude,
-        ];
+        return array_merge(
+            $pet->toArray(),
+            [
+                "tags" => $pet->tags->map(fn(Tag $tag): array => [
+                    "id" => $tag->id,
+                    "name" => $tag->name,
+                ])->all(),
+                "shelter_latitude" => $pet->shelter?->address?->latitude,
+                "shelter_longitude" => $pet->shelter?->address?->longitude,
+            ],
+        );
     }
 }
