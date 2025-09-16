@@ -25,7 +25,6 @@ const proxyChecked = computed({
 })
 </script>
 
-
 <template>
   <input
     v-model="proxyChecked"

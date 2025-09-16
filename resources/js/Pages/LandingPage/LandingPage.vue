@@ -7,7 +7,6 @@ import Footer from '@/Components/Footer.vue'
 import { Head } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 
-
 const { t } = useI18n()
 
 </script>

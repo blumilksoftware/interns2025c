@@ -1,19 +1,31 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { useI18n } from 'vue-i18n'
-import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
-import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
-import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
-import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
+import EditProfile from '@/Pages/Profile/Components/EditProfile.vue'
+import SecurityProfile from '@/Pages/Profile/Components/SecurityProfile.vue'
+import ProfileSidebar from '@/Pages/Profile/Partials/ProfileSidebar.vue'
+import { usePage } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
 const { t } = useI18n()
-
 defineProps({
   sessions: {
     type: Array,
     default: () => [],
   },
 })
+
+const page = usePage()
+
+const user = page.props.auth.user
+
+const view = ref('editProfile')
+
+const handleViewChange = (newView) => {
+  view.value = newView
+  console.log(view.value)
+}
+
 </script>
 
 <template>
@@ -23,24 +35,16 @@ defineProps({
         Profile
       </h2>
     </template>
+    
+    <div class="flex flex-row min-w-full">
+      <ProfileSidebar :user="user" @view-change="handleViewChange" />
 
-    <div>
-      <div class="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-16">
-        <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-          <UpdateProfileInformationForm :user="$page.props.auth.user" />
-        </div>
+      <div v-if="view === 'editProfile'" class="flex-1">
+        <EditProfile :user="user" />
+      </div>
 
-        <div v-if="$page.props.jetstream.canUpdatePassword">
-          <UpdatePasswordForm />
-        </div>
-
-        <div>
-          <LogoutOtherBrowserSessionsForm :sessions="sessions" />
-        </div>
-
-        <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-          <DeleteUserForm />
-        </template>
+      <div v-if="view === 'security'" class="flex-1">
+        <SecurityProfile :sessions="sessions" />
       </div>
     </div>
   </AppLayout>
