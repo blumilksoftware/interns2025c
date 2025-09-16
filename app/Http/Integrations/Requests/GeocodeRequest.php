@@ -24,10 +24,10 @@ class GeocodeRequest extends Request
 
     public function defaultQuery(): array
     {
-        $q = trim(implode(", ", array_filter([$this->address, $this->city, $this->postalCode])));
+        $query = trim(implode(", ", array_filter([$this->address, $this->city, $this->postalCode])));
 
         return [
-            "q" => $q,
+            "query" => $query,
             "format" => "json",
             "limit" => 1,
         ];

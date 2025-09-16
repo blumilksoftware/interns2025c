@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\Pet;
 use App\Models\Preference;
+use App\Models\Tag;
 use App\Services\PetMatcher;
 use App\Services\ProximityService;
 use Illuminate\Support\Collection;
@@ -19,7 +20,7 @@ class FindPetsForPreferenceAction
 
     public function execute(?Preference $preference): Collection
     {
-        $pets = Pet::with("tags", "shelter.address");
+        $pets = Pet::query()->with("tags", "shelter.address");
 
         if ($preference && $preference->latitude && $preference->longitude) {
             $pets = $this->proximity->withinRadius(
@@ -51,7 +52,7 @@ class FindPetsForPreferenceAction
         return [
             "id" => $pet->id,
             "species" => $pet->species,
-            "tags" => $pet->tags->map(fn($t) => ["id" => $t->id, "name" => $t->name])->all(),
+            "tags" => $pet->tags->map(fn(Tag $tag): array => ["id" => $tag->id, "name" => $tag->name])->all(),
             "age" => $pet->age,
             "size" => $pet->size,
             "shelter_id" => $pet->shelter_id,

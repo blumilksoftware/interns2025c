@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $user_id
- * @property array|null $preferences
- * @property string|null $city
- * @property float|null $latitude
- * @property float|null $longitude
+ * @property ?array $preferences
+ * @property ?string $city
+ * @property ?float $latitude
+ * @property ?float $longitude
  * @property int $radius_in_km
  * @property-read User $user
  */
