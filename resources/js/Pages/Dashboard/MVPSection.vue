@@ -26,7 +26,6 @@ const characteristics = computed(() => [
   `${t('dashboard.mvp.temperament')}: ${t('dashboard.mvp.gentle')}`,
 ])
 
-
 </script>
 
 <template>

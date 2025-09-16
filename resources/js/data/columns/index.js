@@ -13,7 +13,6 @@ export const columnConfig = {
   logs: logsConfig,
 }
 
-
 export function getColumnConfig(dataSetType, fieldName) {
   return columnConfig[dataSetType]?.[fieldName] || null
 }

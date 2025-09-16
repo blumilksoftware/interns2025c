@@ -112,7 +112,6 @@ watch(() => props.item, (newItem) => {
   }
 }, { immediate: true, deep: true })
 
-
 const editableFields = computed(() => {
   if (!props.item || Object.keys(props.item).length === 0) return []
 
@@ -199,7 +198,6 @@ const validateForm = () => {
   return Object.keys(errors.value).length === 0
 }
 
-
 const closeModal = () => {
   errors.value = {}
   emit('close')
@@ -264,7 +262,6 @@ const deleteItem = () => {
 const cancelDelete = () => {
   toggleDeleteConfirm(false)
 }
-
 
 const getItemDisplayName = () => {
   return 'Item'

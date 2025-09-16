@@ -39,7 +39,6 @@ const formattedValue = computed(() => {
   }
 })
 
-
 function truncateText(text, maxLength) {
   if (!text || typeof text !== 'string') return text
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
