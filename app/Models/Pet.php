@@ -68,4 +68,9 @@ class Pet extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function favourites(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, "favourites");
+    }
 }
