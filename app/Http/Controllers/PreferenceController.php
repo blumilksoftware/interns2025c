@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PreferenceRequest;
 use App\Http\Resources\PetMatchResource;
-use App\Models\Pet;
 use App\Models\Preference;
 use App\Models\Tag;
-use App\Services\PetMatcher;
+use App\Models\Pet;
+use App\Services\GeocodingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PreferenceController extends Controller
 {
+    public function __construct(
+        protected GeocodingService $geocodingService,
+    ) {}
+
     public function show(): Response
     {
         $tags = Tag::query()
@@ -60,26 +65,12 @@ class PreferenceController extends Controller
         ]);
     }
 
-    public function index(PetMatcher $matcher): Response
+    public function index(FindPetsForPreferenceAction $findPetsForPreference): Response
     {
         $user = request()->user();
         $preference = $user->preferences()->first();
 
-        $pets = Pet::with(["tags", "shelter.address"])
-            ->where("is_accepted", true)
-            ->get()
-            ->map(function (Pet $pet) use ($preference, $matcher): array {
-                $matchPercentage = $preference
-                    ? $matcher->match($pet->toArray(), (array)($preference->preferences ?? []))
-                    : 0;
-
-                return [
-                    "pet" => $pet,
-                    "match" => $matchPercentage,
-                ];
-            })
-            ->sortByDesc("match")
-            ->values();
+        $pets = $findPetsForPreference->execute($preference);
 
         return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetMatchResource::collection($pets)->resolve(),
@@ -88,7 +79,21 @@ class PreferenceController extends Controller
 
     public function store(PreferenceRequest $request): RedirectResponse
     {
-        $request->user()->preferences()->create($request->validated());
+        $data = $request->validated();
+
+        $preference = $request->user()->preferences()->create($data);
+
+        $coords = $this->geocodingService->resolve(
+            $data["address"] ?? null,
+            $data["city"] ?? null,
+            $data["postal_code"] ?? null,
+        );
+
+        if ($coords) {
+            $preference->latitude = $coords["latitude"];
+            $preference->longitude = $coords["longitude"];
+            $preference->save();
+        }
 
         return back()->with("success", "Preference created successfully.");
     }
@@ -97,7 +102,20 @@ class PreferenceController extends Controller
     {
         $this->authorize("update", $preference);
 
-        $preference->update($request->validated());
+        $data = $request->validated();
+
+        $coords = $this->geocodingService->resolve(
+            $data["address"] ?? null,
+            $data["city"] ?? null,
+            $data["postal_code"] ?? null,
+        );
+
+        if ($coords) {
+            $preference->latitude = $coords["latitude"];
+            $preference->longitude = $coords["longitude"];
+        }
+
+        $preference->update($data);
 
         return back()->with("success", "Preference updated successfully.");
     }

@@ -11,16 +11,34 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $user_id
- * @property array $preferences
+ * @property ?array $preferences
+ * @property ?string $address
+ * @property ?string $city
+ * @property ?string $postal_code
+ * @property ?float $latitude
+ * @property ?float $longitude
+ * @property ?int $radius_in_km
  * @property-read User $user
  */
 class Preference extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["user_id", "preferences"];
+    protected $fillable = [
+        "user_id",
+        "preferences",
+        "address",
+        "city",
+        "postal_code",
+        "latitude",
+        "longitude",
+        "radius_in_km",
+    ];
     protected $casts = [
         "preferences" => "array",
+        "latitude" => "float",
+        "longitude" => "float",
+        "radius_in_km" => "integer",
     ];
 
     public function user(): BelongsTo

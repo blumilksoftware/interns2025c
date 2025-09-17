@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,6 +14,12 @@ return new class() extends Migration {
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->json("preferences")->nullable();
+            $table->string("address")->nullable();
+            $table->string("city")->nullable();
+            $table->string("postal_code")->nullable();
+            $table->decimal("latitude", 10, 7)->nullable();
+            $table->decimal("longitude", 10, 7)->nullable();
+            $table->integer("radius_in_km")->nullable();
             $table->timestamps();
         });
     }
