@@ -28,6 +28,7 @@ Route::get("/", function () {
 });
 
 Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+Route::get("/dashboard/matches", [PetController::class, "matches"])->name("dashboard.matches");
 Route::get("/preferences", [PreferenceController::class, "show"])->name("preferences");
 
 Route::middleware([

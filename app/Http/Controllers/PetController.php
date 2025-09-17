@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PetRequest;
 use App\Http\Resources\PetIndexResource;
+use App\Http\Resources\PetMatchResource;
 use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
 use App\Services\TagService;
@@ -54,6 +56,19 @@ class PetController extends Controller
 
         return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetIndexResource::collection($pets),
+        ]);
+    }
+
+    public function matches(FindPetsForPreferenceAction $findPetsForPreference): Response
+    {
+        $user = request()->user();
+
+        $preference = $user->preferences()->first();
+
+        $pets = $findPetsForPreference->execute($preference);
+
+        return Inertia::render("Dashboard/Dashboard", [
+            "pets" => PetMatchResource::collection($pets)->resolve(),
         ]);
     }
 

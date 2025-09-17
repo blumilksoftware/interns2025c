@@ -24,11 +24,6 @@ class PreferenceTest extends TestCase
             ->assertSee("Dashboard");
     }
 
-    public function testGuestsCannotAccessPreferencesIndex(): void
-    {
-        $this->get("/dashboard")->assertStatus(200);
-    }
-
     public function testPreferenceCanBeCreated(): void
     {
         $user = $this->createUser();

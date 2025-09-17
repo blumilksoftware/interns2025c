@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PreferenceRequest;
-use App\Http\Resources\PetMatchResource;
+use App\Models\Pet;
 use App\Models\Preference;
 use App\Models\Tag;
-use App\Models\Pet;
 use App\Services\GeocodingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -62,18 +60,6 @@ class PreferenceController extends Controller
             "tags" => $tags,
             "breeds" => $breeds,
             "colors" => $colors,
-        ]);
-    }
-
-    public function index(FindPetsForPreferenceAction $findPetsForPreference): Response
-    {
-        $user = request()->user();
-        $preference = $user->preferences()->first();
-
-        $pets = $findPetsForPreference->execute($preference);
-
-        return Inertia::render("Dashboard/Dashboard", [
-            "pets" => PetMatchResource::collection($pets)->resolve(),
         ]);
     }
 

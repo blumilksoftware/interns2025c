@@ -44,16 +44,16 @@ class PetMatchingTest extends TestCase
         $dog->tags()->syncWithoutDetaching([$dogTag->id]);
         $cat->tags()->syncWithoutDetaching([$catTag->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard");
+        $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $response->assertInertia(
             fn(Assert $page) => $page
                 ->component("Dashboard/Dashboard")
-                ->has("pets.data"),
+                ->has("pets"),
         );
 
-        $petsData = $response->inertiaProps()["pets"]["data"] ?? [];
-        $ids = collect($petsData)->pluck("id")->all();
+        $petsData = $response->inertiaProps()["pets"] ?? [];
+        $ids = collect($petsData)->pluck("pet.data.id")->all();
         $this->assertContains($dog->id, $ids);
         $this->assertContains($cat->id, $ids);
     }
@@ -79,7 +79,7 @@ class PetMatchingTest extends TestCase
         $dog1->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
         $dog2->tags()->syncWithoutDetaching([Tag::factory()->create()->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard");
+        $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $petsData = $response->inertiaProps()["pets"];
         $matches = collect($petsData)->pluck("match")->all();
@@ -103,7 +103,7 @@ class PetMatchingTest extends TestCase
 
         Pet::factory()->count(3)->create();
 
-        $response = $this->actingAs($user)->get("/dashboard");
+        $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $petsData = $response->inertiaProps()["pets"];
 
@@ -134,7 +134,7 @@ class PetMatchingTest extends TestCase
         $petWithTag->tags()->syncWithoutDetaching([$friendlyTag->id]);
         $petWithoutTag->tags()->syncWithoutDetaching([$shyTag->id]);
 
-        $response = $this->actingAs($user)->get("/dashboard");
+        $response = $this->actingAs($user)->get("/dashboard/matches");
 
         $petsData = $response->inertiaProps()["pets"];
         $matches = collect($petsData)->pluck("match")->all();
