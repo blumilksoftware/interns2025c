@@ -20,6 +20,9 @@ Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
     "phpVersion" => PHP_VERSION,
 ]));
 
+Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+
+
 Route::middleware([
     "auth:sanctum",
     config("jetstream.auth_session"),
@@ -29,7 +32,6 @@ Route::middleware([
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::put("/users/{user}", [UserController::class, "update"])->name("users.update");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
-    Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
     Route::resource("preferences", PreferenceController::class)->only(["store", "update", "destroy"]);
     Route::get("/dashboard/matches", [PreferenceController::class, "index"])->name("dashboard.matches");
 });
