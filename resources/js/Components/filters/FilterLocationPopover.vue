@@ -146,7 +146,7 @@ function pickRemote(item) { emit('use', item.label) }
           <div ref="listRef" :style="{ height: viewportHeight + 'px' }" class="relative overflow-auto" @scroll="onScroll">
             <div :style="{ height: totalHeight + 'px', position: 'relative' }">
               <div :style="{ position: 'absolute', top: offsetTop + 'px', left: 0, right: 0 }">
-                <button v-for="it in visibleItems" :key="it.display + it.lat + it.lon" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="pickRemote(it)">
+                <button v-for="it in visibleItems" :key="it.display + it.lat + it.lon" type="button" class="w-full cursor-pointer text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="pickRemote(it)">
                   {{ it.label }}
                 </button>
               </div>
@@ -166,7 +166,7 @@ function pickRemote(item) { emit('use', item.label) }
           <div class="max-h-64 overflow-auto">
             <template v-if="valueProxy && filteredLocations.length > 0">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.location.results') }}</div>
-              <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
+              <button v-for="loc in filteredLocations" :key="'f-'+loc" type="button" class="w-full cursor-pointer text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </template>
@@ -175,7 +175,7 @@ function pickRemote(item) { emit('use', item.label) }
             </template>
             <div v-if="recentLocations.length > 0" class="mt-2">
               <div class="px-2 py-1 text-xs font-semibold uppercase text-gray-500">{{ t('preferences.location.recent') }}</div>
-              <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
+              <button v-for="loc in recentLocations" :key="'r-'+loc" type="button" class="w-full cursor-pointer text-left px-2 py-1 rounded hover:bg-gray-50 text-sm text-gray-700" @click="$emit('use', loc)">
                 {{ loc }}
               </button>
             </div>
@@ -183,8 +183,8 @@ function pickRemote(item) { emit('use', item.label) }
         </template>
 
         <div class="mt-2 flex justify-between gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100" @click="$emit('clear')">{{ t('preferences.actions.clear') }}</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500" @click="$emit('use', valueProxy)">{{ t('preferences.location.useThis') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer" @click="$emit('clear')">{{ t('preferences.actions.clear') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer" @click="$emit('use', valueProxy)">{{ t('preferences.location.useThis') }}</button>
         </div>
       </div>
     </div>

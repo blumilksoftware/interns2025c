@@ -62,7 +62,7 @@ onBeforeUnmount(() => {
   <div ref="rootRef" class="filter-item" :data-filter-id="filterId" :style="{ zIndex: isOpen ? 1000 : 'auto' }">
     <span class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</span>
     <div class="relative z-30">
-      <button type="button" :aria-label="ariaLabel" :aria-expanded="isOpen" class="w-full text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out" @click="isOpen = !isOpen">
+      <button type="button" :aria-label="ariaLabel" :aria-expanded="isOpen" class="w-full cursor-pointer text-left text-black rounded-md border border-gray-300 px-3 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out" @click="isOpen = !isOpen">
         <span>{{ summary }}</span>
         <svg class="size-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
@@ -70,14 +70,14 @@ onBeforeUnmount(() => {
       </button>
       <div v-if="isOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg p-2">
         <div class="max-h-60 overflow-auto">
-          <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper flex items-center gap-2 text-sm text-gray-700 px-2 py-1 rounded hover:bg-gray-50">
+          <label v-for="opt in options" :key="opt.value" class="checkbox-wrapper cursor-pointer flex items-center gap-2 text-sm text-gray-700 px-2 py-1 rounded hover:bg-gray-50">
             <input v-model="valueProxy" type="radio" :name="filterId" :value="opt.value" class="border-gray-300 transition-all duration-150 ease-in-out checked:scale-105">
             <span>{{ opt.labelKey ? t(opt.labelKey) : (opt.label || opt.value) }}</span>
           </label>
         </div>
         <div class="mt-2 flex justify-end gap-2">
-          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out" @click="valueProxy = ''">{{ t('preferences.placeholders.any') }}</button>
-          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all duration-150 ease-in-out" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all cursor-pointer duration-150 ease-in-out" @click="valueProxy = ''">{{ t('preferences.placeholders.any') }}</button>
+          <button type="button" class="text-xs px-2 py-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 transition-all cursor-pointer duration-150 ease-in-out" @click="isOpen = false">{{ t('preferences.actions.ok') }}</button>
         </div>
       </div>
     </div>

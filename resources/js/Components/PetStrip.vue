@@ -129,7 +129,7 @@ nextTick(() => {
     <div class="flex items-center justify-between mb-4 sm:mb-6">
       <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{{ title }}</h2>
       <button 
-        class="relative overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
+        class="relative cursor-pointer overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
         :aria-label="`${t('dashboard.mvp.seeMore')}: ${title}`"
         @click="showPetListHandler"
       >
@@ -174,7 +174,7 @@ nextTick(() => {
             </Link> 
 
             <button 
-              class="absolute top-2 sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
+              class="absolute top-2 cursor-pointer sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
               :aria-label="`${t('dashboard.mvp.like')} - ${pet.name}`"
               @click.prevent.stop="toggleLike(pet.id)"
             >

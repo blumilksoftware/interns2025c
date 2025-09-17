@@ -56,7 +56,7 @@ const effectiveRadius = computed(() => {
       <div class="space-y-4">
         <div class="filter-item" data-filter-id="radius">
           <label for="radius-select" class="block text-sm font-medium text-gray-700 mb-1">{{ t('preferences.labels.radiusKm') }}</label>
-          <select id="radius-select" v-model="form.radiusKm" class="w-full rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" :disabled="!locationText || locationText.toLowerCase() === t('preferences.location.wholeCountry').toLowerCase()" @change="moveFilterById('radius')">
+          <select id="radius-select" v-model="form.radiusKm" class="w-full cursor-pointer rounded-md border-gray-300 focus:border-indigo-500 transition-all duration-150 ease-in-out focus:scale-[1.01] focus:ring-2 focus:ring-indigo-500/10" :disabled="!locationText || locationText.toLowerCase() === t('preferences.location.wholeCountry').toLowerCase()" @change="moveFilterById('radius')">
             <option :value="null">{{ t('preferences.placeholders.any') }}</option>
             <option v-for="opt in radiusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
           </select>
