@@ -22,10 +22,35 @@ class PetController extends Controller
 
     public function index(Request $request): Response
     {
-        $pets = Pet::query()
+        $perDog = 20;
+        $perCat = 20;
+        $perOther = 10;
+
+        $dogs = Pet::query()
             ->with("tags")
-            ->latest()
-            ->paginate(50);
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["dog"])
+            ->orderByDesc("id")
+            ->take($perDog)
+            ->get();
+
+        $cats = Pet::query()
+            ->with("tags")
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["cat"])
+            ->orderByDesc("id")
+            ->take($perCat)
+            ->get();
+
+        $others = Pet::query()
+            ->with("tags")
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["other"])
+            ->orderByDesc("id")
+            ->take($perOther)
+            ->get();
+
+        $pets = $dogs->merge($cats)->merge($others)->shuffle()->values();
 
         return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetIndexResource::collection($pets),
@@ -34,7 +59,7 @@ class PetController extends Controller
 
     public function show(Pet $pet): Response
     {
-        $pet->load("tags");
+        $pet->load(["tags", "shelter.address"]);
 
         return Inertia::render("Pets/Show", [
             "pet" => new PetShowResource($pet),

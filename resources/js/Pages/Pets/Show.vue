@@ -9,7 +9,7 @@ import PetLocation from './Partials/PetLocation.vue'
 import PetStrip from '@/Components/PetStrip.vue'
 import { useI18n } from 'vue-i18n'
 import { routes } from '@/routes'
-import { formatAge } from '@/helpers/formatters/age.ts'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -30,7 +30,13 @@ const displayPet = computed(() => {
   let statusLabel = rawStatus
   if (String(rawStatus).toLowerCase() === 'available') {
     statusLabel = (sexValue === 'male' || sexValue === 'm') ? (t('dashboard.mvp.availablemale')) : (t('dashboard.mvp.availablefemale'))
+  } else if (rawStatus) {
+    const statusKey = String(rawStatus).toLowerCase().replaceAll(' ', '_')
+    const translated = t(`dashboard.mvp.statuses.${statusKey}`)
+    statusLabel = translated || rawStatus
   }
+  const months = parsePolishAgeToMonths(p.age)
+  const showAge = typeof months === 'number' && months > 0
   return {
     ...p,
     tags: tagNames,
@@ -38,7 +44,7 @@ const displayPet = computed(() => {
     gender: p.sex ?? p.gender,
     microchipped: p.has_chip ?? p.microchipped ?? false,
     imageUrl,
-    age: Number.isFinite(Number(p.age)) ? formatAge(p.age) : p.age,
+    age: showAge ? formatAge(months) : null,
   }
 })
 
@@ -76,7 +82,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
       />
     </div>
 
-    <PetLocation />
+    <PetLocation :pet="displayPet" />
 
     <transition 
       enter-active-class="transition-opacity duration-500"

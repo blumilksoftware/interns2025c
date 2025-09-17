@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { usePage } from '@inertiajs/vue3'
 import { Step1Basic, Step2Health, Step3Location, Step4Attitudes, Step5ActivityTags } from './Steps'
 import TopFilters from './TopFilters.vue'
 import PawPrints from '@/Components/PawPrints.vue'
@@ -9,7 +10,7 @@ import { useLocation } from '@/composables/useLocation'
 import { useBreeds } from '@/composables/useBreeds'
 import { useTopFilters } from '@/composables/useTopFilters'
 import { selectorConfigs } from '@/helpers/selectors'
-import { speciesOptions as speciesCfg, sexOptions as sexCfg, colorOptions as colorCfg, healthOptions as healthCfg, adoptionOptions as adoptionCfg } from '@/helpers/preferencesConfig'
+import { speciesOptions as speciesCfg, sexOptions as sexCfg, healthOptions as healthCfg, adoptionOptions as adoptionCfg } from '@/helpers/preferencesConfig'
 
 const { t } = useI18n()
 
@@ -35,7 +36,11 @@ const { moveFilterById } = useTopFilters()
 
 const speciesOptions = speciesCfg
 const sexOptions = sexCfg
-const colorOptions = colorCfg
+const page = usePage()
+const colorOptions = computed(() => {
+  const colors = page?.props?.colors || []
+  return Array.isArray(colors) ? colors.map((c) => ({ value: c, label: c })) : []
+})
 const healthOptions = healthCfg
 const adoptionOptions = adoptionCfg
 
@@ -47,7 +52,10 @@ const healthChecksOpen = ref(false)
 const breedOpen = ref(false)
 const sexOpen = ref(false)
 
-const tagOptions = computed(() => [])
+const tagOptions = computed(() => {
+  const tags = page?.props?.tags
+  return Array.isArray(tags) ? tags : []
+})
 
 function toggleTag(tag) {
   const idx = form.value.tags.indexOf(tag)

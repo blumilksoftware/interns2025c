@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getAvailableMedicalInfo, getHealthStatusInfo, getPetCharacteristics, getStatusInfo } from '@/helpers/mappers'
 import PetIcons from '@/Components/Icons/PetIcons.vue'
-import { formatAge } from '@/helpers/formatters/age.ts'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const props = defineProps({
   pet: {
@@ -28,9 +28,11 @@ const petTagObjects = computed(() => {
 })
 
 const characteristics = computed(() => {
+  const months = parsePolishAgeToMonths(props.pet?.age)
+  const showAge = typeof months === 'number' && months > 0
   return getPetCharacteristics({
     ...props.pet,
-    age: Number.isFinite(Number(props.pet?.age)) ? formatAge(props.pet?.age) : props.pet?.age,
+    age: showAge ? formatAge(months) : null,
   }).map(item => ({
     ...item,
     label: t(item.label),
@@ -41,6 +43,20 @@ const characteristics = computed(() => {
 const medicalInfo = computed(() => {
   return getAvailableMedicalInfo(props.pet)
 })
+
+const getPetStatusVisual = (pet) => {
+  const raw = String((pet?.adoption_status ?? pet?.status) || '').toLowerCase()
+  if (raw === 'quarantined') {
+    return { bg: 'bg-amber-100 text-amber-800 border-amber-200', dot: 'bg-amber-500' }
+  }
+  if (raw === 'adopted') {
+    return { bg: 'bg-gray-200 text-gray-800 border-gray-300', dot: 'bg-gray-500' }
+  }
+  if (raw === 'in temporary home') {
+    return { bg: 'bg-indigo-100 text-indigo-800 border-indigo-200', dot: 'bg-indigo-500' }
+  }
+  return { bg: 'bg-green-100 text-green-800 border-green-200', dot: 'bg-green-500' }
+}
 </script>
 
 <template>
@@ -54,11 +70,11 @@ const medicalInfo = computed(() => {
         <div v-if="props.pet?.status" class="mt-4 mr-4">
           <div 
             class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium border"
-            :class="getStatusInfo(props.pet.status, [t('dashboard.mvp.availablemale'), t('dashboard.mvp.availablefemale')]).bgColor"
+            :class="getPetStatusVisual(props.pet).bg"
           >
             <span 
               class="size-2 rounded-full"
-              :class="getStatusInfo(props.pet.status, [t('dashboard.mvp.availablemale'), t('dashboard.mvp.availablefemale')]).dotColor"
+              :class="getPetStatusVisual(props.pet).dot"
             />
             <span>{{ props.pet.status }}</span>
           </div>

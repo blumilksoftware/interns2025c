@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { HeartIcon, StarIcon, CalendarIcon, MapPinIcon } from '@heroicons/vue/20/solid'
 import { routes } from '@/routes'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -24,16 +25,25 @@ const petTagObjects = computed(() => {
   }))
 })
 
-import { formatAge } from '@/helpers/formatters/age.ts'
+const ageMonths = computed(() => parsePolishAgeToMonths(petData.age))
+const showAge = computed(() => typeof ageMonths.value === 'number' && ageMonths.value > 0)
+const formattedAge = computed(() => showAge.value ? formatAge(ageMonths.value) : '')
+
+const arrivalDate = computed(() => petData.admission_date || '')
+const showArrival = computed(() => typeof arrivalDate.value === 'string' && arrivalDate.value.length > 0)
+const shelterCity = computed(() => petData.shelter_city || '')
+const shelterPostal = computed(() => petData.shelter_postal_code || '')
+const showCity = computed(() => (shelterCity.value && shelterCity.value.length > 0) || (shelterPostal.value && shelterPostal.value.length > 0))
+const formattedLocation = computed(() => [shelterCity.value, shelterPostal.value].filter(Boolean).join(', '))
 
 const characteristics = computed(() => [
-  `${t('dashboard.mvp.age')}: ${formatAge(petData.age)}`,
+  showAge.value ? `${t('dashboard.mvp.age')}: ${formattedAge.value}` : null,
   `${t('dashboard.mvp.breed')}: ${petData.breed}`,
   `${t('dashboard.mvp.status')}: ${petData.status}`,
   `${t('dashboard.mvp.gender')}: ${petData.gender === 'male' ? t('dashboard.mvp.male') : t('dashboard.mvp.female')}`,
   `${t('dashboard.mvp.health')}: ${t('dashboard.mvp.vaccinated')}`,
   `${t('dashboard.mvp.temperament')}: ${t('dashboard.mvp.gentle')}`,
-])
+].filter(Boolean))
 
 </script>
 
@@ -56,14 +66,18 @@ const characteristics = computed(() => [
             <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ (petData.description && petData.description.trim()) || t('dashboard.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
             
             <div class="mt-4 flex gap-4 text-sm font-medium">
-              <div class="flex items-center gap-2">
-                <CalendarIcon class="size-5 text-gray-600" />
-                <span class="text-gray-700">{{ formatAge(petData.age) }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <MapPinIcon class="size-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.breed }}</span>
-              </div>
+              <template v-if="showArrival">
+                <div class="flex items-center gap-2">
+                  <CalendarIcon class="size-5 text-gray-600" />
+                  <span class="text-gray-700">{{ arrivalDate }}</span>
+                </div>
+              </template>
+              <template v-if="showCity">
+                <div class="flex items-center gap-2">
+                  <MapPinIcon class="size-5 text-gray-600" />
+                  <span class="text-gray-700">{{ formattedLocation }}</span>
+                </div>
+              </template>
             </div>
 
             <div class="mt-4">

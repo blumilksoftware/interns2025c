@@ -39,9 +39,7 @@ export const healthOptions: LabeledOption<string>[] = [
 
 export const adoptionOptions: LabeledOption<string>[] = [
   { value: 'adopted', labelKey: 'preferences.adoption.adopted' },
-  { value: 'waiting', labelKey: 'preferences.adoption.waiting' },
+  { value: 'waiting for adoption', labelKey: 'preferences.adoption.waiting' },
   { value: 'quarantined', labelKey: 'preferences.adoption.quarantined' },
-  { value: 'temporary_home', labelKey: 'preferences.adoption.temporaryHome' },
+  { value: 'in temporary home', labelKey: 'preferences.adoption.temporaryHome' },
 ]
-
-

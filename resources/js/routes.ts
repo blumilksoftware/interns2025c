@@ -70,4 +70,3 @@ export function isActive(currentUrl: string, path: string): boolean {
   const currentPath = currentUrl.split('?')[0]
   return currentPath === path
 }
-

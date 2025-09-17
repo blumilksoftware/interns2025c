@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PetAge;
+use App\Helpers\AgeHelper;
+
 class PetMatcher
 {
     public function match(array $petData, array $preferences): float
@@ -38,6 +41,19 @@ class PetMatcher
 
                     if (array_key_exists("value", $pref) && in_array($pref["value"], $tagValues, true)) {
                         $score += $weight;
+                    }
+                } elseif ($field === "age" && array_key_exists("value", $pref)) {
+                    $petAgeCategory = AgeHelper::classifyDogAgeFromDbAge($petData["age"] ?? null);
+                    $prefValue = (string)$pref["value"];
+
+                    if ($petAgeCategory instanceof PetAge) {
+                        if ($petAgeCategory->value === $prefValue) {
+                            $score += $weight;
+                        }
+                    } else {
+                        if ((string)$petAgeCategory === $prefValue) {
+                            $score += $weight;
+                        }
                     }
                 } elseif (isset($petData[$field]) && array_key_exists("value", $pref) && $petData[$field] === $pref["value"]) {
                     $score += $weight;

@@ -8,6 +8,7 @@ use App\Http\Requests\PreferenceRequest;
 use App\Http\Resources\PetMatchResource;
 use App\Models\Pet;
 use App\Models\Preference;
+use App\Models\Tag;
 use App\Services\PetMatcher;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -17,7 +18,46 @@ class PreferenceController extends Controller
 {
     public function show(): Response
     {
-        return Inertia::render("Preferences/Preferences");
+        $tags = Tag::query()
+            ->withCount(["pets as accepted_pets_count" => fn($q) => $q->where("is_accepted", true)])
+            ->whereHas("pets", fn($q) => $q->where("is_accepted", true), ">", 1)
+            ->orderByDesc("accepted_pets_count")
+            ->orderBy("name")
+            ->get()
+            ->map(fn(Tag $tag): array => [
+                "value" => $tag->name,
+                "label" => $tag->name,
+                "count" => (int)$tag->accepted_pets_count,
+            ]);
+
+        $breedQuery = fn(string $species) => Pet::query()
+            ->where("species", $species)
+            ->where("is_accepted", true)
+            ->whereNotNull("breed")
+            ->where("breed", "!=", "")
+            ->distinct()
+            ->orderBy("breed")
+            ->pluck("breed");
+
+        $breeds = [
+            "dog" => $breedQuery("dog"),
+            "cat" => $breedQuery("cat"),
+            "other" => $breedQuery("other"),
+        ];
+
+        $colors = Pet::query()
+            ->where("is_accepted", true)
+            ->whereNotNull("color")
+            ->where("color", "!=", "")
+            ->distinct()
+            ->orderBy("color")
+            ->pluck("color");
+
+        return Inertia::render("Preferences/Preferences", [
+            "tags" => $tags,
+            "breeds" => $breeds,
+            "colors" => $colors,
+        ]);
     }
 
     public function index(PetMatcher $matcher): Response
@@ -25,7 +65,8 @@ class PreferenceController extends Controller
         $user = request()->user();
         $preference = $user->preferences()->first();
 
-        $pets = Pet::with("tags")
+        $pets = Pet::with(["tags", "shelter.address"])
+            ->where("is_accepted", true)
             ->get()
             ->map(function (Pet $pet) use ($preference, $matcher): array {
                 $matchPercentage = $preference

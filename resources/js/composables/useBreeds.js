@@ -1,18 +1,22 @@
 import { computed } from 'vue'
-import { dogs, cats } from '@/data/petsData.js'
+import { usePage } from '@inertiajs/vue3'
 
 export function useBreeds(form) {
-  const dogBreeds = Array.from(new Set(dogs.map(d => d.breed))).sort()
-  const catBreeds = Array.from(new Set(cats.map(c => c.breed))).sort()
-  const dogBreedsAvailable = computed(() => (Array.isArray(form.value.species) && form.value.species.includes('dog')) ? dogBreeds : [])
-  const catBreedsAvailable = computed(() => (Array.isArray(form.value.species) && form.value.species.includes('cat')) ? catBreeds : [])
+  const page = usePage()
+  const breeds = computed(() => page?.props?.breeds || { dog: [], cat: [], other: [] })
+
+  const dogBreedsAvailable = computed(() => (Array.isArray(form.value.species) && form.value.species.includes('dog')) ? (breeds.value.dog || []) : [])
+  const catBreedsAvailable = computed(() => (Array.isArray(form.value.species) && form.value.species.includes('cat')) ? (breeds.value.cat || []) : [])
+
   const breedOptions = computed(() => {
     const selected = form.value.species
     if (!Array.isArray(selected) || selected.length === 0) return []
-    let breeds = []
-    if (selected.includes('dog')) breeds = breeds.concat(dogBreeds)
-    if (selected.includes('cat')) breeds = breeds.concat(catBreeds)
-    return Array.from(new Set(breeds)).sort()
+    let list = []
+    if (selected.includes('dog')) list = list.concat(breeds.value.dog || [])
+    if (selected.includes('cat')) list = list.concat(breeds.value.cat || [])
+    if (selected.includes('other')) list = list.concat(breeds.value.other || [])
+    return Array.from(new Set(list)).sort()
   })
+
   return { dogBreedsAvailable, catBreedsAvailable, breedOptions }
 }

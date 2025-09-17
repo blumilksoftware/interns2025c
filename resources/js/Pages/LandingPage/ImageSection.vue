@@ -54,6 +54,3 @@ const animals = (sourcePets || []).slice(0, 6).map((p) => ({
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

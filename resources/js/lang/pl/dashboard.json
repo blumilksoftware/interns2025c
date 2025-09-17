@@ -38,6 +38,12 @@
       "gentle": "Łagodny i cierpliwy",
       "description": "Wspaniały {breed} szukający swojego domu na zawsze. {name} to łagodna dusza, która uwielbia się bawić i przytulać.",
       "similarPets": "Podobne zwierzaki",
+      "statuses": {
+        "adopted": "Adoptowany",
+        "waiting_for_adoption": "Oczekuje na adopcję",
+        "quarantined": "Na kwarantannie",
+        "in_temporary_home": "W domu tymczasowym"
+      },
       "healthStatus": {
         "title": "Status zdrowia",
         "description": "Aktualny stan zdrowia zwierzaka",

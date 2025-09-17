@@ -116,6 +116,3 @@ const mobileMenuOpen = ref(false)
     </Dialog>
   </header>
 </template>
-  
-<style scoped>
-</style>

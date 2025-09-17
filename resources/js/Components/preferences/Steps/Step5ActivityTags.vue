@@ -24,6 +24,13 @@ function toggleTag(tag) {
   props.moveFilterById('tags')
 }
 
+function clearTags() {
+  if (Array.isArray(form.value.tags) && form.value.tags.length) {
+    form.value.tags = []
+    props.moveFilterById('tags')
+  }
+}
+
 function handleClearItem(sectionKey, value) {
   clearItem(sectionKey, value, props.moveFilterById)
 }
@@ -49,6 +56,18 @@ const limitedBadges = computed(() => {
   if (arr.length <= limit) return arr
   return [...arr.slice(0, limit), { ellipsis: true }]
 })
+
+const showAllTags = ref(false)
+const baseTagLimit = computed(() => {
+  try { return (typeof window !== 'undefined' && window.innerWidth < 640) ? 12 : 30 } catch { return 30 }
+})
+const limitedTags = computed(() => {
+  const tags = Array.isArray(props.tagOptions) ? props.tagOptions : []
+  if (showAllTags.value) return tags
+  const limit = baseTagLimit.value
+  if (tags.length <= limit) return tags
+  return tags.slice(0, limit)
+})
 </script>
 
 <template>
@@ -66,17 +85,37 @@ const limitedBadges = computed(() => {
     </div>
 
     <div class="filter-item" data-filter-id="tags">
-      <span class="block text-sm font-medium text-gray-700 mb-2">{{ t('preferences.labels.tags') }}</span>
+      <div class="flex items-center justify-between mb-2">
+        <span class="block text-sm font-medium text-gray-700">{{ t('preferences.labels.tags') }}</span>
+        <div class="flex items-center gap-2">
+          <button
+            v-if="Array.isArray(tagOptions) && tagOptions.length > baseTagLimit"
+            type="button"
+            class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+            @click="showAllTags = !showAllTags"
+          >
+            {{ showAllTags ? t('preferences.actions.collapse') : t('preferences.actions.expand') }}
+          </button>
+          <button
+            v-if="Array.isArray(form.tags) && form.tags.length"
+            type="button"
+            class="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+            @click="clearTags"
+          >
+            {{ t('preferences.actions.clear') }}
+          </button>
+        </div>
+      </div>
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="tag in tagOptions"
+          v-for="tag in limitedTags"
           :key="tag.value"
           type="button"
           class="px-3 py-1 rounded-full border text-sm transition-all duration-150 ease-in-out"
           :class="form.tags.includes(tag.value) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-transparent text-gray-700 border-gray-300'"
           @click="toggleTag(tag.value, $event)"
         >
-          {{ tag.label }}
+          {{ tag.label }}<span v-if="typeof tag.count === 'number'" class="ml-1 text-xs" :class="form.tags.includes(tag.value) ? 'text-white' : 'text-gray-500'">({{ tag.count }})</span>
         </button>
       </div>
     </div>

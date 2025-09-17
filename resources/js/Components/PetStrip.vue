@@ -7,7 +7,7 @@ import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { getGenderInfo } from '@/helpers/mappers'
-import { formatAge } from '@/helpers/formatters/age.ts'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -45,6 +45,53 @@ const descriptionFor = (pet) => {
   const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
   if (desc) return desc
   return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
+}
+
+const getTranslatedStatus = (pet) => {
+  const sexValue = String((pet.sex && typeof pet.sex === 'object' && 'value' in pet.sex) ? pet.sex.value : pet.sex || '').toLowerCase()
+  const rawStatus = (pet.status ?? pet.adoption_status)
+  if (!rawStatus) return ''
+  const statusStr = String((rawStatus && typeof rawStatus === 'object' && ('value' in rawStatus || 'name' in rawStatus))
+    ? (rawStatus.value ?? rawStatus.name)
+    : rawStatus)
+  const statusLower = statusStr.toLowerCase()
+
+  if (statusLower === 'available') {
+    return (sexValue === 'male' || sexValue === 'm')
+      ? t('dashboard.mvp.availablemale')
+      : t('dashboard.mvp.availablefemale')
+  }
+
+  const knownEnglish = ['adopted', 'waiting for adoption', 'quarantined', 'in temporary home']
+  if (knownEnglish.includes(statusLower)) {
+    const key = `dashboard.mvp.statuses.${statusLower.replaceAll(' ', '_')}`
+    const translated = t(key)
+    return translated === key ? statusStr : translated
+  }
+
+  return statusStr
+}
+
+const getStatusClasses = (pet) => {
+  const rawStatus = (pet.adoption_status ?? pet.status)
+  if (!rawStatus) return 'bg-green-100 text-green-800'
+  const statusLower = String((rawStatus && typeof rawStatus === 'object' && ('value' in rawStatus || 'name' in rawStatus))
+    ? (rawStatus.value ?? rawStatus.name)
+    : rawStatus).toLowerCase()
+
+  if (statusLower === 'quarantined') {
+    return 'bg-amber-100 text-amber-800'
+  }
+
+  if (statusLower === 'adopted') {
+    return 'bg-gray-200 text-gray-800'
+  }
+
+  if (statusLower === 'in temporary home') {
+    return 'bg-indigo-100 text-indigo-800'
+  }
+
+  return 'bg-green-100 text-green-800'
 }
 
 const checkScrollPosition = () => {
@@ -148,8 +195,12 @@ nextTick(() => {
             </div>
             
             <div class="flex items-center justify-center gap-1 sm:gap-2 mb-2">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800" :aria-label="`${t('dashboard.mvp.age')}: ${formatAge(pet.age)}`">{{ formatAge(pet.age) }}</span>
-              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800" :aria-label="`${t('dashboard.mvp.status')}: ${pet.adoption_status}`">{{ pet.adoption_status }}</span>
+              <span 
+                v-if="parsePolishAgeToMonths(pet.age) > 0"
+                class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800" 
+                :aria-label="`${t('dashboard.mvp.age')}: ${formatAge(parsePolishAgeToMonths(pet.age))}`"
+              >{{ formatAge(parsePolishAgeToMonths(pet.age)) }}</span>
+              <span class="inline-flex items-center rounded-full px-2 py-1 text-xs sm:text-sm font-semibold" :class="getStatusClasses(pet)" :aria-label="`${t('dashboard.mvp.status')}: ${getTranslatedStatus(pet)}`">{{ getTranslatedStatus(pet) }}</span>
             </div>
             
             <div class="border-t border-gray-200 my-2 sm:my-3" />
@@ -172,6 +223,3 @@ nextTick(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style> 

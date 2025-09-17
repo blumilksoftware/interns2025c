@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PetStrip from '@/Components/PetStrip.vue'
 import { getGenderInfo } from '@/helpers/mappers'
-import { formatAge } from '@/helpers/formatters/age.ts'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 import { Link } from '@inertiajs/vue3'
 import { routes } from '@/routes'
 
@@ -99,7 +99,10 @@ const handleHidePetList = () => {
                 </div>
                 
                 <div class="flex items-center gap-2 mb-3">
-                  <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ formatAge(pet.age) }}</span>
+                  <span 
+                    v-if="parsePolishAgeToMonths(pet.age) > 0"
+                    class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800"
+                  >{{ formatAge(parsePolishAgeToMonths(pet.age)) }}</span>
                   <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
                   <span :class="getGenderInfo(pet.gender).color + ' text-xl'">{{ getGenderInfo(pet.gender).symbol }}</span>
                 </div>
