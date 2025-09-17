@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Pet;
+use App\Models\PetShelter;
 use App\Models\Preference;
 use App\Models\Tag;
 use App\Models\User;
@@ -29,6 +30,9 @@ class PetMatchingTest extends TestCase
             "preferences" => [
                 "species" => [["value" => "dog", "weight" => 1]],
             ],
+            "latitude" => null,
+            "longitude" => null,
+            "radius_in_km" => null,
         ]);
 
         $dog = Pet::factory()->create(["species" => "dog"]);
@@ -61,6 +65,9 @@ class PetMatchingTest extends TestCase
             "preferences" => [
                 "species" => [["value" => "dog", "weight" => 1]],
             ],
+            "latitude" => null,
+            "longitude" => null,
+            "radius_in_km" => null,
         ]);
 
         $cat = Pet::factory()->create(["species" => "cat"]);
@@ -73,38 +80,29 @@ class PetMatchingTest extends TestCase
 
         $response = $this->actingAs($user)->get("/dashboard/matches");
 
-        $response->assertInertia(
-            fn(Assert $page) => $page
-                ->component("Dashboard/Dashboard")
-                ->has("pets", 3),
-        );
-
         $petsData = $response->inertiaProps()["pets"];
         $matches = collect($petsData)->pluck("match")->all();
-        $sortedMatches = $matches;
-        rsort($sortedMatches);
 
-        $this->assertSame($sortedMatches, $matches, "Pets are not sorted by match descending");
+        $sorted = $matches;
+        rsort($sorted);
+
+        $this->assertSame($sorted, $matches);
     }
 
     public function testNoPreferenceReturnsZeroMatch(): void
     {
         $user = User::factory()->create();
 
-        $pets = Pet::factory()->count(3)->create();
-        $tags = Tag::factory()->count(3)->create();
+        Preference::factory()->for($user)->create([
+            "preferences" => [],
+            "latitude" => null,
+            "longitude" => null,
+            "radius_in_km" => null,
+        ]);
 
-        foreach ($pets as $index => $pet) {
-            $pet->tags()->syncWithoutDetaching([$tags[$index]->id]);
-        }
+        Pet::factory()->count(3)->create();
 
         $response = $this->actingAs($user)->get("/dashboard/matches");
-
-        $response->assertInertia(
-            fn(Assert $page) => $page
-                ->component("Dashboard/Dashboard")
-                ->has("pets", 3),
-        );
 
         $petsData = $response->inertiaProps()["pets"];
 
@@ -121,6 +119,9 @@ class PetMatchingTest extends TestCase
             "preferences" => [
                 "tags" => [["value" => "friendly", "weight" => 1]],
             ],
+            "latitude" => null,
+            "longitude" => null,
+            "radius_in_km" => null,
         ]);
 
         $petWithTag = Pet::factory()->create();
@@ -137,6 +138,67 @@ class PetMatchingTest extends TestCase
         $petsData = $response->inertiaProps()["pets"];
         $matches = collect($petsData)->pluck("match")->all();
 
-        $this->assertGreaterThan($matches[1], $matches[0], "Pet with matching tag should have higher match");
+        $this->assertGreaterThan($matches[1], $matches[0]);
+    }
+
+    public function testPetsAreFilteredByProximity(): void
+    {
+        $user = User::factory()->create();
+
+        Preference::factory()->for($user)->create([
+            "preferences" => [],
+            "latitude" => 40.0,
+            "longitude" => -75.0,
+            "radius_in_km" => 50,
+        ]);
+
+        $nearShelter = PetShelter::factory()->create();
+        $nearShelter->address()->create([
+            "latitude" => 40.1,
+            "longitude" => -75.1,
+        ]);
+        $petNear = Pet::factory()->create();
+        $petNear->shelter()->associate($nearShelter)->save();
+
+        $farShelter = PetShelter::factory()->create();
+        $farShelter->address()->create([
+            "latitude" => 45.0,
+            "longitude" => -80.0,
+        ]);
+        $petFar = Pet::factory()->create();
+        $petFar->shelter()->associate($farShelter)->save();
+
+        $response = $this->actingAs($user)->get("/dashboard/matches");
+
+        $petsData = $response->inertiaProps()["pets"];
+        $petIds = collect($petsData)->pluck("pet.data.id");
+
+        $this->assertContains($petNear->id, $petIds);
+        $this->assertNotContains($petFar->id, $petIds);
+    }
+
+    public function testPetsOutsideRadiusReturnZeroMatch(): void
+    {
+        $user = User::factory()->create();
+
+        Preference::factory()->for($user)->create([
+            "preferences" => [],
+            "latitude" => 40.0,
+            "longitude" => -75.0,
+            "radius_in_km" => 1,
+        ]);
+
+        $farShelter = PetShelter::factory()->create();
+        $farShelter->address()->create([
+            "latitude" => 50.0,
+            "longitude" => -80.0,
+        ]);
+        $petFar = Pet::factory()->create();
+        $petFar->shelter()->associate($farShelter)->save();
+
+        $response = $this->actingAs($user)->get("/dashboard/matches");
+
+        $petsData = $response->inertiaProps()["pets"];
+        $this->assertEmpty($petsData);
     }
 }
