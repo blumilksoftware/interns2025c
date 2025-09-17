@@ -9,6 +9,7 @@
     --color-gradient-primary: oklch(0.95 0.05 85); /* Warm beige */
     --color-gradient-secondary: oklch(0.92 0.08 120); /* Soft green */
     --color-soft-cream: oklch(0.9814 0.0342 99.83); /* Soft cream */
+    --color-light-soft-cream: oklch(0.9921 0.0172 99.59) /* Light soft cream */
     --color-light-brown: oklch(0.8152 0.1185 76.54); /* Light brown */
 }
 @keyframes heartbeat {
