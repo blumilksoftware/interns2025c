@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class PetShelterService
 {
-    public static function findShelterByItsUrlHost(string $shelterUrl): ?PetShelter
+    public function findShelterByItsUrlHost(string $shelterUrl): ?PetShelter
     {
         if (!$shelterUrl) {
             Log::error("Shelter URL is empty or invalid.");

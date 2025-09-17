@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Log;
 
 class PetService
 {
+    public function __construct(
+        private readonly TagService $tagService,
+        private readonly PetShelterService $petShelterService,
+    ) {}
+
     public function store(array $petData, string $shelterUrl, string $extractedPetAdoptionUrl): void
     {
         if (empty($petData)) {
@@ -24,12 +29,12 @@ class PetService
             return;
         }
 
-        $shelterId = PetShelterService::findShelterByItsUrlHost($shelterUrl)?->id;
+        $shelterId = $this->petShelterService->findShelterByItsUrlHost($shelterUrl)?->id;
 
         foreach ($petData["animals"] ?? [] as $animal) {
             $animalTagsText = $animal["tags"] ?? ($petData["tags"] ?? "");
-            $tags = TagService::extractTagsFromText($animalTagsText);
-            $tagIds = (new TagService())->processTagsAndGetIds($tags);
+            $tags = $this->tagService->extractTagsFromText($animalTagsText);
+            $tagIds = $this->tagService->processTagsAndGetIds($tags);
             $identifyingAttributes = [
                 "name" => $animal["name"],
                 "shelter_id" => $shelterId,

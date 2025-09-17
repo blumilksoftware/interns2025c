@@ -14,7 +14,7 @@ class TagService
         $service = new self();
 
         return collect(preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY))
-            ->map(fn($token) => $service->sanitizeTagName($token))
+            ->map(fn(string $token): ?string => $service->sanitizeTagName($token))
             ->filter()
             ->unique()
             ->values()
