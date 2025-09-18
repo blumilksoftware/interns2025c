@@ -17,6 +17,13 @@ export const petsConfig = {
     renderer: 'text',
     label: 'Adoption URL',
   },
+  image_urls: {
+    width: 'w-40 sm:w-56',
+    type: 'array',
+    editable: true,
+    renderer: 'array',
+    label: 'Image URLs',
+  },
   species: {
     width: 'w-16 sm:w-20',
     type: 'select',
@@ -255,6 +262,6 @@ export const petsFieldOrder = [
   'has_chip', 'chip_number', 'dewormed', 'deflea_treated', 'medical_tests',
   'food_type', 'attitude_to_people', 'attitude_to_dogs', 'attitude_to_cats',
   'attitude_to_children', 'activity_level', 'behavioral_notes',
-  'adoption_url', 'admission_date', 'found_location', 'adoption_status', 
+  'adoption_url', 'image_urls', 'admission_date', 'found_location', 'adoption_status',
   'is_accepted', 'shelter_id', 'tags',
 ]

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\PetShelter;
+use App\Models\PetShelterAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<PetShelter>
- */
 class PetShelterFactory extends Factory
 {
     protected $model = PetShelter::class;
@@ -23,5 +21,12 @@ class PetShelterFactory extends Factory
             "description" => $this->faker->paragraph(),
             "url" => $this->faker->url(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (PetShelter $shelter): void {
+            PetShelterAddress::factory()->for($shelter)->create();
+        });
     }
 }
