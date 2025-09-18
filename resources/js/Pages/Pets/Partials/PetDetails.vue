@@ -35,8 +35,6 @@ const characteristics = computed(() => {
   }))
 })
 
-
-
 const medicalInfo = computed(() => {
   return getAvailableMedicalInfo(props.pet)
 })

@@ -9,6 +9,18 @@ use Illuminate\Support\Str;
 
 class TagService
 {
+    public static function extractTagsFromText(string $text): array
+    {
+        $service = new self();
+
+        return collect(preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY))
+            ->map(fn(string $token): ?string => $service->sanitizeTagName($token))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
     public function processTagsAndGetIds(array $tags): array
     {
         return collect($tags)

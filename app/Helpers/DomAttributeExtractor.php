@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
+use Throwable;
 
 class DomAttributeExtractor
 {
@@ -48,7 +50,7 @@ class DomAttributeExtractor
     public static function getLinksFromWebpage(Crawler $crawler, string $baseUrl): array
     {
         return collect(
-            $crawler->filter("a")->each(fn(Crawler $node): string => $node->attr("href")),
+            $crawler->filter("a")->each(fn(Crawler $node): ?string => $node->attr("href")),
         )
             ->filter()
             ->map(fn(string $href): ?string => UrlFormatHelper::normalizeUrl($href, $baseUrl))
@@ -56,5 +58,60 @@ class DomAttributeExtractor
             ->unique()
             ->values()
             ->all();
+    }
+
+    public static function scrapImageLinksFromWebpage(Crawler $crawler, string $baseUrl): array
+    {
+        $images = $crawler->filter("img")->each(function (Crawler $node) use ($baseUrl): ?string {
+            $allowedExtensions = ["jpg", "jpeg", "png"];
+            $src = (string)$node->attr("src");
+
+            if (!$src) {
+                return null;
+            }
+
+            $extension = UrlFormatHelper::getPathInfoExtension($src);
+
+            if (!in_array($extension, $allowedExtensions, true)) {
+                return null;
+            }
+
+            $normalizedUrl = UrlFormatHelper::normalizeUrl($src, $baseUrl);
+
+            if (!$normalizedUrl) {
+                return null;
+            }
+
+            return $normalizedUrl;
+        });
+
+        return array_filter($images);
+    }
+
+    public static function hasImageMinimumDimensions(string $imageUrl, int $minWidth, int $minHeight): bool
+    {
+        try {
+            $imageInfo = @getimagesize($imageUrl);
+
+            if ($imageInfo === false) {
+                Log::debug("Could not get image dimensions for: {$imageUrl}");
+
+                return false;
+            }
+
+            [$width, $height] = $imageInfo;
+
+            $meetsRequirements = $width >= $minWidth && $height >= $minHeight;
+
+            if (!$meetsRequirements) {
+                Log::debug("Image {$imageUrl} does not meet minimum dimensions ({$width}x{$height} < " . $minWidth . "x" . $minHeight . ")");
+            }
+
+            return $meetsRequirements;
+        } catch (Throwable $exception) {
+            Log::debug("Error checking image dimensions for {$imageUrl}: " . $exception->getMessage());
+
+            return false;
+        }
     }
 }
