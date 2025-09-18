@@ -20,7 +20,6 @@ import { IconMenu2 } from '@tabler/icons-vue'
 const { t } = useI18n()
 const mobileMenuOpen = ref(false)
 
-
 </script>
 
 <template>
