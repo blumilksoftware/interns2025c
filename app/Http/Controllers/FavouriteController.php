@@ -7,34 +7,30 @@ namespace App\Http\Controllers;
 use App\Models\Pet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class FavouriteController extends Controller
 {
-    public function index(Request $request): Response
+    public function store(Request $request): RedirectResponse
     {
-        $user = $request->user();
-
-        return Inertia::render("Favourites/Index", [
-            "favourites" => $user->favourites()->get(),
+        $validated = $request->validate([
+            "pet_id" => ["required", "exists:pets,id"],
         ]);
-    }
 
-    public function store(Request $request, Pet $pet): RedirectResponse
-    {
+        $pet = Pet::findOrFail($validated["pet_id"]);
         $user = $request->user();
 
-        if (!$user->favourites()->where("pet_id", $pet->id)->exists()) {
-            $user->favourites()->attach($pet->id);
-        }
+        $this->authorize("favouriteCreate", $pet);
+
+        $user->favourites()->attach($pet->id);
 
         return back()->with("success", "Pet added to favourites.");
     }
 
-    public function destroy(Request $request, Pet $pet): RedirectResponse
+    public function destroy(Pet $pet): RedirectResponse
     {
-        $user = $request->user();
+        $user = auth()->user();
+
+        $this->authorize("favouriteDelete", $pet);
 
         $user->favourites()->detach($pet->id);
 

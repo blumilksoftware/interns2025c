@@ -13,89 +13,82 @@ class FavouriteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testFavouritesIndexCanBeRendered(): void
-    {
-        $user = User::factory()->create();
-        $pets = Pet::factory()->count(2)->create();
-        $user->favourites()->attach($pets->pluck("id")->toArray());
+    private User $user;
+    private Pet $pet;
 
-        $this->actingAs($user)
-            ->get("/favourites")
-            ->assertStatus(200)
-            ->assertSee($pets->first()->name);
-    }
-
-    public function testGuestsCannotAccessFavouritesIndex(): void
+    protected function setUp(): void
     {
-        $this->get("/favourites")->assertRedirect("/login");
+        parent::setUp();
+
+        $this->user = User::factory()->create();
+        $this->pet = Pet::factory()->create();
     }
 
     public function testFavouriteCanBeCreated(): void
     {
-        $user = User::factory()->create();
-        $pet = Pet::factory()->create();
-
-        $this->actingAs($user)
-            ->post("/favourites/{$pet->id}")
+        $this->actingAs($this->user)
+            ->post("/favourites", ["pet_id" => $this->pet->id])
             ->assertRedirect();
 
-        $this->assertDatabaseHas("favourites", ["user_id" => $user->id, "pet_id" => $pet->id]);
-    }
-
-    public function testFavouriteCannotBeCreatedByGuest(): void
-    {
-        $pet = Pet::factory()->create();
-
-        $this->post("/favourites/{$pet->id}")->assertRedirect("/login");
-
-        $this->assertDatabaseCount("favourites", 0);
+        $this->assertDatabaseHas("favourites", [
+            "user_id" => $this->user->id,
+            "pet_id" => $this->pet->id,
+        ]);
     }
 
     public function testFavouriteCannotBeCreatedTwice(): void
     {
-        $user = User::factory()->create();
-        $pet = Pet::factory()->create();
-        $user->favourites()->attach($pet->id);
+        $this->user->favourites()->attach($this->pet->id);
 
-        $this->actingAs($user)
-            ->post("/favourites/{$pet->id}")
-            ->assertRedirect();
+        $this->actingAs($this->user)
+            ->post("/favourites", ["pet_id" => $this->pet->id])
+            ->assertStatus(403);
 
         $this->assertDatabaseCount("favourites", 1);
     }
 
+    public function testFavouriteCannotBeCreatedByGuest(): void
+    {
+        $this->post("/favourites", ["pet_id" => $this->pet->id])
+            ->assertRedirect("/login");
+
+        $this->assertDatabaseCount("favourites", 0);
+    }
+
     public function testFavouriteCanBeDeleted(): void
     {
-        $user = User::factory()->create();
-        $pet = Pet::factory()->create();
-        $user->favourites()->attach($pet->id);
+        $this->user->favourites()->attach($this->pet->id);
 
-        $this->actingAs($user)
-            ->delete("/favourites/{$pet->id}")
+        $this->actingAs($this->user)
+            ->delete("/favourites/{$this->pet->id}")
             ->assertRedirect();
 
-        $this->assertDatabaseMissing("favourites", ["user_id" => $user->id, "pet_id" => $pet->id]);
+        $this->assertDatabaseMissing("favourites", [
+            "user_id" => $this->user->id,
+            "pet_id" => $this->pet->id,
+        ]);
     }
 
     public function testFavouriteCannotBeDeletedByGuest(): void
     {
-        $user = User::factory()->create();
-        $pet = Pet::factory()->create();
-        $user->favourites()->attach($pet->id);
+        $this->user->favourites()->attach($this->pet->id);
 
-        $this->delete("/favourites/{$pet->id}")->assertRedirect("/login");
+        $this->delete("/favourites/{$this->pet->id}")
+            ->assertRedirect("/login");
 
-        $this->assertDatabaseHas("favourites", ["user_id" => $user->id, "pet_id" => $pet->id]);
+        $this->assertDatabaseHas("favourites", [
+            "user_id" => $this->user->id,
+            "pet_id" => $this->pet->id,
+        ]);
     }
 
     public function testFavouriteCannotBeDeletedIfNotExists(): void
     {
-        $user = User::factory()->create();
-        $pet = Pet::factory()->create();
+        $otherPet = Pet::factory()->create();
 
-        $this->actingAs($user)
-            ->delete("/favourites/{$pet->id}")
-            ->assertRedirect();
+        $this->actingAs($this->user)
+            ->delete("/favourites/{$otherPet->id}")
+            ->assertStatus(403);
 
         $this->assertDatabaseCount("favourites", 0);
     }

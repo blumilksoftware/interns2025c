@@ -33,9 +33,9 @@ Route::middleware([
     Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
     Route::resource("preferences", PreferenceController::class)->only(["store", "update", "destroy"]);
     Route::get("/dashboard/matches", [PreferenceController::class, "index"])->name("dashboard.matches");
-    Route::get("/favourites", [FavouriteController::class, "index"])->name("favourites.index");
-    Route::post("/favourites/{pet}", [FavouriteController::class, "store"])->name("favourites.store");
-    Route::delete("/favourites/{pet}", [FavouriteController::class, "destroy"])->name("favourites.destroy");
+    Route::resource("favourites", FavouriteController::class)
+        ->only(["store", "destroy"])
+        ->parameters(["favourites" => "pet"]);
 });
 
 Route::middleware([
