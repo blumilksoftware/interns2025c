@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
@@ -45,23 +49,40 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon $admission_date
  * @property ?string $found_location
  * @property ?string $adoption_status
+ * @property ?string $adoption_url
+ * @property ?array $image_urls
  * @property bool $is_accepted
  * @property int $shelter_id
  */
-class Pet extends Model
+class Pet extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
     use SoftDeletes;
 
     protected $guarded = [];
     protected $casts = [
         "age" => "string",
         "admission_date" => "date",
+        "image_urls" => "array",
     ];
 
     public function shelter(): BelongsTo
     {
         return $this->belongsTo(PetShelter::class);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $desiredWidth = 320;
+        $desiredHeight = 320;
+        $previewScaleFactor = 2;
+        $this
+            ->addMediaConversion("thumbnail")
+            ->fit(Fit::Contain, $desiredWidth, $desiredHeight);
+        $this
+            ->addMediaConversion("preview")
+            ->fit(Fit::Contain, $desiredWidth * $previewScaleFactor, $desiredHeight * $previewScaleFactor);
     }
 
     public function tags(): BelongsToMany

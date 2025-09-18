@@ -55,7 +55,6 @@ class PetRequest extends FormRequest
                 "nullable",
                 "string",
                 "max:255",
-                "required_if:has_chip,true",
                 "prohibited_unless:has_chip,true",
             ],
             "dewormed" => ["nullable", "boolean"],
@@ -72,6 +71,8 @@ class PetRequest extends FormRequest
             "quarantine_end_date" => ["nullable", "date"],
             "found_location" => ["nullable", "string", "max:255"],
             "adoption_status" => ["nullable", "string", "max:255"],
+            "image_urls" => ["nullable", "array"],
+            "image_urls.*" => ["string", "max:2048", "url"],
             "shelter_id" => [
                 "required",
                 "integer",

@@ -17,6 +17,7 @@
         "saloonphp/cache-plugin": "^3.0",
         "saloonphp/saloon": "^3.0",
         "spatie/crawler": "^8.4",
+        "spatie/laravel-medialibrary": "^11.14",
         "symfony/css-selector": "^7.3",
         "symfony/dom-crawler": "^7.3"
     },
@@ -24,6 +25,7 @@
         "blumilksoftware/codestyle": "^v5.0.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.5.0",
+        "laravel/boost": "^1.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
         "phpunit/phpunit": "^12.2.7",

@@ -28,7 +28,7 @@ class AnalyzePetPage implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public const int PAGE_SCORE_THRESHOLD = 7;
+    public const int PAGE_SCORE_THRESHOLD = 5;
 
     public int $tries = 5;
     public int $timeout = 120;
@@ -79,22 +79,49 @@ class AnalyzePetPage implements ShouldQueue
             $result = $gemini->generateContent($payload);
             $raw = $gemini->getGeminiResult($result);
 
-            if ($raw) {
-                $json = $this->extractJsonFromRaw($raw);
+            if (!$raw) {
+                Log::warning("Empty response from AI for: " . $this->url);
 
-                if ($json) {
-                    $data = json_decode($json, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
-                        $petService->store($data, $this->baseUrl, $this->url);
-                        Log::info("Pet data extracted and here it is : " . json_encode($data));
-                    } else {
-                        Log::warning("AI returned invalid JSON for: " . $this->url, ["raw" => $raw]);
-                    }
-                } else {
-                    Log::warning("No JSON block found in AI response for: " . $this->url, ["raw" => $raw]);
-                }
+                return;
             }
+            $json = $this->extractJsonFromRaw($raw);
+
+            if (!$json) {
+                Log::warning("No JSON found in AI response for: " . $this->url);
+
+                return;
+            }
+
+            $data = json_decode($json, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+                Log::warning("AI returned invalid JSON for: " . $this->url);
+
+                return;
+            }
+
+            if (!$this->gemini->geminiResponseContainSpecificAnimal($data)) {
+                Log::info("AI determined no animals on page: " . $this->url);
+
+                return;
+            }
+
+            $petImages = DomAttributeExtractor::scrapImageLinksFromWebpage($crawler, $this->url);
+
+            $petImages = array_values(array_filter(
+                $petImages,
+                static fn(string $imageUrl): bool => DomAttributeExtractor::hasImageMinimumDimensions($imageUrl, 300, 300),
+            ));
+
+            $data["image_urls"] = $petImages;
+            Log::info(sprintf(
+                "Extracted %d images from page: %s",
+                count($petImages),
+                $this->url,
+            ));
+
+            $petService->store($data, $this->baseUrl, $this->url);
+            Log::info("Pet data extracted: " . json_encode($data));
         } catch (JsonException $exception) {
             Log::error("JSON decoding error in AnalyzePetPage job for URL: " . $this->url, ["error" => $exception->getMessage()]);
         }
