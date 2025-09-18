@@ -365,4 +365,4 @@ const handleNativeDateChange = (columnKey, date) => {
     </div>
     <Pagination :current-page="currentPage" :total-pages="totalPages" :total-items="filteredData.length" :items-per-page="itemsPerPage" @page-change="handlePageChange" />
   </div>
-</template> 
+</template>

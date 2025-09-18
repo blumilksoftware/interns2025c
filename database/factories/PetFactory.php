@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetAdoptionStatus;
 use App\Enums\PetHealthStatus;
 use App\Enums\PetSex;
 use App\Enums\PetSpecies;
@@ -19,6 +20,7 @@ class PetFactory extends Factory
     public function definition(): array
     {
         $hasChip = $this->faker->optional()->boolean();
+        $adoptionStatus = $this->faker->optional()->randomElement(PetAdoptionStatus::values());
 
         return [
             "name" => $this->faker->firstName(),
@@ -48,8 +50,8 @@ class PetFactory extends Factory
             "behavioral_notes" => $this->faker->optional()->sentence(5),
             "admission_date" => $this->faker->optional()->date(),
             "found_location" => $this->faker->optional()->city(),
-            "adoption_status" => $this->faker->optional()->randomElement(["available", "adopted", "pending", "fostered"]),
-            "adoption_url" => $this->faker->optional()->url(),
+            "adoption_status" => $adoptionStatus,
+            "adoption_url" => $adoptionStatus === "adopted" ? null : $this->faker->optional()->url(),
             "shelter_id" => PetShelter::factory(),
             "is_accepted" => $this->faker->boolean(),
         ];

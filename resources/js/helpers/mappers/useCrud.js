@@ -30,7 +30,6 @@ export function useCrud() {
   }
 
   const updateItem = async (dataSetType, item, onSuccess = null, onError = null) => {
-    console.log('UPDATE ITEM', dataSetType, item)
     if (isLoading.value) return
 
     isLoading.value = true

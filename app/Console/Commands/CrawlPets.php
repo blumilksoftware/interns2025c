@@ -16,6 +16,7 @@ use App\Services\PetPageAnalyzer;
 use App\Services\PetShelterService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Saloon\Exceptions\Request\FatalRequestException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlPets extends Command
@@ -101,14 +102,13 @@ class CrawlPets extends Command
             $this->info("Crawling (depth $depth): $currentUrl");
             Log::info("Crawling page: $currentUrl");
 
-            $response = $this->connector->send(new GetPageRequest($currentUrl));
-
-            if ($response->isCached() && $depth > 0) {
-                $this->info("Response is cached - Skipping HTTP request for $currentUrl");
+            try {
+                $response = $this->connector->send(new GetPageRequest($currentUrl));
+            } catch (FatalRequestException $exception) {
+                $this->warn("Failed to fetch $currentUrl: " . $exception->getMessage());
 
                 continue;
             }
-            Log::info("Fetched fresh response for $currentUrl");
 
             $html = $response->body();
 
@@ -118,10 +118,13 @@ class CrawlPets extends Command
                 continue;
             }
 
-            AnalyzePetPage::dispatch($html, $currentUrl, UrlFormatHelper::getBaseUrl($currentUrl))
+            $sanitizedHtml = UrlFormatHelper::sanitizeUtf8($html);
+
+            AnalyzePetPage::dispatch($sanitizedHtml, $currentUrl, UrlFormatHelper::getBaseUrl($currentUrl))
                 ->onQueue("analyze_pet_pages");
 
             $crawler = new Crawler($html);
+
             $links = DomAttributeExtractor::getLinksFromWebpage($crawler, $currentUrl);
 
             foreach ($links as $link) {

@@ -69,7 +69,7 @@ class CrawlShelters extends Command
                         $baseUrl,
                         $index + 1,
                         $batches->count(),
-                    );
+                    )->onQueue("extract_pet_shelters");
                 } catch (Exception $exception) {
                     $this->error("Failed to dispatch job for batch " . ($index + 1) . ": " . $exception->getMessage());
                     Log::error("Dispatch failed", [

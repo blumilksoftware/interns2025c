@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Helpers\UrlFormatHelper;
 use App\Models\Pet;
-use App\Models\PetShelter;
-use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class PetService
 {
+    public function __construct(
+        private readonly TagService $tagService,
+        private readonly PetShelterService $petShelterService,
+    ) {}
+
     public function store(array $petData, string $shelterUrl, string $extractedPetAdoptionUrl): void
     {
         if (empty($petData)) {
@@ -28,27 +29,30 @@ class PetService
             return;
         }
 
-        $shelterId = $this->findShelterByItsUrlHost($shelterUrl)?->id;
+        $shelterId = $this->petShelterService->findShelterByItsUrlHost($shelterUrl)?->id;
 
         foreach ($petData["animals"] ?? [] as $animal) {
+            $animalTagsText = $animal["tags"] ?? ($petData["tags"] ?? "");
+            $tags = $this->tagService->extractTagsFromText($animalTagsText);
+            $tagIds = $this->tagService->processTagsAndGetIds($tags);
             $identifyingAttributes = [
                 "name" => $animal["name"],
+                "shelter_id" => $shelterId,
+            ];
+
+            $attributes = [
                 "species" => $animal["species"],
                 "behavioral_notes" => $animal["behavioral_notes"] ?? null,
-                "shelter_id" => $shelterId,
                 "sex" => $animal["sex"],
                 "breed" => $animal["breed"] ?? null,
                 "weight" => $animal["weight"] ?? null,
                 "chip_number" => $animal["chip_number"] ?? null,
                 "found_location" => $animal["found_location"] ?? null,
-            ];
-
-            $attributes = [
                 "age" => $animal["age"] ?? null,
                 "size" => $animal["size"] ?? null,
                 "color" => $animal["color"] ?? null,
                 "sterilized" => $animal["sterilized"] ?? null,
-                "description" => $animal["description"],
+                "description" => $animal["description"] ?? "",
                 "health_status" => $animal["health_status"] ?? null,
                 "current_treatment" => $animal["current_treatment"] ?? null,
                 "vaccinated" => $animal["vaccinated"] ?? null,
@@ -65,51 +69,15 @@ class PetService
                 "admission_date" => isset($animal["admission_date"]) ? Carbon::parse($animal["admission_date"]) : null,
                 "has_chip" => $animal["has_chip"] ?? null,
                 "adoption_url" => $extractedPetAdoptionUrl,
+                "image_urls" => array_values($petData["image_urls"] ?? null),
+                "is_accepted" => false,
             ];
 
-            Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
+            $pet = Pet::query()->updateOrCreate($identifyingAttributes, $attributes);
+
+            if (!empty($tagIds)) {
+                $pet->tags()->syncWithoutDetaching($tagIds);
+            }
         }
-
-        $tags = $this->extractTagsFromText(
-            $petData["tags"] ?? "",
-        );
-
-        foreach ($tags as $tag) {
-            Tag::query()->firstOrCreate(["name" => $tag]);
-        }
-    }
-
-    private function findShelterByItsUrlHost(string $shelterUrl): PetShelter|null
-    {
-        if (!$shelterUrl) {
-            Log::error("Shelter URL is empty or invalid.");
-
-            return null;
-        }
-
-        $host = UrlFormatHelper::getUrlHost($shelterUrl);
-
-        $shelter = PetShelter::where("url", "like", "%" . $host . "%")->first();
-
-        if ($shelter) {
-            return $shelter;
-        }
-        Log::warning("No shelter found for URL: $shelterUrl");
-
-        return null;
-    }
-
-    private function extractTagsFromText(string $text, string $delimiter = " "): array
-    {
-        if (empty($text)) {
-            return [];
-        }
-
-        return Str::of($text)
-            ->explode($delimiter)
-            ->map(fn(string $tag): string => trim($tag))
-            ->filter()
-            ->unique()
-            ->toArray();
     }
 }

@@ -24,7 +24,6 @@ class PetTest extends TestCase
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
-
         $petData = Pet::factory()->make()->toArray();
         $petData["shelter_id"] = $shelter->id;
 
@@ -76,7 +75,7 @@ class PetTest extends TestCase
 
     public function testCannotCreatePetWithInvalidData(): void
     {
-        $pet = ["species" => "dog", "description" => ""];
+        $pet = ["species" => "dog", "description" => "", "adoption_status" => "available"];
 
         $response = $this->post("/pets", $pet);
         $response->assertStatus(302);

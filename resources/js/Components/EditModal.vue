@@ -100,14 +100,17 @@ watch(() => props.item, (newItem) => {
     for (const fieldKey of allConfiguredFields) {
       const fieldType = getColumnType(props.dataSetType, fieldKey)
       if (fieldType === 'array' && Array.isArray(editData.value[fieldKey])) {
-        editData.value[fieldKey] = fieldKey === 'tags' 
-          ? convertTagsToDisplayFormat(editData.value[fieldKey])
-          : convertArrayToDisplayFormat(editData.value[fieldKey])
+        if (fieldKey === 'tags') {
+          editData.value[fieldKey] = convertTagsToDisplayFormat(editData.value[fieldKey])
+        } else if (fieldKey === 'image_urls') {
+          editData.value[fieldKey] = editData.value[fieldKey].join('\n')
+        } else {
+          editData.value[fieldKey] = convertArrayToDisplayFormat(editData.value[fieldKey])
+        }
       }
     }
   }
 }, { immediate: true, deep: true })
-
 
 const editableFields = computed(() => {
   if (!props.item || Object.keys(props.item).length === 0) return []
@@ -195,7 +198,6 @@ const validateForm = () => {
   return Object.keys(errors.value).length === 0
 }
 
-
 const closeModal = () => {
   errors.value = {}
   emit('close')
@@ -211,9 +213,19 @@ const prepareDataForSave = () => {
 
     if (field.type === 'array') {
       if (cleanedData[field.key] && typeof cleanedData[field.key] === 'string') {
-        cleanedData[field.key] = field.key === 'tags'
-          ? convertTagNamesToArray(cleanedData[field.key])
-          : cleanedData[field.key].split(',').map(item => item.trim()).filter(item => item.length > 0)
+        if (field.key === 'tags') {
+          cleanedData[field.key] = convertTagNamesToArray(cleanedData[field.key])
+        } else if (field.key === 'image_urls') {
+          cleanedData[field.key] = cleanedData[field.key]
+            .split(/\n+/)
+            .map(item => item.trim())
+            .filter(item => item.length > 0)
+        } else {
+          cleanedData[field.key] = cleanedData[field.key]
+            .split(',')
+            .map(item => item.trim())
+            .filter(item => item.length > 0)
+        }
       } else if (!Array.isArray(cleanedData[field.key])) {
         cleanedData[field.key] = []
       }
@@ -250,7 +262,6 @@ const deleteItem = () => {
 const cancelDelete = () => {
   toggleDeleteConfirm(false)
 }
-
 
 const getItemDisplayName = () => {
   return 'Item'
@@ -316,6 +327,21 @@ const handleKeydown = (event) => {
                       ]"
                     >
 
+                    <textarea
+                      v-else-if="field.type === 'array' && field.key === 'image_urls'"
+                      :id="field.key"
+                      v-model="editData[field.key]"
+                      rows="6"
+                      :required="field.required"
+                      placeholder="Enter one URL per line"
+                      :class="[
+                        'mt-1 block w-full rounded-md shadow-sm sm:text-sm',
+                        errors[field.key]
+                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
+                      ]"
+                    />
+
                     <input
                       v-else-if="field.type === 'array'"
                       :id="field.key"
@@ -375,7 +401,6 @@ const handleKeydown = (event) => {
                         {{ option }}
                       </option>
                     </select>
-
                     <input
                       v-else-if="field.type === 'datetime-local'"
                       :id="field.key"
