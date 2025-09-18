@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FavouriteRequest;
 use App\Models\Pet;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class FavouriteController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    public function store(FavouriteRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            "pet_id" => ["required", "exists:pets,id"],
-        ]);
-
-        $pet = Pet::findOrFail($validated["pet_id"]);
+        $pet = Pet::findOrFail($request->validated()["pet_id"]);
         $user = $request->user();
 
         $this->authorize("favouriteCreate", $pet);
