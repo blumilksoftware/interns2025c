@@ -31,7 +31,10 @@ const characteristics = computed(() => [
 <template>
   <div class="overflow-hidden py-8 sm:py-12">
     <div class="relative isolate">
-      <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
+      <div class="flex items-center justify-center">
+        <h1 class="text-4xl font-bold text-center text-gray-900">{{ t('dashboard.mvp.title') }}</h1>
+      </div>
+      <div class="mx-auto max-w-6xl sm:px-6 lg:px-8 py-12">
         <div class="mx-auto flex max-w-4xl bg-gradient-to-br from-white to-yellow-50 flex-col sm:flex-row border-b-2 border-[#FFD700] sm:border-b-0 sm:ring-2 ring-[#FFD700] sm:shadow-[0_0_30px_rgba(255,215,0,0.3)]  sm:rounded-2xl lg:mx-0 lg:max-w-none xl:gap-x-16">
           <div class="flex items-center justify-center sm:relative overflow-hidden shrink-0 w-full sm:w-72 md:w-80 lg:w-1/3 aspect-[4/3] md:aspect-auto min-h-[240px] md:min-h-[340px] lg:min-h-[420px] rounded-xl lg:rounded-l-xl md:rounded-r-none sm:ring-2 sm:ring-[#FFD700] sm:hadow-[0_0_20px_rgba(255,215,0,0.4)] md:ring-0 md:shadow-none">
             <img class="w-4/5 sm:w-full rounded-l-xl md:rounded-l-2xl h-full object-cover object-center" :src="petData.imageUrl" :alt="`${petData.name} - ${petData.breed}`">
