@@ -4,7 +4,7 @@
     "lead": "ŁapGo pomoże Ci znaleźć i adoptować wymarzonego zwierzaka. Indeksuje zwierzęta ze schronisk w całej Polsce i na podstawie Twoich preferencji pokazuje idealnie dopasowane zwierzęta, wraz z informacjami o tym, jak skontaktować się ze schroniskiem lub odwiedzić Twojego potencjalnego nowego towarzysza.",
     "features": {
       "indexing": {
-        "title": "Indeksujemy schroniska",
+        "title": "Indeksowanie schronisk",
         "desc": "Gromadzimy ogłoszenia z wielu polskich schronisk, abyś miał wszystko w jednym miejscu."
       },
       "matching": {
@@ -12,8 +12,8 @@
         "desc": "Podaj swoje preferencje, a pokażemy Ci zwierzęta najlepiej pasujące do Ciebie."
       },
       "contact": {
-        "title": "Prosty kontakt",
-        "desc": "Łatwe informacje, jak skontaktować się ze schroniskiem i poznać zwierzaka osobiście."
+        "title": "Łatwy kontakt",
+        "desc": "Wszystkie informacje, jak skontaktować się ze schroniskiem i poznać zwierzaka osobiście, znajdziesz w jednym miejscu."
       }
     }
   }

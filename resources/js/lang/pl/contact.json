@@ -5,7 +5,7 @@
     "sections": {
       "email": {
         "title": "E-mail",
-        "value": "contact@example.com",
+        "value": "contact{'@'}example.com",
         "desc": "Napisz do nas, jeśli masz pytania dotyczące adopcji lub działania serwisu."
       },
       "phone": {
