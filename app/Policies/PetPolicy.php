@@ -35,4 +35,14 @@ class PetPolicy
     {
         return $user->hasAdminRole() && $pet->is_accepted === false;
     }
+
+    public function favouriteCreate(User $user, Pet $pet): bool
+    {
+        return !$user->favourites()->where("pet_id", $pet->id)->exists();
+    }
+
+    public function favouriteDelete(User $user, Pet $pet): bool
+    {
+        return $user->favourites()->where("pet_id", $pet->id)->exists();
+    }
 }

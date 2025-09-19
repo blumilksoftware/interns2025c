@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\Role;
+use App\Models\Favourite;
 use App\Models\Pet;
 use App\Models\PetShelter;
 use App\Models\Preference;
@@ -22,6 +23,7 @@ class DemoSeeder extends Seeder
     public const NUMBER_OF_PREFERENCES_PER_USER_TO_CREATE = 20;
     public const NUMBER_OF_TAGS_PER_PREFERENCE = 3;
     public const NUMBER_OF_TAGS_PER_PET = 3;
+    public const NUMBER_OF_FAVOURITES_PER_USER = 2;
 
     public function run(): void
     {
@@ -102,5 +104,16 @@ class DemoSeeder extends Seeder
                 $tags->random(self::NUMBER_OF_TAGS_PER_PET)->pluck("id")->unique()->toArray(),
             );
         });
+
+        foreach ($users as $user) {
+            $randomPets = $pets->random(self::NUMBER_OF_FAVOURITES_PER_USER);
+
+            foreach ($randomPets as $pet) {
+                Favourite::firstOrCreate([
+                    "user_id" => $user->id,
+                    "pet_id" => $pet->id,
+                ]);
+            }
+        }
     }
 }

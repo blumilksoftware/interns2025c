@@ -89,4 +89,9 @@ class Pet extends Model implements HasMedia
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function favourites(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, "favourites");
+    }
 }
