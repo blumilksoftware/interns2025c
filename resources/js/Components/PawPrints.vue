@@ -3,20 +3,34 @@ import { ref, onMounted } from 'vue'
 
 const pawPrints = ref([])
 
-const generatePawPrint = () => {
-  return {
-    x: Math.random() * 100, 
-    y: Math.random() * 100,
-    size: Math.random() * 0.8 + 0.8,
-    rotation: Math.random() * 360,
-    opacity: Math.random() * 0.1 + 0.3,
-    delay: Math.random() * 2,
-  }
-}
-
 onMounted(() => {
-  const count = Math.floor(Math.random() * 11) + 40
-  pawPrints.value = Array.from({ length: count }, generatePawPrint)
+  const count = 90
+  const minDist = 6.5
+  const minDist2 = minDist * minDist
+  const items = []
+  let attempts = 0
+  const maxAttempts = 20000
+  while (items.length < count && attempts < maxAttempts) {
+    attempts++
+    const x = 5 + Math.random() * 90
+    const y = 6 + Math.random() * 88
+    let ok = true
+    for (let i = 0; i < items.length; i++) {
+      const dx = items[i].x - x
+      const dy = items[i].y - y
+      if (dx * dx + dy * dy < minDist2) { ok = false; break }
+    }
+    if (!ok) continue
+    items.push({
+      x,
+      y,
+      size: 0.9 + Math.random() * 0.35,
+      rotation: (Math.random() - 0.5) * 180,
+      opacity: 0.2 + Math.random() * 0.22,
+      delay: items.length * 0.01,
+    })
+  }
+  pawPrints.value = items
 })
 </script>
 
@@ -53,8 +67,6 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 </style>

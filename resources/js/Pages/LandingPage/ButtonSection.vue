@@ -1,6 +1,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import PawPrints from '@/Components/PawPrints.vue'
+import { Link } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 </script>
@@ -19,12 +21,9 @@ const { t } = useI18n()
     <div class="h-1/2 px-6 sm:px-6 lg:px-8">
       <div class="flex justify-center items-center h-full">
         <div class="flex gap-4">
-          <button type="button" class="rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
-            {{ t('landing.hero.adoptButton') }}
-          </button>
-          <button type="button" class="rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
-            {{ t('landing.hero.donateButton') }}
-          </button>
+          <Link :href="routes.dashboard()" class="rounded-full bg-indigo-600 text-pretty inline-flex w-full sm:w-auto items-center justify-center px-6 py-4 text-base sm:px-12 sm:py-6 sm:text-xl font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
+            {{ t('landing.imageSection.goToDashboard') }}
+          </Link>
         </div>
       </div>
     </div>

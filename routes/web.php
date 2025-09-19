@@ -10,16 +10,27 @@ use App\Http\Controllers\PetShelterController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
+use App\Http\Resources\PetIndexResource;
+use App\Models\Pet;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get("/", fn() => Inertia::render("LandingPage/LandingPage", [
-    "canLogin" => Route::has("login"),
-    "canRegister" => Route::has("register"),
-    "laravelVersion" => Application::VERSION,
-    "phpVersion" => PHP_VERSION,
-]));
+Route::get("/", function () {
+    $pets = Pet::with("tags")->latest()->take(12)->get();
+
+    return Inertia::render("LandingPage/LandingPage", [
+        "canLogin" => Route::has("login"),
+        "canRegister" => Route::has("register"),
+        "laravelVersion" => Application::VERSION,
+        "phpVersion" => PHP_VERSION,
+        "pets" => PetIndexResource::collection($pets),
+    ]);
+});
+
+Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+Route::get("/dashboard/matches", [PetController::class, "matches"])->name("dashboard.matches");
+Route::get("/preferences", [PreferenceController::class, "show"])->name("preferences");
 
 Route::middleware([
     "auth:sanctum",
@@ -30,7 +41,6 @@ Route::middleware([
     Route::get("/profile", [UserController::class, "profile"])->name("users.profile");
     Route::put("/users/{user}", [UserController::class, "update"])->name("users.update");
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
-    Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
     Route::resource("preferences", PreferenceController::class)->only(["store", "update", "destroy"]);
     Route::get("/dashboard/matches", [PreferenceController::class, "index"])->name("dashboard.matches");
     Route::resource("favourites", FavouriteController::class)

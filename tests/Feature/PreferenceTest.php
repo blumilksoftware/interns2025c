@@ -19,14 +19,9 @@ class PreferenceTest extends TestCase
         [$user] = $this->createUserWithPreference();
 
         $this->actingAs($user)
-            ->get("/dashboard/matches")
+            ->get("/dashboard")
             ->assertStatus(200)
             ->assertSee("Dashboard");
-    }
-
-    public function testGuestsCannotAccessPreferencesIndex(): void
-    {
-        $this->get("/dashboard/matches")->assertRedirect("/login");
     }
 
     public function testPreferenceCanBeCreated(): void

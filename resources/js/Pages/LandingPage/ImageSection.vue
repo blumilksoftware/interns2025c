@@ -1,12 +1,27 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { dogs, cats } from '@/data/petsData.js'
 import { Link } from '@inertiajs/vue3'
-import { routes } from '@/routes.js'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 
-const animals = [...dogs, ...cats].slice(0, 6)
+const props = defineProps({
+  pets: {
+    type: [Array, Object],
+    default: () => [],
+  },
+})
+
+const sourcePets = Array.isArray(props.pets) ? props.pets : (props.pets?.data || [])
+const animals = (sourcePets || []).slice(0, 6).map((p) => ({
+  id: p.id,
+  name: p.name,
+  species: p.species,
+  breed: p.breed,
+
+  description: p.description,
+  imageUrl: `https://placedog.net/500?id=${p.id || 1}`,
+}))
 
 </script>
 
@@ -15,11 +30,16 @@ const animals = [...dogs, ...cats].slice(0, 6)
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mx-auto max-w-2xl text-center">
         <h2 class="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">{{ t('landing.imageSection.title') }}</h2>
-        <p class="mt-2 text-lg/8 text-gray-600">{{ t('landing.imageSection.subtitle') }}</p>
+        <p class="mt-2 text-lg/8 pt-6 text-gray-600">{{ t('landing.imageSection.subtitle') }}</p>
+        <div class="mt-6 py-3">
+          <Link :href="routes.preferences.index()" class="rounded-full bg-indigo-600 text-pretty inline-flex w-full sm:w-auto items-center justify-center px-6 py-4 text-base sm:px-12 sm:py-6 sm:text-xl font-semibold text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200">
+            {{ t('landing.imageSection.adoptButton') }}
+          </Link>
+        </div>
       </div>
       <div class="mx-auto mt-16 grid max-w-2xl auto-rows-fr grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
         <article v-for="post in animals" :key="post.id" class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pt-80 pb-8 sm:pt-48 lg:pt-80">
-          <img :src="post.imageUrl" alt="Pet image" class="absolute inset-0 -z-10 size-full object-cover" width="1200" height="800" loading="lazy" decoding="async">
+          <img :src="post.imageUrl" :alt="`${post.name} - ${post.species} - ${post.breed}`" class="absolute inset-0 -z-10 size-full object-cover" width="1200" height="800" loading="lazy" decoding="async">
           <div class="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
           <div class="absolute inset-0 -z-10 rounded-2xl ring-1 ring-gray-900/10" />
           <h3 class="mt-3 text-lg/6 font-semibold text-white">
@@ -34,6 +54,3 @@ const animals = [...dogs, ...cats].slice(0, 6)
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>

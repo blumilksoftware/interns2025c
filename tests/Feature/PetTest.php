@@ -24,9 +24,8 @@ class PetTest extends TestCase
         ]);
         $shelter = PetShelter::factory()->create();
         $user->petShelters()->attach($shelter->id);
-        $petData = Pet::factory()->make([
-            "shelter_id" => $shelter->id,
-        ])->toArray();
+        $petData = Pet::factory()->make()->toArray();
+        $petData["shelter_id"] = $shelter->id;
 
         $response = $this->actingAs($user)->post("/pets", $petData);
 
@@ -46,6 +45,7 @@ class PetTest extends TestCase
 
         $tags = Tag::factory()->count(3)->create();
         $petData = Pet::factory()->make()->toArray();
+        $petData["shelter_id"] = $shelter->id;
 
         $response = $this->actingAs($user)->post("/pets", $petData);
         $response->assertStatus(302);

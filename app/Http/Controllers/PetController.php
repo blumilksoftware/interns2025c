@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PetRequest;
 use App\Http\Resources\PetIndexResource;
+use App\Http\Resources\PetMatchResource;
 use App\Http\Resources\PetShowResource;
 use App\Models\Pet;
 use App\Services\TagService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,18 +22,59 @@ class PetController extends Controller
         private TagService $tagService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $pets = Pet::query()->latest()->paginate(15);
+        $perDog = 20;
+        $perCat = 20;
+        $perOther = 10;
+
+        $dogs = Pet::query()
+            ->with("tags")
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["dog"])
+            ->orderByDesc("id")
+            ->take($perDog)
+            ->get();
+
+        $cats = Pet::query()
+            ->with("tags")
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["cat"])
+            ->orderByDesc("id")
+            ->take($perCat)
+            ->get();
+
+        $others = Pet::query()
+            ->with("tags")
+            ->where("is_accepted", true)
+            ->whereRaw("LOWER(TRIM(species)) = ?", ["other"])
+            ->orderByDesc("id")
+            ->take($perOther)
+            ->get();
+
+        $pets = $dogs->merge($cats)->merge($others)->shuffle()->values();
 
         return Inertia::render("Dashboard/Dashboard", [
             "pets" => PetIndexResource::collection($pets),
         ]);
     }
 
+    public function matches(FindPetsForPreferenceAction $findPetsForPreference): Response
+    {
+        $user = request()->user();
+
+        $preference = $user->preferences()->first();
+
+        $pets = $findPetsForPreference->execute($preference);
+
+        return Inertia::render("Dashboard/Dashboard", [
+            "pets" => PetMatchResource::collection($pets)->resolve(),
+        ]);
+    }
+
     public function show(Pet $pet): Response
     {
-        $pet->load("tags");
+        $pet->load(["tags", "shelter.address"]);
 
         return Inertia::render("Pets/Show", [
             "pet" => new PetShowResource($pet),

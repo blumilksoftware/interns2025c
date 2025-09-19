@@ -1,5 +1,6 @@
 {
   "landing": {
+    "scrollToAdopt": "Adoptuj teraz",
     "hero": {
       "title": "Daj kochający dom futrzastemu przyjacielowi już dziś",
       "subtitle": "Każde zwierzę zasługuje na drugą szansę. Znajdź swojego idealnego towarzysza i zmień jego życie.",
@@ -41,7 +42,9 @@
         "buddy": {"description": "Buddy to 3-letni Golden Retriever. Jest bardzo przyjazny i uwielbia bawić się w aportowanie. Lubi pływać i chodzić na długie spacery."},
         "luna": {"description": "Luna to 2-letnia Husky. Jest bardzo energiczna i uwielbia biegać. Ma piękne niebieskie oczy i lubi bawić się na śniegu."},
         "rocky": {"description": "Rocky to 4-letni Owczarek Niemiecki. Jest bardzo lojalny i opiekuńczy. Uwielbia treningi i lubi być wśród swojej rodziny."}
+      },
+      "adoptButton": "Pomóż nam dobrać idealnego zwierzaka dla Ciebie",
+      "goToDashboard": "Zobacz zwierzaki bez filtrowania"
       }
     }
   }
-}

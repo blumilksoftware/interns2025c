@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\FindPetsForPreferenceAction;
 use App\Http\Requests\PreferenceRequest;
-use App\Http\Resources\PetMatchResource;
+use App\Models\Pet;
 use App\Models\Preference;
+use App\Models\Tag;
 use App\Services\GeocodingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -19,15 +19,47 @@ class PreferenceController extends Controller
         protected GeocodingService $geocodingService,
     ) {}
 
-    public function index(FindPetsForPreferenceAction $findPetsForPreference): Response
+    public function show(): Response
     {
-        $user = request()->user();
-        $preference = $user->preferences()->first();
+        $tags = Tag::query()
+            ->withCount(["pets as accepted_pets_count" => fn($q) => $q->where("is_accepted", true)])
+            ->whereHas("pets", fn($q) => $q->where("is_accepted", true), ">", 1)
+            ->orderByDesc("accepted_pets_count")
+            ->orderBy("name")
+            ->get()
+            ->map(fn(Tag $tag): array => [
+                "value" => $tag->name,
+                "label" => $tag->name,
+                "count" => (int)$tag->accepted_pets_count,
+            ]);
 
-        $pets = $findPetsForPreference->execute($preference);
+        $breedQuery = fn(string $species) => Pet::query()
+            ->where("species", $species)
+            ->where("is_accepted", true)
+            ->whereNotNull("breed")
+            ->where("breed", "!=", "")
+            ->distinct()
+            ->orderBy("breed")
+            ->pluck("breed");
 
-        return Inertia::render("Dashboard/Dashboard", [
-            "pets" => PetMatchResource::collection($pets)->resolve(),
+        $breeds = [
+            "dog" => $breedQuery("dog"),
+            "cat" => $breedQuery("cat"),
+            "other" => $breedQuery("other"),
+        ];
+
+        $colors = Pet::query()
+            ->where("is_accepted", true)
+            ->whereNotNull("color")
+            ->where("color", "!=", "")
+            ->distinct()
+            ->orderBy("color")
+            ->pluck("color");
+
+        return Inertia::render("Preferences/Preferences", [
+            "tags" => $tags,
+            "breeds" => $breeds,
+            "colors" => $colors,
         ]);
     }
 

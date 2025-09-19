@@ -3,14 +3,13 @@ import { computed, ref } from 'vue'
 import Header from '@/Components/Header.vue'
 import Footer from '@/Components/Footer.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import { bestMatches, dogs, cats } from '@/data/petsData.js'
-import { getGenderInfo } from '@/helpers/mappers'
 import PetGallery from './Partials/PetGallery.vue'
 import PetDetails from './Partials/PetDetails.vue'
 import PetLocation from './Partials/PetLocation.vue'
 import PetStrip from '@/Components/PetStrip.vue'
 import { useI18n } from 'vue-i18n'
 import { routes } from '@/routes'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -21,48 +20,42 @@ const props = defineProps({
   },
 })
 
-const allPets = [...bestMatches, ...dogs, ...cats]
-
-const routeId = computed(() => {
-  const path = typeof window !== 'undefined' ? window.location.pathname : ''
-  const match = path.match(/\/(?:pets)(?:\/static)?\/(\d+)/)
-  const id = match ? Number(match[1]) : NaN
-  return Number.isFinite(id) ? id : null
-})
-
-const staticPet = computed(() => allPets.find(pet => pet.id === routeId.value) || null)
-
-const effectivePet = computed(() => {
-  if (props.pet && staticPet.value) {
-    return {
-      ...props.pet,
-      ...staticPet.value,
-    }
+const displayPet = computed(() => {
+  const p = props.pet && typeof props.pet === 'object' && 'data' in props.pet ? props.pet.data : props.pet
+  if (!p) return null
+  const tagNames = Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
+  const imageUrl = `https://placedog.net/500?id=${p.id || 1}`
+  const rawStatus = p.adoption_status ?? p.status
+  const sexValue = String(p.sex ?? p.gender ?? '').toLowerCase()
+  let statusLabel = rawStatus
+  if (String(rawStatus).toLowerCase() === 'available') {
+    statusLabel = (sexValue === 'male' || sexValue === 'm') ? (t('dashboard.mvp.availablemale')) : (t('dashboard.mvp.availablefemale'))
+  } else if (rawStatus) {
+    const statusKey = String(rawStatus).toLowerCase().replaceAll(' ', '_')
+    const translated = t(`dashboard.mvp.statuses.${statusKey}`)
+    statusLabel = translated || rawStatus
   }
-  return props.pet ?? staticPet.value
+  const months = parsePolishAgeToMonths(p.age)
+  const showAge = typeof months === 'number' && months > 0
+  return {
+    ...p,
+    tags: tagNames,
+    status: statusLabel,
+    gender: p.sex ?? p.gender,
+    microchipped: p.has_chip ?? p.microchipped ?? false,
+    imageUrl,
+    age: showAge ? formatAge(months) : null,
+  }
 })
 
-const similarPets = computed(() => {
-  const current = effectivePet.value
-  if (!current) return []
-  const currentTags = new Set(Array.isArray(current.tags) ? current.tags : [])
-  const candidates = allPets.filter(pet => pet.id !== current.id)
-  const scored = candidates.map(pet => {
-    const petTags = Array.isArray(pet.tags) ? pet.tags : []
-    const overlap = petTags.filter(tag => currentTags.has(tag)).length
-    return { pet: pet, score: overlap }
-  })
-  const filtered = scored.filter(s => s.score > 0)
-  filtered.sort((a, b) => b.score - a.score)
-  return filtered.slice(0, 10).map(s => s.pet)
-})
+const similarPets = computed(() => [])
 
 const showSimilarOverlay = ref(false)
 const similarListTitle = ref('')
 const similarList = ref([])
 
 const onShowSimilar = ({ title, pets }) => {
-  similarListTitle.value = title || (t('dashboard.mvp.similarPets') || 'Podobne zwierzaki')
+  similarListTitle.value = title || (t('dashboard.mvp.similarPets'))
   similarList.value = Array.isArray(pets) ? pets : []
   showSimilarOverlay.value = true
 }
@@ -74,22 +67,22 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
     <Head :title="t('titles.petShow')" />     
     <Header />
 
-    <PetGallery v-if="effectivePet" :pet="effectivePet" />
+    <PetGallery v-if="displayPet" :pet="displayPet" />
 
     <div class="mx-auto max-w-6xl px-6 lg:px-2 py-4">
-      <PetDetails v-if="effectivePet" :pet="effectivePet" />
+      <PetDetails v-if="displayPet" :pet="displayPet" />
     </div>
 
     <div v-if="similarPets.length" class="mx-auto max-w-6xl p-6 lg:px-2">
       <PetStrip 
-        :title="t('dashboard.mvp.similarPets') || 'Podobne zwierzaki'" 
+        :title="t('dashboard.mvp.similarPets')" 
         :pets="similarPets"
         @show-pet-list="onShowSimilar"
         @hide-pet-list="onHideSimilar"
       />
     </div>
 
-    <PetLocation />
+    <PetLocation :pet="displayPet" />
 
     <transition 
       enter-active-class="transition-opacity duration-500"
@@ -144,7 +137,7 @@ const onHideSimilar = () => { showSimilarOverlay.value = false }
                     </div>
                   </div>
                   <div class="flex items-center gap-2 mb-3">
-                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ similarPet.age }}</span>
+                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ formatAge(similarPet.age) }}</span>
                     <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ similarPet.status }}</span>
                     <span :class="getGenderInfo(similarPet.gender).color + ' text-xl'">{{ getGenderInfo(similarPet.gender).symbol }}</span>
                   </div>

@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PetStrip from '@/Components/PetStrip.vue'
-import { bestMatches, dogs, cats } from '@/data/petsData.js'
-import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { getGenderInfo } from '@/helpers/mappers'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 import { Link } from '@inertiajs/vue3'
 import { routes } from '@/routes'
 
@@ -16,20 +16,33 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  bestMatchesRest: {
+    type: Array,
+    default: () => [],
+  },
+  dogs: {
+    type: Array,
+    default: () => [],
+  },
+  cats: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['showPetList', 'hidePetList'])
 
-const petTags = getPetTags()
-
 const { t } = useI18n()
 
-const getPetTagsForPet = (pet) => {
-  if (!pet.tags || !Array.isArray(pet.tags)) return []
-  return pet.tags.map(tagId => petTags[tagId]).filter(Boolean)
-}
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags)
+  ? pet.tags.map((t) => (typeof t === 'string' ? t : t?.name)).filter(Boolean)
+  : []
 
-const bestMatchesRest = computed(() => bestMatches.slice(1))
+const descriptionFor = (pet) => {
+  const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
+  if (desc) return desc
+  return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
+}
 
 const handleShowPetList = (data) => {
   emit('showPetList', data)
@@ -86,7 +99,10 @@ const handleHidePetList = () => {
                 </div>
                 
                 <div class="flex items-center gap-2 mb-3">
-                  <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
+                  <span 
+                    v-if="parsePolishAgeToMonths(pet.age) > 0"
+                    class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800"
+                  >{{ formatAge(parsePolishAgeToMonths(pet.age)) }}</span>
                   <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
                   <span :class="getGenderInfo(pet.gender).color + ' text-xl'">{{ getGenderInfo(pet.gender).symbol }}</span>
                 </div>
@@ -94,19 +110,17 @@ const handleHidePetList = () => {
                 <div class="flex flex-wrap gap-1 mb-3">
                   <span 
                     v-for="tag in getPetTagsForPet(pet)" 
-                    :key="`${pet.id}-${tag.name}`"
+                    :key="`${pet.id}-${tag}`"
                     class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium border"
-                    :class="tag.color"
                   >
-                    <span class="text-sm">{{ tag.emoji }}</span>
-                    <span class="text-sm">{{ tag.name }}</span>
+                    <span class="text-sm">{{ tag }}</span>
                   </span>
                 </div>
               </div>
               
               <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
-                <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
+                <p class="text-base text-gray-700 leading-relaxed">{{ descriptionFor(pet) }}</p>
                 <div class="mt-3">
                   <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
                 </div>
