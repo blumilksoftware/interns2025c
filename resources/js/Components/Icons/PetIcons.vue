@@ -5,8 +5,8 @@
 <script setup>
 import { computed } from 'vue'
 import {
-  IconCircleArrowRight,
-  IconShieldCheck,
+  IconCake,
+  IconDog,
   IconGenderMale,
   IconGenderFemale,
   IconCircleCheck,
@@ -36,8 +36,8 @@ const props = defineProps({
 })
 
 const map = {
-  'age': { comp: IconCircleArrowRight, class: 'mt-1 size-4 text-amber-500 flex-none' },
-  'breed': { comp: IconShieldCheck, class: 'mt-1 size-4 text-green-400 flex-none' },
+  'age': { comp: IconCake, class: 'mt-1 size-4 text-amber-500 flex-none' },
+  'breed': { comp: IconDog, class: 'mt-1 size-4 text-green-400 flex-none' },
   'male': { comp: IconGenderMale, class: 'mt-1 size-4 text-sky-500 flex-none' },
   'female': { comp: IconGenderFemale, class: 'mt-1 size-4 text-pink-500 flex-none' },
   'default': { comp: IconCircleCheck, class: 'mt-1 size-4 text-blue-500 flex-none' },
