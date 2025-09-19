@@ -8,23 +8,29 @@ const hasActions = computed(() => !! useSlots().actions)
 </script>
 
 <template>
-  <div class="md:grid md:grid-cols-3 md:gap-6">
-    <SectionTitle>
-      <template #title>
-        <slot name="title" />
-      </template>
-      <template #description>
-        <slot name="description" />
-      </template>
-    </SectionTitle>
+  <div class="flex flex-row min-h-[300px] justify-center">
+    <div class="flex flex-row justify-around items-center w-1/4 px-8">
+      <SectionTitle>
+        <template #title>
+          <div class="text-end text-xl">
+            <slot name="title" />
+          </div>
+        </template>
+        <template #description>
+          <div class="mt-2 text-end">
+            <slot name="description" />
+          </div>
+        </template>
+      </SectionTitle>
+    </div>
 
-    <div class="mt-5 md:mt-0 md:col-span-2">
-      <form @submit.prevent="$emit('submitted')">
+    <div class="flex flex-row justify-center items-center w-1/2 px-8">
+      <form class="w-full max-w-md" @submit.prevent="$emit('submitted')">
         <div
-          class="px-4 py-5 sm:p-6 rounded"
+          class="px-4 py-5 sm:p-6 rounded bg-white shadow "
           :class="hasActions ? 'sm:rounded-tl-md sm:rounded-tr-md' : 'sm:rounded-md'"
         >
-          <div class="grid mb-4 justify-center gap-6">
+          <div class="mb-4 gap-6 flex flex-col ">
             <slot name="form" />
           </div>
           <div v-if="hasActions" class="flex items-center justify-end px-4 py-3 text-end sm:px-6 rounded sm:rounded-b-md">

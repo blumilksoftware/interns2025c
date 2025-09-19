@@ -52,7 +52,6 @@ const mobileMenuOpen = ref(false)
 
               <span v-else class="inline-flex rounded-md">
                 <button type="button" aria-label="User menu" class="inline-flex items-center px-3 py-2 text-sm font-semibold rounded-md text-gray-900  hover:bg-white transition ease-in-out duration-150">
-                  {{ $page.props.auth.user.name }}
                   <IconMenu2 class="size-6" />
                 </button>
               </span>
