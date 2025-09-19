@@ -73,6 +73,11 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         return $this->hasMany(Preference::class);
     }
 
+    public function favourites(): BelongsToMany
+    {
+        return $this->belongsToMany(Pet::class, "favourites");
+    }
+
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));

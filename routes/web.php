@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\PetShelterAddressController;
 use App\Http\Controllers\PetShelterController;
@@ -36,6 +37,9 @@ Route::middleware([
     Route::delete("/users/{user}", [UserController::class, "destroy"])->name("users.destroy");
     Route::resource("preferences", PreferenceController::class)->only(["store", "update", "destroy"]);
     Route::get("/dashboard/matches", [PreferenceController::class, "index"])->name("dashboard.matches");
+    Route::resource("favourites", FavouriteController::class)
+        ->only(["store", "destroy"])
+        ->parameters(["favourites" => "pet"]);
 });
 
 Route::middleware([
