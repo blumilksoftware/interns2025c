@@ -39,8 +39,8 @@ const mobileMenuOpen = ref(false)
       </div>
       <PopoverGroup class="hidden lg:flex lg:gap-x-12">
         <NavLink :href="routes.dashboard()">{{ t('landing.navigation.pets') }}</NavLink>
-        <NavLink href="#">{{ t('landing.navigation.about') }}</NavLink>
-        <NavLink href="#">{{ t('landing.navigation.contact') }}</NavLink>
+        <NavLink :href="routes.about()">{{ t('landing.navigation.about') }}</NavLink>
+        <NavLink :href="routes.contact()">{{ t('landing.navigation.contact') }}</NavLink>
       </PopoverGroup>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
         <template v-if="$page.props.auth.user">
@@ -97,8 +97,8 @@ const mobileMenuOpen = ref(false)
             <div class="-my-6 divide-y divide-gray-500/10">
               <div class="space-y-2 py-6 flex flex-col">
                 <NavLink :href="routes.dashboard()">{{ t('landing.navigation.pets') }}</NavLink>
-                <NavLink href="#">{{ t('landing.navigation.about') }}</NavLink>
-                <NavLink href="#">{{ t('landing.navigation.contact') }}</NavLink>
+                <NavLink :href="routes.about()">{{ t('landing.navigation.about') }}</NavLink>
+                <NavLink :href="routes.contact()">{{ t('landing.navigation.contact') }}</NavLink>
                 <form method="POST" :action="routes.logout()" @submit.prevent="$inertia.post(routes.logout())">
                   <NavLink as="button">
                     {{ t('navigation.logOut') }}
@@ -116,6 +116,3 @@ const mobileMenuOpen = ref(false)
     </Dialog>
   </header>
 </template>
-  
-<style scoped>
-</style>

@@ -1,0 +1,24 @@
+{
+  "contact": {
+    "title": "Kontakt",
+    "lead": "Masz pytania lub chcesz nawiązać współpracę? Skontaktuj się z nami – odpowiemy tak szybko, jak to możliwe.",
+    "sections": {
+      "email": {
+        "title": "E-mail",
+        "value": "contact@example.com",
+        "desc": "Napisz do nas, jeśli masz pytania dotyczące adopcji lub działania serwisu."
+      },
+      "phone": {
+        "title": "Telefon",
+        "value": "+48 123 456 789",
+        "desc": "Jesteśmy dostępni w dni robocze w godzinach 9:00–17:00."
+      },
+      "github": {
+        "title": "GitHub",
+        "value": "blumilksoftware/interns2025c",
+        "desc": "Zgłaszaj propozycje, problemy lub śledź rozwój projektu."
+      }
+    }
+  }
+}
+

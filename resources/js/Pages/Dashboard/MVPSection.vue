@@ -32,7 +32,7 @@ const characteristics = computed(() => [
   <div class="overflow-hidden py-8 sm:py-12">
     <div class="relative isolate">
       <div class="flex items-center justify-center">
-        <h1 class="text-4xl font-bold text-center text-gray-900">{{ t('dashboard.mvp.title') }}</h1>
+        <h1 class="text-2xl p-4 md:text-4xl font-bold text-center text-gray-900">{{ t('dashboard.mvp.title') }}</h1>
       </div>
       <div class="mx-auto max-w-6xl sm:px-6 lg:px-8 py-12">
         <div class="mx-auto flex max-w-4xl bg-gradient-to-br from-white to-yellow-50 flex-col sm:flex-row border-b-2 border-[#FFD700] sm:border-b-0 sm:ring-2 ring-[#FFD700] sm:shadow-[0_0_30px_rgba(255,215,0,0.3)]  sm:rounded-2xl lg:mx-0 lg:max-w-none xl:gap-x-16">
@@ -42,7 +42,7 @@ const characteristics = computed(() => [
           <div class="w-full flex-auto p-4 sm:p-8">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-xl sm:text-2xl md:text-4xl font-bold tracking-tight text-pretty text-[#3B2F1A]">{{ t('dashboard.mvp.meetPet') }} {{ petData.name }}</h2>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-4">
                 <HeartIcon class="size-5 text-red-500 animate-heartbeat" />
                 <span class="text-sm font-bold text-red-600">{{ t('dashboard.mvp.featuredPet') }}</span>
               </div>

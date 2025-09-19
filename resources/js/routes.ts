@@ -1,6 +1,8 @@
 export const routes = {
   home: () => '/',
   dashboard: () => '/dashboard',
+  about: () => '/about',
+  contact: () => '/contact',
   login: () => '/login',
   register: () => '/register',
   logout: () => '/logout',
@@ -67,4 +69,3 @@ export function isActive(currentUrl: string, path: string): boolean {
   const currentPath = currentUrl.split('?')[0]
   return currentPath === path
 }
-
