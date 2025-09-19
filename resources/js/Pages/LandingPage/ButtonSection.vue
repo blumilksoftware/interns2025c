@@ -19,7 +19,7 @@ const { t } = useI18n()
     <div class="h-1/2 px-6 sm:px-6 lg:px-8">
       <div class="flex justify-center items-center h-full">
         <div class="flex gap-4">
-          <button type="button" class="rounded-lg inline-flex gap-3 items-center bg-white px-8 py-4 text-lg font-semibold text-black shadow-lg hover:scale-105 duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black border-2 border-gray-300 transition hover:cursor-pointer duration-200">
+          <button type="button" class="rounded-lg inline-flex gap-3 items-center bg-white px-8 py-4 text-lg font-semibold text-black shadow-lg hover:border-black hover:scale-105 duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black border-2 border-gray-300 transition hover:cursor-pointer duration-200">
             {{ t('landing.hero.adoptButton') }}
             <svg
               width="24"

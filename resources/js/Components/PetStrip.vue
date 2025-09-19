@@ -124,7 +124,7 @@ nextTick(() => {
               <HeartOutlineIcon v-else class="size-4 sm:size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>
             
-            <div class="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white rounded-full pointer-events-none">
+            <div class="absolute bottom-2 sm:top-3 left-2 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white rounded-full pointer-events-none">
               <span :class="getGenderInfo(pet.gender).color">{{ getGenderInfo(pet.gender).symbol }}</span>
             </div>
           </div>
@@ -159,6 +159,3 @@ nextTick(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style> 

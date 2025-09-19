@@ -13,9 +13,9 @@ defineProps({
 <template>
   <div>
     <Head :title="title" />
-    <div class="min-h-screen bg-soft-cream/50 relative">
+    <div class="min-h-screen relative flex flex-col">
       <Header />
-      <main>
+      <main class="flex-1">
         <slot />
       </main>
       <Footer />

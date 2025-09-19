@@ -70,7 +70,7 @@ const handleHidePetList = () => {
             <div class="flex flex-col md:flex-row md:items-center">
               <div class="w-full md:w-[40vw] lg:w-80 shrink-0">
                 <img 
-                  class="w-full h-auto object-cover cursor-pointer" 
+                  class="w-full aspect-square object-cover cursor-pointer" 
                   :src="pet.imageUrl" 
                   :alt="`${pet.name} - ${pet.breed}`" 
                   @click="handleShowPetList(pet)"
@@ -81,14 +81,16 @@ const handleHidePetList = () => {
                 <div class="flex items-start justify-between mb-2">
                   <div>
                     <h3 class="text-xl font-bold text-gray-900">{{ pet.name }}</h3>
-                    <p class="text-base text-gray-600">{{ pet.breed }}</p>
+                    <p class="text-base text-gray-600">
+                      {{ pet.breed }}                   
+                      <span :class="getGenderInfo(pet.gender).color">{{ getGenderInfo(pet.gender).symbol }}</span>
+                    </p>
                   </div>
                 </div>
                 
                 <div class="flex items-center gap-2 mb-3">
                   <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm font-semibold text-blue-800">{{ pet.age }}</span>
                   <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-sm font-semibold text-green-800">{{ pet.status }}</span>
-                  <span :class="getGenderInfo(pet.gender).color + ' text-xl'">{{ getGenderInfo(pet.gender).symbol }}</span>
                 </div>
                 
                 <div class="flex flex-wrap gap-1 mb-3">
@@ -104,11 +106,11 @@ const handleHidePetList = () => {
                 </div>
               </div>
               
-              <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200 bg-gray-50">
+              <div class="w-full md:w-80 p-4 border-t md:border-t-0 md:border-l border-gray-200">
                 <h4 class="text-base font-semibold text-gray-700 mb-2">{{ t('dashboard.aboutPet') }}</h4>
                 <p class="text-base text-gray-700 leading-relaxed">{{ pet.description }}</p>
                 <div class="mt-3">
-                  <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 font-semibold">{{ t('dashboard.mvp.seeMore') }} →</Link>
+                  <Link :href="routes.pets.show(pet.id)" class="text-indigo-600 hover:text-indigo-800 transition-all duration-300 font-semibold">{{ t('dashboard.mvp.seeMore') }}</Link>
                 </div>
               </div>
             </div>
