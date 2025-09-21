@@ -32,6 +32,11 @@ Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
 Route::get("/dashboard/matches", [PetController::class, "matches"])->name("dashboard.matches");
 Route::get("/preferences", [PreferenceController::class, "show"])->name("preferences");
 
+Route::get("/dashboard", [PetController::class, "index"])->name("dashboard");
+
+Route::get("/about", fn() => Inertia::render("About"))->name("about");
+Route::get("/contact", fn() => Inertia::render("Contact"))->name("contact");
+
 Route::middleware([
     "auth:sanctum",
     config("jetstream.auth_session"),

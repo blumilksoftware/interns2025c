@@ -68,6 +68,7 @@ RUN apt-get update \
         --with-jpeg \
         --with-webp \
     && docker-php-ext-install \
+        exif \
         gd \
         zip \
         pdo_pgsql

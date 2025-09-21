@@ -129,12 +129,10 @@ nextTick(() => {
     <div class="flex items-center justify-between mb-4 sm:mb-6">
       <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{{ title }}</h2>
       <button 
-        class="relative cursor-pointer overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:translate-x-1 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
-        :aria-label="`${t('dashboard.mvp.seeMore')}: ${title}`"
+        class="relative cursor-pointer overflow-hidden text-xs sm:text-sm text-left text-purple-600 hover:text-purple-800 font-medium transition-transform duration-300 hover:scale-105 after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-purple-600 after:to-purple-500 hover:after:w-full after:transition-[width] after:duration-300"
         @click="showPetListHandler"
       >
-        <span class="sr-only">{{ `${t('dashboard.mvp.seeMore')}: ${title}` }}</span>
-        {{ t('dashboard.mvp.seeMore') }} →
+        {{ t('dashboard.mvp.seeMore') }}
       </button>
     </div>
     
@@ -191,8 +189,8 @@ nextTick(() => {
               <HeartOutlineIcon v-else class="size-4 sm:size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>
             
-            <div class="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white/70 rounded-full pointer-events-none">
-              <span :class="getGenderInfo(pet.sex).color">{{ getGenderInfo(pet.sex).symbol }}</span>
+            <div class="absolute bottom-2 sm:top-3 left-2 size-7 sm:size-8 flex items-center justify-center text-white text-lg sm:text-2xl font-bold drop-shadow-lg bg-white rounded-full pointer-events-none">
+              <span :class="getGenderInfo(pet.gender).color">{{ getGenderInfo(pet.gender).symbol }}</span>
             </div>
           </div>
           
