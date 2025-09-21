@@ -178,6 +178,27 @@ const getPetStatusVisual = (pet) => {
           </div>
         </div>
       </div>
+
+      <!-- Adoption Announcement Link -->
+      <div v-if="props.pet?.adoption_url" class="mt-8 pt-6 border-t border-gray-200">
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ t('dashboard.mvp.adoptionAnnouncement') }}</h3>
+            <p class="text-sm text-gray-600 mb-4">{{ t('dashboard.mvp.adoptionAnnouncementDescription') }}</p>
+            <a
+              :href="props.pet.adoption_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
+            >
+              <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              {{ t('dashboard.mvp.viewAdoptionPost') }}
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

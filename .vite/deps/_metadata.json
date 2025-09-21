@@ -1,0 +1,46 @@
+{
+  "hash": "d8c19486",
+  "configHash": "0dd07568",
+  "lockfileHash": "bd03d488",
+  "browserHash": "fdd75e34",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "069b0c7a",
+      "needsInterop": false
+    },
+    "@inertiajs/vue3": {
+      "src": "../../node_modules/@inertiajs/vue3/dist/index.esm.js",
+      "file": "@inertiajs_vue3.js",
+      "fileHash": "23c0e534",
+      "needsInterop": false
+    },
+    "laravel-vite-plugin/inertia-helpers": {
+      "src": "../../node_modules/laravel-vite-plugin/inertia-helpers/index.js",
+      "file": "laravel-vite-plugin_inertia-helpers.js",
+      "fileHash": "a1bbb95d",
+      "needsInterop": false
+    },
+    "vue-i18n": {
+      "src": "../../node_modules/vue-i18n/dist/vue-i18n.mjs",
+      "file": "vue-i18n.js",
+      "fileHash": "d00f6b7e",
+      "needsInterop": false
+    },
+    "vue-easy-lightbox": {
+      "src": "../../node_modules/vue-easy-lightbox/dist/vue-easy-lightbox.esm.min.js",
+      "file": "vue-easy-lightbox.js",
+      "fileHash": "2891bf60",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-Y7TKRIWE": {
+      "file": "chunk-Y7TKRIWE.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
+}

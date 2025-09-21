@@ -29,7 +29,7 @@ class PetController extends Controller
         $perOther = 10;
 
         $dogs = Pet::query()
-            ->with("tags")
+            ->with(["tags", "media"])
             ->where("is_accepted", true)
             ->whereRaw("LOWER(TRIM(species)) = ?", ["dog"])
             ->orderByDesc("id")
@@ -37,7 +37,7 @@ class PetController extends Controller
             ->get();
 
         $cats = Pet::query()
-            ->with("tags")
+            ->with(["tags", "media"])
             ->where("is_accepted", true)
             ->whereRaw("LOWER(TRIM(species)) = ?", ["cat"])
             ->orderByDesc("id")
@@ -45,7 +45,7 @@ class PetController extends Controller
             ->get();
 
         $others = Pet::query()
-            ->with("tags")
+            ->with(["tags", "media"])
             ->where("is_accepted", true)
             ->whereRaw("LOWER(TRIM(species)) = ?", ["other"])
             ->orderByDesc("id")
@@ -74,7 +74,7 @@ class PetController extends Controller
 
     public function show(Pet $pet): Response
     {
-        $pet->load(["tags", "shelter.address"]);
+        $pet->load(["tags", "shelter.address", "media"]);
 
         return Inertia::render("Pets/Show", [
             "pet" => new PetShowResource($pet),

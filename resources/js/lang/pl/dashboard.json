@@ -63,7 +63,10 @@
         "chippedDesc": "Chip identyfikacyjny",
         "sterilized": "Wykastrowany",
         "sterilizedDesc": "Sterylizacja wykonana"
-      }
+      },
+      "adoptionAnnouncement": "Ogłoszenie adopcyjne",
+      "adoptionAnnouncementDescription": "Zobacz oryginalne ogłoszenie adopcyjne tego zwierzaka",
+      "viewAdoptionPost": "Zobacz ogłoszenie"
     }
   }
 }

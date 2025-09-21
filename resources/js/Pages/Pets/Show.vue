@@ -24,7 +24,10 @@ const displayPet = computed(() => {
   const p = props.pet && typeof props.pet === 'object' && 'data' in props.pet ? props.pet.data : props.pet
   if (!p) return null
   const tagNames = Array.isArray(p.tags) ? p.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : []
-  const imageUrl = `https://placedog.net/500?id=${p.id || 1}`
+  const originals = Array.isArray(p.photos) ? p.photos : []
+  const previews = Array.isArray(p.photos_preview) ? p.photos_preview : []
+  const photos = originals.length ? originals : previews
+  const imageUrl = (photos && photos.length) ? photos[0] : null
   const rawStatus = p.adoption_status ?? p.status
   const sexValue = String(p.sex ?? p.gender ?? '').toLowerCase()
   let statusLabel = rawStatus
@@ -39,6 +42,7 @@ const displayPet = computed(() => {
   const showAge = typeof months === 'number' && months > 0
   return {
     ...p,
+    photos,
     tags: tagNames,
     status: statusLabel,
     gender: p.sex ?? p.gender,

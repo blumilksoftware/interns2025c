@@ -14,9 +14,16 @@ const props = defineProps({
 const imageUrls = computed(() => {
   const pet = props.pet
   if (!pet) return []
-  if (Array.isArray(pet.photos) && pet.photos.length) return pet.photos
+  const originals = Array.isArray(pet.photos) ? pet.photos : []
+  const previews = Array.isArray(pet.photos_preview) ? pet.photos_preview : []
+  if (originals.length) return originals
+  if (previews.length) return previews
   if (pet.imageUrl) return [pet.imageUrl]
   return []
+})
+
+const hasImages = computed(() => {
+  return imageUrls.value.length > 0
 })
 
 const currentImageIndex = ref(0)
@@ -170,14 +177,14 @@ onBeforeUnmount(() => {
     @touchmove="handleTouchMove"
     @touchend="handleTouchEnd"
   >
-    <div v-if="imageUrls.length > 0" class="relative hidden sm:flex h-80 md:h-128 justify-center">
-      <div 
-        class="flex h-full transition-transform duration-300 ease-out" 
+    <div v-if="hasImages" class="relative hidden sm:flex h-80 md:h-128 justify-center">
+      <div
+        class="flex h-full transition-transform duration-300 ease-out"
         :class="{ 'ml-[50vw]': hasMultipleImages, 'duration-0': isDragging }"
         :style="{ transform: carouselTransform, 'will-change': 'transform', 'touch-action': 'pan-y' }"
       >
-        <div 
-          v-for="(url, index) in imageUrls" 
+        <div
+          v-for="(url, index) in imageUrls"
           :key="index"
           class="w-[50vw] shrink-0 px-2 md:px-[2vw] lg:px-[5vw]"
         >
@@ -195,7 +202,19 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-if="imageUrls.length > 0" class="relative sm:hidden">
+    <div v-else class="relative hidden sm:flex h-80 md:h-128 justify-center">
+      <div class="flex justify-center items-center h-full w-full bg-gray-100 rounded-lg">
+        <div class="text-center text-gray-500">
+          <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">{{ t('pets.gallery.noImagesTitle') }}</h3>
+          <p class="text-sm text-gray-500">{{ t('pets.gallery.noImagesText') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="hasImages" class="relative sm:hidden">
       <div class="relative w-full h-72 overflow-hidden">
         <div
           class="flex h-full transition-transform duration-300 ease-out"
@@ -215,9 +234,21 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <button 
-      v-if="imageUrls.length > 1"
-      type="button" 
+    <div v-else class="relative sm:hidden">
+      <div class="w-full h-72 flex items-center justify-center bg-gray-100 rounded-lg">
+        <div class="text-center text-gray-500 px-4">
+          <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 class="text-base font-medium text-gray-900 mb-1">{{ t('pets.gallery.noImagesTitle') }}</h3>
+          <p class="text-xs text-gray-500">{{ t('pets.gallery.noImagesText') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <button
+      v-if="hasMultipleImages"
+      type="button"
       :disabled="currentImageIndex === 0"
       class="absolute inset-y-0 start-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-s-lg disabled:opacity-50 disabled:cursor-not-allowed"
       @click="prevImage"
@@ -229,9 +260,9 @@ onBeforeUnmount(() => {
       </span>
       <span class="sr-only">{{ t('pets.gallery.previous') }}</span>
     </button>
-    <button 
-      v-if="imageUrls.length > 1"
-      type="button" 
+    <button
+      v-if="hasMultipleImages"
+      type="button"
       :disabled="currentImageIndex >= imageUrls.length - 1"
       class="absolute inset-y-0 end-0 inline-flex justify-center items-center w-11.5 h-full text-gray-800 hover:bg-gray-800/10 focus:outline-hidden focus:bg-gray-800/10 rounded-e-lg disabled:opacity-50 disabled:cursor-not-allowed"
       @click="nextImage"

@@ -17,6 +17,27 @@ class PetIndexResource extends JsonResource
         return [
             "id" => $pet->id,
             "name" => $pet->name,
+            // First existing media URL for cards/strips
+            "image_url" => (function () use ($pet) {
+                $mediaItems = $pet->getMedia("pet_images");
+                foreach ($mediaItems as $media) {
+                    $path = $media->getPath();
+                    if (is_string($path) && file_exists($path)) {
+                        return $media->getUrl();
+                    }
+                }
+                return null;
+            })(),
+            "has_images" => (function () use ($pet) {
+                $mediaItems = $pet->getMedia("pet_images");
+                foreach ($mediaItems as $media) {
+                    $path = $media->getPath();
+                    if (is_string($path) && file_exists($path)) {
+                        return true;
+                    }
+                }
+                return false;
+            })(),
             "species" => $pet->species,
             "breed" => $pet->breed,
             "sex" => $pet->sex,

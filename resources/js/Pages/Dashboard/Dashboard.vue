@@ -34,7 +34,7 @@ onMounted(() => {
 })
 
 const page = usePage()
-const petImageFor = (_base, idx) => `https://placedog.net/500?id=${idx + 1}`
+const petImageFor = (base) => (base && base.image_url) ? base.image_url : null
 
 const normalizeEnum = (v) => (v && typeof v === 'object') ? (('value' in v) ? v.value : (('name' in v) ? v.name : String(v))) : v
 
@@ -54,13 +54,14 @@ const pets = computed(() => (sourcePets.value || []).map((p, idx) => {
     statusLabel = t(`dashboard.mvp.statuses.${statusKey}`)
   }
 
+  const img = petImageFor(base)
   return {
     ...base,
     species: String(normalizeEnum(base.species) ?? '').trim().toLowerCase(),
     sex: sexNormalized,
     gender: base.sex ?? base.gender,
     tags: Array.isArray(base.tags) ? base.tags.map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean) : [],
-    imageUrl: petImageFor(p, idx),
+    imageUrl: img,
     status: statusLabel,
   }
 }))

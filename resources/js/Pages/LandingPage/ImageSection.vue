@@ -18,9 +18,8 @@ const animals = (sourcePets || []).slice(0, 6).map((p) => ({
   name: p.name,
   species: p.species,
   breed: p.breed,
-
   description: p.description,
-  imageUrl: `https://placedog.net/500?id=${p.id || 1}`,
+  imageUrl: p.image_url || null,
 }))
 
 </script>
