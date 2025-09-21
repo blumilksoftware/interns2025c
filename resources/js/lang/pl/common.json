@@ -31,8 +31,19 @@
     "logOut": "Wyloguj się",
     "goToHomepage": "Przejdź do strony głównej",
     "openMainMenu": "Otwórz menu główne",
+    "appLogoAlt": "Logo witryny ŁapGo",
     "closeMenu": "Zamknij menu"
   },
   "The provided password was incorrect.": "Podane hasło jest nieprawidłowe.",
   "The password is incorrect.": "Podane hasło jest nieprawidłowe."
+  ,
+  "next": "Dalej",
+  "prev": "Wstecz"
+  ,
+  "common": {
+    "next": "Dalej",
+    "prev": "Wstecz",
+    "ok": "OK"
+  },
+  "scrollToTop": "Przewiń na górę"
 }

@@ -18,6 +18,32 @@ class PetShowResource extends JsonResource
         return [
             "id" => $pet->id,
             "name" => $pet->name,
+            "photos" => (function () use ($pet) {
+                $mediaItems = $pet->getMedia("pet_images");
+
+                foreach ($mediaItems as $media) {
+                    $path = $media->getPath();
+
+                    if (is_string($path) && file_exists($path)) {
+                        return [$media->getUrl()];
+                    }
+                }
+
+                return [];
+            })(),
+            "has_images" => (function () use ($pet) {
+                $mediaItems = $pet->getMedia("pet_images");
+
+                foreach ($mediaItems as $media) {
+                    $path = $media->getPath();
+
+                    if (is_string($path) && file_exists($path)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })(),
             "adoption_url" => $pet->adoption_url,
             "species" => $pet->species,
             "breed" => $pet->breed,
@@ -47,6 +73,17 @@ class PetShowResource extends JsonResource
             "quarantine_end_date" => $pet->quarantine_end_date ? $pet->quarantine_end_date->toDateString() : null,
             "found_location" => $pet->found_location,
             "adoption_status" => $pet->adoption_status,
+            "shelter" => $pet->shelter ? [
+                "id" => $pet->shelter->id,
+                "name" => $pet->shelter->name,
+                "phone" => $pet->shelter->phone,
+                "email" => $pet->shelter->email,
+                "address" => $pet->shelter->address ? [
+                    "address" => $pet->shelter->address->address,
+                    "city" => $pet->shelter->address->city,
+                    "postal_code" => $pet->shelter->address->postal_code,
+                ] : null,
+            ] : null,
             "tags" => $pet->tags->map(fn(Tag $tag): array => [
                 "id" => $tag->id,
                 "name" => $tag->name,

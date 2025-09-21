@@ -16,7 +16,12 @@
     },
     "gallery": {
       "previous": "Poprzedni",
-      "next": "Następny"
+      "next": "Następny",
+      "noImagesTitle": "Brak zdjęć",
+      "noImagesText": "Nie ma dostępnych zdjęć tego zwierzaka"
+    },
+    "strip": {
+      "noImage": "Brak zdjęcia"
     }
   }
 }

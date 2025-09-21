@@ -112,8 +112,6 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 </style>

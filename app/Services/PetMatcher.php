@@ -4,28 +4,58 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PetAge;
+use App\Helpers\AgeHelper;
+
 class PetMatcher
 {
     public function match(array $petData, array $preferences): float
     {
+        $normalized = [];
+
+        foreach ($preferences as $field => $prefValues) {
+            if (!is_array($prefValues)) {
+                continue;
+            }
+            $list = array_is_list($prefValues) ? $prefValues : [$prefValues];
+            $normalized[$field] = array_values(array_filter($list, static fn($p) => is_array($p) && (array_key_exists("value", $p) || array_key_exists("weight", $p))));
+        }
+
         $score = 0.0;
         $maxScore = 0.0;
 
-        foreach ($preferences as $field => $prefValues) {
+        foreach ($normalized as $field => $prefValues) {
             foreach ($prefValues as $pref) {
                 $weight = (float)($pref["weight"] ?? 1);
                 $maxScore += $weight;
 
-                if ($field === "tags" && isset($petData["tags"]) && is_array($petData["tags"])) {
-                    $tagValues = array_map(
-                        fn(array $tag): string|int => $tag["name"] ?? $tag["id"],
-                        $petData["tags"],
-                    );
+                if ($field === "tags") {
+                    $petTags = isset($petData["tags"]) && is_array($petData["tags"]) ? $petData["tags"] : [];
+                    $tagValues = array_map(static function ($tag) {
+                        if (is_array($tag)) {
+                            return $tag["name"] ?? $tag["id"] ?? null;
+                        }
 
-                    if (in_array($pref["value"], $tagValues, true)) {
+                        return $tag;
+                    }, $petTags);
+
+                    if (array_key_exists("value", $pref) && in_array($pref["value"], $tagValues, true)) {
                         $score += $weight;
                     }
-                } elseif (isset($petData[$field]) && $petData[$field] === $pref["value"]) {
+                } elseif ($field === "age" && array_key_exists("value", $pref)) {
+                    $petAgeCategory = AgeHelper::classifyDogAgeFromDbAge($petData["age"] ?? null);
+                    $prefValue = (string)$pref["value"];
+
+                    if ($petAgeCategory instanceof PetAge) {
+                        if ($petAgeCategory->value === $prefValue) {
+                            $score += $weight;
+                        }
+                    } else {
+                        if ((string)$petAgeCategory === $prefValue) {
+                            $score += $weight;
+                        }
+                    }
+                } elseif (isset($petData[$field]) && array_key_exists("value", $pref) && $petData[$field] === $pref["value"]) {
                     $score += $weight;
                 }
             }

@@ -3,28 +3,47 @@ import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { HeartIcon, StarIcon, CalendarIcon, MapPinIcon } from '@heroicons/vue/20/solid'
-import { bestMatches } from '@/data/petsData.js'
-import { getPetTags } from '@/helpers/mappers'
 import { routes } from '@/routes'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
-const petData = bestMatches[0]
-
-const petTags = getPetTags()
-const petPersonality = computed(() => {
-  if (!petData.tags || !Array.isArray(petData.tags)) return []
-  return petData.tags.map(tagId => petTags[tagId]?.name).filter(Boolean)
+const props = defineProps({
+  pet: {
+    type: Object,
+    required: true,
+  },
 })
 
+const petData = props.pet
+const petPersonality = computed(() => Array.isArray(petData.tags) ? petData.tags.slice(0, 6) : [])
+
+const petTagObjects = computed(() => {
+  return petPersonality.value.map(tag => ({
+    name: tag,
+    color: 'rounded-full bg-yellow-100 text-yellow-800',
+  }))
+})
+
+const ageMonths = computed(() => parsePolishAgeToMonths(petData.age))
+const showAge = computed(() => typeof ageMonths.value === 'number' && ageMonths.value > 0)
+const formattedAge = computed(() => showAge.value ? formatAge(ageMonths.value) : '')
+
+const arrivalDate = computed(() => petData.admission_date || '')
+const showArrival = computed(() => typeof arrivalDate.value === 'string' && arrivalDate.value.length > 0)
+const shelterCity = computed(() => petData.shelter_city || '')
+const shelterPostal = computed(() => petData.shelter_postal_code || '')
+const showCity = computed(() => (shelterCity.value && shelterCity.value.length > 0) || (shelterPostal.value && shelterPostal.value.length > 0))
+const formattedLocation = computed(() => [shelterCity.value, shelterPostal.value].filter(Boolean).join(', '))
+
 const characteristics = computed(() => [
-  `${t('dashboard.mvp.age')}: ${petData.age}`,
+  showAge.value ? `${t('dashboard.mvp.age')}: ${formattedAge.value}` : null,
   `${t('dashboard.mvp.breed')}: ${petData.breed}`,
   `${t('dashboard.mvp.status')}: ${petData.status}`,
   `${t('dashboard.mvp.gender')}: ${petData.gender === 'male' ? t('dashboard.mvp.male') : t('dashboard.mvp.female')}`,
   `${t('dashboard.mvp.health')}: ${t('dashboard.mvp.vaccinated')}`,
   `${t('dashboard.mvp.temperament')}: ${t('dashboard.mvp.gentle')}`,
-])
+].filter(Boolean))
 
 </script>
 
@@ -47,27 +66,35 @@ const characteristics = computed(() => [
                 <span class="text-sm font-bold text-red-600">{{ t('dashboard.mvp.featuredPet') }}</span>
               </div>
             </div>
-            <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ t('dashboard.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
+            <p class="mt-2 sm:mt-3 text-sm/6 sm:text-base/6 font-medium text-pretty text-gray-700">{{ (petData.description && petData.description.trim()) || t('dashboard.mvp.description', { breed: petData.breed, name: petData.name }) }}</p>
             
             <div class="mt-4 flex gap-4 text-sm font-medium">
-              <div class="flex items-center gap-2">
-                <CalendarIcon class="size-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.age }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <MapPinIcon class="size-5 text-gray-600" />
-                <span class="text-gray-700">{{ petData.breed }}</span>
-              </div>
+              <template v-if="showArrival">
+                <div class="flex items-center gap-2">
+                  <CalendarIcon class="size-5 text-gray-600" />
+                  <span class="text-gray-700">{{ arrivalDate }}</span>
+                </div>
+              </template>
+              <template v-if="showCity">
+                <div class="flex items-center gap-2">
+                  <MapPinIcon class="size-5 text-gray-600" />
+                  <span class="text-gray-700">{{ formattedLocation }}</span>
+                </div>
+              </template>
             </div>
 
             <div class="mt-4">
               <h3 class="text-base font-bold text-[#3B2F1A] mb-3">{{ t('dashboard.mvp.personalityTraits') }}</h3>
-              <ul role="list" class="grid grid-cols-1 gap-x-6 gap-y-2 text-sm/5 font-medium text-gray-700 sm:grid-cols-2 lg:grid">
-                <li v-for="trait in petPersonality" :key="trait" class="flex gap-x-3">
-                  <StarIcon class="size-5 flex-none text-yellow-500" aria-hidden="true" />
-                  {{ trait }}
-                </li>
-              </ul>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="tag in petTagObjects" 
+                  :key="tag.name"
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-medium justify-center truncate shadow-lg border"
+                  :class="tag.color"
+                >
+                  <span class="truncate text-sm">{{ tag.name }}</span>
+                </span>
+              </div>
             </div>
 
             <div class="mt-4">

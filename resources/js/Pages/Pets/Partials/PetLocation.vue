@@ -1,6 +1,27 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 const { t } = useI18n()
+
+const props = defineProps({
+  pet: {
+    type: Object,
+    default: null,
+  },
+})
+
+const shelterName = computed(() => props.pet?.shelter?.name || t('pets.location.shelterName'))
+const addressText = computed(() => {
+  const addr = props.pet?.shelter?.address
+  if (!addr) return t('pets.location.address')
+  const parts = [addr.address, addr.postal_code, addr.city].filter(Boolean)
+  return parts.join(', ')
+})
+
+const mapsQuery = computed(() => encodeURIComponent(addressText.value))
+const mapsEmbed = computed(() => `https://www.google.com/maps?q=${mapsQuery.value}&output=embed`)
+const mapsLink = computed(() => `https://maps.google.com/?q=${mapsQuery.value}`)
 </script>
 
 <template>
@@ -20,20 +41,8 @@ const { t } = useI18n()
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.shelterName') }}</h3>
-              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.address') }}</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start space-x-3">
-            <div class="shrink-0 size-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-              <svg class="size-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.openingHoursTitle') }}</h3>
-              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.openingHoursWeek') }}<br>{{ t('pets.location.openingHoursWeekend') }}</p>
+              <h3 class="font-medium text-gray-900 dark:text-white">{{ shelterName }}</h3>
+              <p class="text-gray-600 dark:text-gray-300">{{ addressText }}</p>
             </div>
           </div>
           
@@ -45,7 +54,19 @@ const { t } = useI18n()
             </div>
             <div>
               <h3 class="font-medium text-gray-900 dark:text-white">{{ t('pets.location.contactTitle') }}</h3>
-              <p class="text-gray-600 dark:text-gray-300">{{ t('pets.location.contactPhone') }}<br>{{ t('pets.location.contactEmail', { email: 'kontakt@przyjaznelapki.pl' }) }}</p>
+              <div class="space-y-1 mt-1">
+                <template v-if="props.pet?.shelter?.phone">
+                  <span class="text-gray-600 dark:text-gray-300">Nr tel: </span><a class="text-blue-700 hover:underline" :href="`tel:${props.pet.shelter.phone}`">{{ props.pet.shelter.phone }}</a>
+                </template>
+                <template v-else>
+                  <span class="text-gray-600 dark:text-gray-300">{{ t('pets.location.contactPhone') }}</span>
+                </template>
+                <template v-if="props.pet?.shelter?.email">
+                  <div>
+                    <a :href="`mailto:${props.pet.shelter.email}`">{{ props.pet.shelter.email }}</a>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
         </div>
@@ -57,12 +78,12 @@ const { t } = useI18n()
               loading="lazy"
               allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=ul.+Leśna+15,+Warszawa&output=embed"
+              :src="mapsEmbed"
             />
           </div>
           
           <a 
-            href="https://maps.google.com/?q=ul.+Leśna+15,+Warszawa" 
+            :href="mapsLink" 
             target="_blank" 
             rel="noopener noreferrer"
             class="inline-flex items-center justify-center w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 group"

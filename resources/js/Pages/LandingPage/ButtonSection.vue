@@ -1,6 +1,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import PawPrints from '@/Components/PawPrints.vue'
+import { Link } from '@inertiajs/vue3'
+import { routes } from '@/routes'
 
 const { t } = useI18n()
 </script>

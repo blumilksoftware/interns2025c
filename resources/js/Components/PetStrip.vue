@@ -6,7 +6,8 @@ import { useI18n } from 'vue-i18n'
 import { HeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/vue/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { getPetTags, getGenderInfo } from '@/helpers/mappers'
+import { getGenderInfo } from '@/helpers/mappers'
+import { parsePolishAgeToMonths, formatAge } from '@/helpers/formatters/age.ts'
 
 const { t } = useI18n()
 
@@ -28,8 +29,6 @@ const scrollContainer = ref(null)
 const canScrollLeft = ref(false)
 const canScrollRight = ref(true)
 
-const petTags = getPetTags()
-
 const toggleLike = (petId) => {
   if (likedPets.value.has(petId)) {
     likedPets.value.delete(petId)
@@ -38,9 +37,61 @@ const toggleLike = (petId) => {
   }
 }
 
-const getPetTagsForPet = (pet) => {
-  if (!pet.tags || !Array.isArray(pet.tags)) return []
-  return pet.tags.map(tagId => petTags[tagId]).filter(Boolean)
+const getPetTagsForPet = (pet) => Array.isArray(pet.tags)
+  ? pet.tags.map((t) => (typeof t === 'string' ? t : t?.name)).filter(Boolean)
+  : []
+
+const descriptionFor = (pet) => {
+  const desc = typeof pet.description === 'string' ? pet.description.trim() : ''
+  if (desc) return desc
+  return t('dashboard.mvp.description', { breed: pet.breed || '', name: pet.name || '' })
+}
+
+const getTranslatedStatus = (pet) => {
+  const sexValue = String((pet.sex && typeof pet.sex === 'object' && 'value' in pet.sex) ? pet.sex.value : pet.sex || '').toLowerCase()
+  const rawStatus = (pet.status ?? pet.adoption_status)
+  if (!rawStatus) return ''
+  const statusStr = String((rawStatus && typeof rawStatus === 'object' && ('value' in rawStatus || 'name' in rawStatus))
+    ? (rawStatus.value ?? rawStatus.name)
+    : rawStatus)
+  const statusLower = statusStr.toLowerCase()
+
+  if (statusLower === 'available') {
+    return (sexValue === 'male' || sexValue === 'm')
+      ? t('dashboard.mvp.availablemale')
+      : t('dashboard.mvp.availablefemale')
+  }
+
+  const knownEnglish = ['adopted', 'waiting for adoption', 'quarantined', 'in temporary home']
+  if (knownEnglish.includes(statusLower)) {
+    const key = `dashboard.mvp.statuses.${statusLower.replaceAll(' ', '_')}`
+    const translated = t(key)
+    return translated === key ? statusStr : translated
+  }
+
+  return statusStr
+}
+
+const getStatusClasses = (pet) => {
+  const rawStatus = (pet.adoption_status ?? pet.status)
+  if (!rawStatus) return 'bg-green-100 text-green-800'
+  const statusLower = String((rawStatus && typeof rawStatus === 'object' && ('value' in rawStatus || 'name' in rawStatus))
+    ? (rawStatus.value ?? rawStatus.name)
+    : rawStatus).toLowerCase()
+
+  if (statusLower === 'quarantined') {
+    return 'bg-amber-100 text-amber-800'
+  }
+
+  if (statusLower === 'adopted') {
+    return 'bg-gray-200 text-gray-800'
+  }
+
+  if (statusLower === 'in temporary home') {
+    return 'bg-indigo-100 text-indigo-800'
+  }
+
+  return 'bg-green-100 text-green-800'
 }
 
 const checkScrollPosition = () => {
@@ -89,16 +140,20 @@ nextTick(() => {
       <button 
         v-show="canScrollLeft"
         class="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 size-8 sm:size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+        :aria-label="t('common.prev')"
         @click="scrollLeft"
       >
+        <span class="sr-only">{{ t('common.prev') }}</span>
         <ChevronLeftIcon class="size-4 sm:size-6 text-gray-700" />
       </button>
       
       <button 
         v-show="canScrollRight"
         class="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 size-8 sm:size-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+        :aria-label="t('common.next')"
         @click="scrollRight"
       >
+        <span class="sr-only">{{ t('common.next') }}</span>
         <ChevronRightIcon class="size-4 sm:size-6 text-gray-700" />
       </button>
       
@@ -111,15 +166,25 @@ nextTick(() => {
           :key="pet.id" 
           class="shrink-0 w-64 sm:w-72 md:w-80 bg-white rounded-xl shadow-lg ring-2 m-4 ring-gray-100 hover:shadow-xl hover:ring-blue-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-300 overflow-hidden relative"
         >
-          <div class="relative aspect-square ">
-            <Link :href="routes.pets.show(pet.id)" class="focus-visible:outline-none">
-              <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`">
-            </Link> 
+          <div class="relative aspect-square">
+            <Link v-if="pet.has_images" :href="routes.pets.show(pet.id)" :aria-label="`${t('dashboard.mvp.goToPetView') || t('dashboard.mvp.seeMore')}: ${pet.name}`" class="focus-visible:outline-none">
+              <img class="size-full object-cover" :src="pet.imageUrl" :alt="`${pet.name} - ${pet.breed}`" @error="($event) => { $event.target.src = '/Images/cat-dog.png' }">
+            </Link>
+            <div v-else class="size-full bg-gray-100 flex items-center justify-center rounded-lg">
+              <div class="text-center text-gray-500 px-2">
+                <svg class="mx-auto size-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-xs font-medium">{{ t('pets.strip.noImage') }}</p>
+              </div>
+            </div> 
 
             <button 
-              class="absolute top-2 sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
+              class="absolute top-2 cursor-pointer sm:top-3 right-2 sm:right-3 size-7 sm:size-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 z-10 hover:scale-110 active:scale-95" 
+              :aria-label="`${t('dashboard.mvp.like')} - ${pet.name}`"
               @click.prevent.stop="toggleLike(pet.id)"
             >
+              <span class="sr-only">{{ `${t('dashboard.mvp.like')} - ${pet.name}` }}</span>
               <HeartIcon v-if="likedPets.has(pet.id)" class="size-4 sm:size-5 text-purple-600 animate-heartbeat [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)]" />
               <HeartOutlineIcon v-else class="size-4 sm:size-5 text-purple-600 [transition:all_0.3s_cubic-bezier(0.68,_-0.55,_0.265,_1.55)] hover:scale-110" />
             </button>
@@ -131,27 +196,32 @@ nextTick(() => {
           
           <div class="flex flex-1 flex-col p-3 sm:p-4 text-center">
             <div class="flex flex-col items-center mb-2">
-              <h3 class="text-lg sm:text-xl font-bold text-gray-900">{{ pet.name }}</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-gray-900" :aria-label="`${pet.name} - ${pet.breed}`">{{ pet.name }}</h3>
               <span class="text-sm sm:text-base text-gray-600">{{ pet.breed }}</span>
             </div>
             
             <div class="flex items-center justify-center gap-1 sm:gap-2 mb-2">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800">{{ pet.age }}</span>
-              <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs sm:text-sm font-semibold text-green-800">{{ pet.status }}</span>
+              <span 
+                v-if="parsePolishAgeToMonths(pet.age) > 0"
+                class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs sm:text-sm font-semibold text-blue-800" 
+                :aria-label="`${t('dashboard.mvp.age')}: ${formatAge(parsePolishAgeToMonths(pet.age))}`"
+              >{{ formatAge(parsePolishAgeToMonths(pet.age)) }}</span>
+              <span class="inline-flex items-center rounded-full px-2 py-1 text-xs sm:text-sm font-semibold" :class="getStatusClasses(pet)" :aria-label="`${t('dashboard.mvp.status')}: ${getTranslatedStatus(pet)}`">{{ getTranslatedStatus(pet) }}</span>
             </div>
             
             <div class="border-t border-gray-200 my-2 sm:my-3" />
             
-            <div class="flex flex-wrap gap-1 sm:gap-2 justify-center">
-              <span 
-                v-for="tag in getPetTagsForPet(pet)" 
-                :key="tag.name"
-                class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full"
-                :class="tag.color"
-              >
-                <span class="text-xs sm:text-sm shrink-0">{{ tag.emoji }}</span>
-                <span class="truncate text-xs sm:text-sm">{{ tag.name }}</span>
-              </span>
+            <div class="flex flex-col gap-2 items-center">
+              <p class="text-xs sm:text-sm text-gray-700 leading-relaxed text-center px-2">{{ descriptionFor(pet) }}</p>
+              <div class="flex flex-wrap gap-1 sm:gap-2 justify-center">
+                <span 
+                  v-for="tag in getPetTagsForPet(pet)" 
+                  :key="`${pet.id}-${tag}`"
+                  class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs sm:text-sm font-medium justify-center truncate border max-w-full"
+                >
+                  <span class="truncate text-xs sm:text-sm">{{ tag }}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
