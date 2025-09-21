@@ -41,7 +41,7 @@ const medicalInfo = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-5xl mx-auto py-12">
     <div class="mb-6">
       <div class="flex items-start justify-between gap-4">
         <div>
@@ -67,8 +67,8 @@ const medicalInfo = computed(() => {
       <div class="mb-8"> 
         <h2 class="heading-xl">{{ t('dashboard.mvp.characteristics') }}</h2>
         <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-4 gap-x-6 text-gray-700">
-          <li v-for="item in characteristics" :key="item.key + String(item.value)" class="flex gap-3 items-start">
-            <PetIcons :name="item.icon" />
+          <li v-for="item in characteristics" :key="item.key + String(item.value)" class="flex gap-3 items-center">
+            <PetIcons class="size-6" :name="item.icon" />
             <span class="text-base">
               <template v-if="item.label">
                 {{ item.label }}: <span class="font-semibold">{{ item.value }}</span>

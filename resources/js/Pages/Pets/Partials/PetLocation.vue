@@ -6,8 +6,8 @@ const { t } = useI18n()
 <template>
   <div class="mx-auto max-w-6xl px-6 lg:px-8 py-8">
     <div class="bg-white dark:bg-gray-800 py-8 px-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-      <h2 class="heading-xl dark:text-white mb-6 text-center">
-        📍 {{ t('pets.location.heading') }}
+      <h2 class="text-2xl font-bold mb-6 text-center py-3">
+        {{ t('pets.location.heading') }}
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div 
-    class="relative w-full overflow-hidden bg-gray-300/60 p-4 sm:px-6 md:px-4 lg:px-12 rounded-lg dark:bg-neutral-900 cursor-grab active:cursor-grabbing select-none"
+    class="relative w-full overflow-hidden bg-gray-300/20 p-8 sm:px-6 md:px-4 lg:px-12 rounded-lg cursor-grab active:cursor-grabbing select-none"
     @mousedown="handleDragStart"
     @mousemove="handleDragMove"
     @mouseup="handleDragEnd"
