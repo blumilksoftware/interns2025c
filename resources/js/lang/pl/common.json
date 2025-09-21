@@ -1,6 +1,9 @@
 {
   "profile": {
-    "edit": "Edytuj profil"
+    "editProfile": "Edytuj profil",
+    "security": "Bezpieczeństwo",
+    "favoritePets": "Ulubione zwierzaki",
+    "myShelter": "Moje schronisko"
   },
   "terms": {
     "agreement": "Zgadzam się na Regulamin i Politykę Prywatności"

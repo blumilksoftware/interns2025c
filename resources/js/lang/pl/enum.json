@@ -1,0 +1,9 @@
+{
+    "enum": {
+        "role": {
+            "user": "Użytkownik",
+            "admin": "Administrator",
+            "shelterEmployee": "Pracownik schroniska"
+        }
+    }
+}
