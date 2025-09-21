@@ -20,22 +20,28 @@ class PetShowResource extends JsonResource
             "name" => $pet->name,
             "photos" => (function () use ($pet) {
                 $mediaItems = $pet->getMedia("pet_images");
+
                 foreach ($mediaItems as $media) {
                     $path = $media->getPath();
+
                     if (is_string($path) && file_exists($path)) {
                         return [$media->getUrl()];
                     }
                 }
+
                 return [];
             })(),
             "has_images" => (function () use ($pet) {
                 $mediaItems = $pet->getMedia("pet_images");
+
                 foreach ($mediaItems as $media) {
                     $path = $media->getPath();
+
                     if (is_string($path) && file_exists($path)) {
                         return true;
                     }
                 }
+
                 return false;
             })(),
             "adoption_url" => $pet->adoption_url,

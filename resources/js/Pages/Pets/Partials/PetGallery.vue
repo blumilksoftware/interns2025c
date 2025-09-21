@@ -203,9 +203,9 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-else class="relative hidden sm:flex h-80 md:h-128 justify-center">
-      <div class="flex justify-center items-center h-full w-full bg-gray-100 rounded-lg">
+      <div class="flex justify-center items-center size-full bg-gray-100 rounded-lg">
         <div class="text-center text-gray-500">
-          <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="mx-auto size-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           <h3 class="text-lg font-medium text-gray-900 mb-2">{{ t('pets.gallery.noImagesTitle') }}</h3>
@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
     <div v-else class="relative sm:hidden">
       <div class="w-full h-72 flex items-center justify-center bg-gray-100 rounded-lg">
         <div class="text-center text-gray-500 px-4">
-          <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="mx-auto size-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           <h3 class="text-base font-medium text-gray-900 mb-1">{{ t('pets.gallery.noImagesTitle') }}</h3>
