@@ -1,11 +1,11 @@
 # For other versions check: https://hub.docker.com/_/composer/tags
-FROM composer/composer:2.8.10-bin@sha256:b85784e99453d3b64099ca094298666a476e83a70e8bcd0f252675d2fdc4e4e0 AS composer-bin
-FROM ghcr.io/php/pie:1.0.0-bin@sha256:f8fb97db83aa125841c0429bd4ea1fc8c34eecf30873e00e1b5b729678b6538d AS pie-bin
+FROM composer/composer:2.8.12-bin@sha256:f1a57d9cabfc04430058288eaab6c18967b19a3870b5fe71bf0c6afd67968653 AS composer-bin
+FROM ghcr.io/php/pie:1.3.1-bin@sha256:560c05d64b4cba4f4c240d25f010533effd8094ebac7075d5daadfb9726e5ebb AS pie-bin
 # For other versions check: https://hub.docker.com/_/node/tags?page=1&name=bookworm-slim
-FROM node:24.4.0-bookworm-slim@sha256:1b044a60874f1b57ac8c4e708ddb3a00e55b34586ebbacce09a48796dafcc799 AS node
+FROM node:24.4.1-bookworm-slim@sha256:36ae19f59c91f3303c7a648f07493fe14c4bd91320ac8d898416327bacf1bbfa AS node
 
 # For other versions check: https://hub.docker.com/_/php/tags?page=1&name=fpm-bookworm
-FROM php:8.4.10-fpm-bookworm@sha256:c9d4beea5abc16ba2c5a52aa0caafd534500682bbec17411fad9198bb47ec196
+FROM php:8.4.15-fpm-bookworm@sha256:0dc3b56694374910c625b6a6cf40c85214ee03c862072438d8deb8dbf09aba42
 
 COPY --from=composer-bin ./composer /usr/bin/composer
 COPY --from=pie-bin /pie /usr/bin/pie
@@ -37,11 +37,11 @@ RUN mv "${PHP_INI_DIR}/php.ini-development" "${PHP_INI_DIR}/php.ini"
 
 # For other versions check: http://nginx.org/packages/mainline/debian/pool/nginx/n/nginx/
 # renovate: datasource=github-tags depName=nginx/nginx extractVersion=^release-(?<version>.*)$
-ARG NGINX_VERSION="1.29.0"
+ARG NGINX_VERSION="1.29.3"
 
 # For other versions check: http://github.com/phpredis/phpredis/releases
 # renovate: datasource=github-tags depName=phpredis/phpredis
-ARG PHPREDIS_VERSION=6.2.0
+ARG PHPREDIS_VERSION=6.3.0
 
 RUN apt-get update \
     && apt-get install --assume-yes gpg \
@@ -75,7 +75,7 @@ RUN apt-get update \
 
 # For other versions check: http://github.com/xdebug/xdebug/releases
 # renovate: datasource=github-tags depName=xdebug/xdebug
-ARG XDEBUG_VERSION=3.4.5
+ARG XDEBUG_VERSION=3.4.7
 ARG INSTALL_XDEBUG=true
 
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
